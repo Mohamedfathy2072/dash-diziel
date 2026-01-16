@@ -1,0 +1,9 @@
+{
+  "labels": {
+    "vehicleTypes": "أنواع المركبات"
+  },
+  "buttons": {
+    "addNewVehicleType": "إضافة نوع مركبة جديد"
+  }
+}
+

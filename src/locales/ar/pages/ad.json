@@ -1,0 +1,19 @@
+{
+  "subtitle": "تفاصيل الإعلان",
+  "basicInformation": "المعلومات الأساسية",
+  "titleEn": "العنوان (بالإنجليزية)",
+  "titleAr": "العنوان (بالعربية)",
+  "descriptionEn": "الوصف (بالإنجليزية)",
+  "descriptionAr": "الوصف (بالعربية)",
+  "link": "الرابط",
+  "image": "الصورة",
+  "status": "الحالة",
+  "active": "نشط",
+  "inactive": "غير نشط",
+  "order": "الترتيب",
+  "validFrom": "صالح من",
+  "validUntil": "صالح حتى",
+  "edit": "تعديل",
+  "delete": "حذف"
+}
+

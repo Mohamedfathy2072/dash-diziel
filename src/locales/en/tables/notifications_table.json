@@ -1,0 +1,20 @@
+{
+  "labels": {
+    "title": "Title",
+    "body": "Body",
+    "targetType": "Target Type",
+    "sentCount": "Sent",
+    "totalCount": "Total",
+    "createdAt": "Created At",
+    "actions": "Actions",
+    "allUsers": "All Users",
+    "allDrivers": "All Drivers",
+    "specificUser": "Specific User",
+    "specificDriver": "Specific Driver"
+  },
+  "actions": {
+    "view": "View"
+  },
+  "noNotifications": "No notifications found"
+}
+

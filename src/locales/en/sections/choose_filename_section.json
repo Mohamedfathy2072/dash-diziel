@@ -1,0 +1,8 @@
+{
+  "title": "Choose the file name",
+  "placeholder": "File name",
+  "label": "File name",
+  "noFileName": "Please enter a file name",
+  "download": "Download",
+  "cancel": "Cancel"
+}

@@ -1,0 +1,16 @@
+{
+  "labels": {
+    "rowsToShow": "Rows to Show",
+    "status": "Status",
+    "vehicleType": "Vehicle Type",
+    "userId": "User ID",
+    "driverId": "Driver ID",
+    "pickupAddress": "Pickup Address",
+    "destinationAddress": "Destination Address"
+  },
+  "buttons": {
+    "filter": "Filter",
+    "applyFilter": "Apply Filter",
+    "clearFilter": "Clear Filter"
+  }
+}

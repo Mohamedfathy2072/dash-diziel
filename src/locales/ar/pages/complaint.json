@@ -1,0 +1,21 @@
+{
+  "subtitle": "تفاصيل الشكوى",
+  "basicInformation": "المعلومات الأساسية",
+  "subject": "الموضوع",
+  "description": "الوصف",
+  "status": "الحالة",
+  "user": "المستخدم",
+  "complaintableType": "الشكوى حول",
+  "createdAt": "تاريخ الإنشاء",
+  "resolution": "الحل",
+  "resolvedAt": "تاريخ الحل",
+  "resolvedBy": "تم الحل بواسطة",
+  "resolutionNotes": "ملاحظات الحل",
+  "edit": "تعديل",
+  "delete": "حذف",
+  "resolve": "حل",
+  "enterResolutionNotes": "أدخل ملاحظات الحل (اختياري):",
+  "complaintResolvedSuccessfully": "تم حل الشكوى بنجاح",
+  "failedToResolveComplaint": "فشل في حل الشكوى"
+}
+

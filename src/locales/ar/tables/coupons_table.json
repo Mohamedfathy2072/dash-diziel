@@ -1,0 +1,17 @@
+{
+  "labels": {
+    "code": "الكود",
+    "type": "النوع",
+    "value": "القيمة",
+    "usage": "الاستخدام",
+    "validFrom": "صالح من",
+    "validUntil": "صالح حتى",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "percentage": "نسبة مئوية",
+    "fixedAmount": "مبلغ ثابت",
+    "active": "نشط",
+    "inactive": "غير نشط"
+  }
+}
+

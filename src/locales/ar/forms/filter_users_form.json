@@ -1,0 +1,11 @@
+{
+  "labels": {
+    "rowsToShow": "عرض الصفوف",
+    "username": "اسم المستخدم"
+  },
+  "buttons": {
+    "filter": "فلترة",
+    "applyFilter": "تطبيق الفلترة",
+    "clearFilter": "إزالة الفلترة"
+  }
+}

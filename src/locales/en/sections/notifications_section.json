@@ -1,0 +1,11 @@
+{
+  "labels": {
+    "notifications": "Notifications"
+  },
+  "buttons": {
+    "sendNotification": "Send Notification"
+  },
+  "noNotificationsYet": "No notifications sent yet",
+  "sendFirstNotification": "Send First Notification"
+}
+

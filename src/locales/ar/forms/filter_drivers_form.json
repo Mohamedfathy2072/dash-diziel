@@ -1,0 +1,13 @@
+{
+  "labels": {
+    "rowsToShow": "عدد الصفوف المعروضة",
+    "driverName": "اسم السائق",
+    "status": "الحالة"
+  },
+  "buttons": {
+    "filter": "تصفية",
+    "applyFilter": "تطبيق التصفية",
+    "clearFilter": "مسح التصفية"
+  }
+}
+

@@ -1,0 +1,13 @@
+{
+  "labels": {
+    "rowsToShow": "Rows to Show",
+    "driverName": "Driver Name",
+    "status": "Status"
+  },
+  "buttons": {
+    "filter": "Filter",
+    "applyFilter": "Apply Filter",
+    "clearFilter": "Clear Filter"
+  }
+}
+

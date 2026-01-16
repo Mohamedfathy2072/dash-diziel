@@ -1,0 +1,665 @@
+import type { FormikProps } from "formik";
+import type { DriverStatus, DriverAvailabilityStatus } from "./enums";
+
+type FormsType =
+  | "login"
+  | "updatePassword"
+  | "filterUsers"
+  | "addUser"
+  | "editUser"
+  | "deleteUser"
+  | "addDriver"
+  | "editDriver"
+  | "filterDrivers"
+  | "deleteDriver"
+  | "updateDocument"
+  | "addVehicle"
+  | "editVehicle"
+  | "filterVehicles"
+  | "deleteVehicle"
+  | "editTrip"
+  | "filterTrips"
+  | "deleteTrip"
+  | "addVehicleType"
+  | "editVehicleType"
+  | "deleteVehicleType"
+  | "addCoupon"
+  | "editCoupon"
+  | "deleteCoupon"
+  | "addAd"
+  | "editAd"
+  | "deleteAd"
+  | "addComplaint"
+  | "editComplaint"
+  | "deleteComplaint"
+  | "filterComplaints"
+  | "sendNotification"
+  | "deletePermission"
+  | "deleteRole"
+  | "addRole"
+  | "editRole"
+  | "addPermission"
+  | "editPermission"
+  | "addDeposit";
+
+interface FormsTypes {
+  type: FormsType;
+  index?: number;
+}
+
+interface FieldUpdatedTypes {
+  field_to_update: string;
+  new_value: string | number;
+}
+
+//Home
+interface FilterBalanceDetailsFormTypes {
+  from: Date;
+  to: Date;
+}
+
+interface FilterBalanceDetailsFormikTypes {
+  touched: FilterBalanceDetailsFormTypes;
+  errors: FilterBalanceDetailsFormTypes;
+  initialValues: FilterBalanceDetailsFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: FilterBalanceDetailsFormTypes;
+}
+//Home
+
+//Authentication
+interface LoginFormTypes {
+  email: string;
+  password: string;
+}
+
+interface LoginFormikTypes {
+  touched: LoginFormTypes;
+  errors: LoginFormTypes;
+  initialValues: LoginFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: LoginFormTypes;
+}
+
+interface UpdatePasswordFormTypes {
+  old_password: string;
+  new_password: string;
+  confirm_password: string;
+}
+
+interface UpdatePasswordFormikTypes {
+  touched: UpdatePasswordFormTypes;
+  errors: UpdatePasswordFormTypes;
+  initialValues: UpdatePasswordFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: UpdatePasswordFormTypes;
+}
+
+//Authentication
+
+
+
+
+//Users
+interface UserFormTypes {
+  name: string;
+  email: string;
+  phone: string | null;
+  password?: string;
+  password_confirmation?: string;
+  type: "user" | "driver" | "superAdmin";
+  photo_url?: string | null;
+  date_of_birth?: string | null;
+  gender?: "male" | "female" | "other" | null;
+  address?: string | null;
+  role_ids?: number[];
+  city?: string | null;
+  state?: string | null;
+  postal_code?: string | null;
+  country?: string | null;
+  photoFile?: File | null;
+}
+
+interface UserFormikTypes {
+  touched: UserFormTypes;
+  errors: UserFormTypes;
+  initialValues: UserFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: UserFormTypes;
+}
+
+interface FilterUsersFormTypes {
+  name1: string;
+}
+
+interface FilterUsersFormikTypes {
+  touched: FilterUsersFormTypes;
+  errors: FilterUsersFormTypes;
+  initialValues: FilterUsersFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: FilterUsersFormTypes;
+}
+
+interface VehicleFormTypes {
+  driver_id: number;
+  make: string;
+  model: string;
+  year: number;
+  color: string | null;
+  license_plate: string;
+  vin: string | null;
+  vehicle_type_id: number;
+  fuel_type: string | null;
+  transmission: string | null;
+  doors: number | null;
+  seats: number | null;
+  is_primary: boolean;
+  status: string | null;
+  verification_status: string | null;
+  registration_number: string | null;
+  registration_expiry: string | null;
+  registration_state: string | null;
+  insurance_provider: string | null;
+  insurance_policy_number: string | null;
+  insurance_expiry: string | null;
+  inspection_date: string | null;
+  inspection_expiry: string | null;
+  inspection_certificate: string | null;
+  mileage: number | null;
+  condition_rating: number | null;
+  last_maintenance_date: string | null;
+  next_maintenance_due: string | null;
+  notes: string | null;
+}
+
+interface VehicleFormikTypes {
+  touched: VehicleFormTypes;
+  errors: VehicleFormTypes;
+  initialValues: VehicleFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: VehicleFormTypes;
+}
+
+interface FilterVehiclesFormTypes {
+  status: string;
+  verification_status: string;
+  vehicle_type_id: number | string; // string for query params compatibility
+  make: string;
+  model: string;
+  license_plate: string;
+  driver_id: string;
+}
+
+interface FilterVehiclesFormikTypes {
+  touched: FilterVehiclesFormTypes;
+  errors: FilterVehiclesFormTypes;
+  initialValues: FilterVehiclesFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: FilterVehiclesFormTypes;
+}
+
+interface TripFormTypes {
+  trip_title: string | null;
+  pickup_address: string;
+  pickup_lat: number | null;
+  pickup_lng: number | null;
+  pickup_date: string | null;
+  destination_address: string;
+  destination_lat: number | null;
+  destination_lng: number | null;
+  destination_date: string | null;
+  vehicle_type_id: number;
+  base_price: number;
+  scheduled_at: string | null;
+  description: string | null;
+  notes: string | null;
+  weight: string | null;
+  material: string | null;
+  status: string | null;
+}
+
+interface TripFormikTypes {
+  touched: TripFormTypes;
+  errors: TripFormTypes;
+  initialValues: TripFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: TripFormTypes;
+}
+
+interface FilterTripsFormTypes {
+  status: string;
+  vehicle_type_id: number | string; // string for query params compatibility
+  user_id: string;
+  driver_id: string;
+  pickup_address: string;
+  destination_address: string;
+}
+
+interface VehicleTypeFormTypes {
+  name: string;
+  name_ar: string;
+  status: "active" | "inactive" | null;
+  order: number | null;
+}
+
+interface CouponFormTypes {
+  code: string;
+  type: "percentage" | "fixed_amount";
+  value: number;
+  min_order_amount: number | null;
+  max_discount: number | null;
+  usage_limit: number | null;
+  user_limit: number;
+  valid_from: string;
+  valid_until: string;
+  is_active: boolean;
+  applicable_to: "all" | "specific_vehicle_types";
+  vehicle_types: number[];
+  description: string | null;
+}
+
+interface AdFormTypes {
+  title_ar: string;
+  title_en: string;
+  description_ar: string | null;
+  description_en: string | null;
+  link: string | null;
+  image: File | null;
+  image_url: string | null;
+  is_active: boolean;
+  valid_from: string | null;
+  valid_until: string | null;
+  order: number | null;
+}
+
+interface ComplaintFormTypes {
+  subject: string;
+  description: string;
+  complaintable_type: 'Trip' | 'Driver' | 'User' | null;
+  complaintable_id: number | null;
+}
+
+interface ComplaintFormikTypes {
+  touched: ComplaintFormTypes;
+  errors: ComplaintFormTypes;
+  initialValues: ComplaintFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: ComplaintFormTypes;
+}
+
+interface FilterComplaintsFormTypes {
+  status: string;
+  user_id: string;
+  complaintable_type: string;
+  subject: string;
+}
+
+interface FilterComplaintsFormikTypes {
+  touched: FilterComplaintsFormTypes;
+  errors: FilterComplaintsFormTypes;
+  initialValues: FilterComplaintsFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: FilterComplaintsFormTypes;
+}
+
+interface NotificationFormTypes {
+  title: string;
+  body: string;
+  target_type: "user" | "driver" | "all_users" | "all_drivers";
+  user_id?: number | null;
+  driver_id?: number | null;
+}
+
+interface RoleFormikTypes {
+  touched: RoleFormTypes;
+  errors: RoleFormTypes;
+  initialValues: RoleFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  slug?: string | null;
+  group?: string | null;
+  description?: string | null;
+}
+
+interface PermissionFormikTypes {
+  touched: PermissionFormTypes;
+  errors: PermissionFormTypes;
+  initialValues: PermissionFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  slug?: string | null;
+  description?: string | null;
+  is_active?: boolean;
+  permission_ids?: number[];
+}
+interface DepositFormTypes {
+  amount: number;
+  description?: string;
+  reference_number?: string;
+  metadata?: Record<string, any> | null;
+  type?: string; // "manual" for manual deposits by admin
+}
+
+interface DepositFormikTypes {
+  touched: DepositFormTypes;
+  errors: DepositFormTypes;
+  initialValues: DepositFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: DepositFormTypes;
+}
+
+
+interface RoleFormikTypes {
+  touched: RoleFormTypes;
+  errors: RoleFormTypes;
+  initialValues: RoleFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  slug?: string | null;
+  group?: string | null;
+  description?: string | null;
+}
+
+interface PermissionFormikTypes {
+  touched: PermissionFormTypes;
+  errors: PermissionFormTypes;
+  initialValues: PermissionFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  slug?: string | null;
+  description?: string | null;
+  is_active?: boolean;
+  permission_ids?: number[];
+}
+
+interface RoleFormikTypes {
+  touched: RoleFormTypes;
+  errors: RoleFormTypes;
+  initialValues: RoleFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  slug?: string | null;
+  group?: string | null;
+  description?: string | null;
+}
+
+interface PermissionFormikTypes {
+  touched: PermissionFormTypes;
+  errors: PermissionFormTypes;
+  initialValues: PermissionFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  initialValues: VehicleTypeFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: VehicleTypeFormTypes;
+}
+
+interface FilterTripsFormikTypes {
+  touched: FilterTripsFormTypes;
+  errors: FilterTripsFormTypes;
+  initialValues: FilterTripsFormTypes;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: DriverFormTypes;
+}
+
+interface FilterDriversFormikTypes {
+  touched: FilterDriversFormTypes;
+  errors: FilterDriversFormTypes;
+  initialValues: FilterDriversFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: FilterDriversFormTypes;
+}
+
+interface DocumentFormTypes {
+  type: string;
+  document_number?: string | null;
+  issue_date?: string | null;
+  expiry_date?: string | null;
+  issuing_authority?: string | null;
+  file?: File | null;
+}
+
+interface DocumentFormikTypes {
+  touched: DocumentFormTypes;
+  errors: DocumentFormTypes;
+  initialValues: DocumentFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: DocumentFormTypes;
+}
+
+interface FilterUsersFormikTypes {
+  touched: FilterUsersFormTypes;
+  errors: FilterUsersFormTypes;
+  initialValues: FilterUsersFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: FilterUsersFormTypes;
+}
+
+//Users
+
+//Delete
+
+interface DeleteFormTypes {}
+
+interface DeleteFormikTypes {
+  touched: DeleteFormTypes;
+  errors: DeleteFormTypes;
+  initialValues: DeleteFormTypes;
+  validationSchema: unknown;
+  onSubmit: (values: unknown) => void;
+  handleChange: (event: unknown) => void;
+  handleBlur: (event: unknown) => void;
+  values: DeleteFormTypes;
+}
+
+interface DeleteTypes {
+  title?: string;
+  description?: string;
+}
+//Delete
+
+type FilterValuesTypes =
+  | FilterUsersFormTypes
+  | FilterDriversFormTypes
+  | FilterVehiclesFormTypes
+  | FilterTripsFormTypes
+  | FilterComplaintsFormTypes
+  | FilterBalanceDetailsFormTypes;
+
+type AllFormsTypes =
+  | DepositFormTypes
+  | RoleFormTypes
+  | PermissionFormTypes
+  | LoginFormTypes
+  | UpdatePasswordFormTypes
+  | DeleteFormTypes
+  | UserFormTypes
+  | FilterUsersFormTypes
+  | DriverFormTypes
+  | FilterDriversFormTypes
+  | DocumentFormTypes
+  | VehicleFormTypes
+  | FilterVehiclesFormTypes
+  | ComplaintFormTypes
+  | FilterComplaintsFormTypes
+  | FilterBalanceDetailsFormTypes
+  | NotificationFormTypes;
+
+type AllFormiksTypes =
+  | DepositFormikTypes
+  | RoleFormikTypes
+  | PermissionFormikTypes
+  | LoginFormikTypes
+  | DeleteFormikTypes
+  | UserFormikTypes
+  | FilterUsersFormikTypes
+  | DriverFormikTypes
+  | FilterDriversFormikTypes
+  | VehicleFormikTypes
+  | FilterVehiclesFormikTypes
+  | DocumentFormikTypes
+  | ComplaintFormikTypes
+  | FilterComplaintsFormikTypes
+  | FilterBalanceDetailsFormikTypes
+  | NotificationFormikTypes;
+
+interface FormiksTypes<T> {
+  formik: FormikProps<T>;
+  type?: string;
+}
+
+type FormikMap = {
+  login: FormikProps<LoginFormTypes>;
+  updatePassword: FormikProps<UpdatePasswordFormTypes>;
+  filterUsers: FormikProps<FilterUsersFormTypes>;
+  addUser: FormikProps<UserFormTypes>;
+  editUser: FormikProps<UserFormTypes>;
+  deleteUser: FormikProps<DeleteFormTypes>;
+  addDriver: FormikProps<DriverFormTypes>;
+  editDriver: FormikProps<DriverFormTypes>;
+  filterDrivers: FormikProps<FilterDriversFormTypes>;
+  updateDocument: FormikProps<DocumentFormTypes>;
+  addVehicle: FormikProps<VehicleFormTypes>;
+  editVehicle: FormikProps<VehicleFormTypes>;
+  filterVehicles: FormikProps<FilterVehiclesFormTypes>;
+  deleteVehicle: FormikProps<DeleteFormTypes>;
+  editTrip: FormikProps<TripFormTypes>;
+  filterTrips: FormikProps<FilterTripsFormTypes>;
+  deleteTrip: FormikProps<DeleteFormTypes>;
+  addVehicleType: FormikProps<VehicleTypeFormTypes>;
+  editVehicleType: FormikProps<VehicleTypeFormTypes>;
+  deleteVehicleType: FormikProps<DeleteFormTypes>;
+  addCoupon: FormikProps<CouponFormTypes>;
+  editCoupon: FormikProps<CouponFormTypes>;
+  deleteCoupon: FormikProps<DeleteFormTypes>;
+  addAd: FormikProps<AdFormTypes>;
+  editAd: FormikProps<AdFormTypes>;
+  deleteAd: FormikProps<DeleteFormTypes>;
+  addComplaint: FormikProps<ComplaintFormTypes>;
+  editComplaint: FormikProps<ComplaintFormTypes>;
+  deleteComplaint: FormikProps<DeleteFormTypes>;
+  filterComplaints: FormikProps<FilterComplaintsFormTypes>;
+  sendNotification: FormikProps<NotificationFormTypes>;
+  deletePermission: FormikProps<DeleteFormTypes>;
+  deleteRole: FormikProps<DeleteFormTypes>;
+  addRole: FormikProps<RoleFormTypes>;
+  editRole: FormikProps<RoleFormTypes>;
+  addPermission: FormikProps<PermissionFormTypes>;
+  editPermission: FormikProps<PermissionFormTypes>;
+  addRole: FormikProps<RoleFormTypes>;
+  editRole: FormikProps<RoleFormTypes>;
+  addPermission: FormikProps<PermissionFormTypes>;
+  editPermission: FormikProps<PermissionFormTypes>;
+  addDeposit: FormikProps<DepositFormTypes>;
+};
+
+interface CatchErrorTypes {
+  response: {
+    data: {
+      message: string;
+    };
+  };
+}
+
+export type {
+  AllFormiksTypes,
+  AllFormsTypes,
+  CatchErrorTypes,
+  DeleteFormikTypes,
+  DeleteFormTypes,
+  DeleteTypes,
+  DocumentFormTypes,
+  DocumentFormikTypes,
+  DriverFormTypes,
+  VehicleFormTypes,
+  VehicleFormikTypes,
+  FilterVehiclesFormTypes,
+  FilterVehiclesFormikTypes,
+  FieldUpdatedTypes,
+  FilterDriversFormTypes,
+  FilterDriversFormikTypes,
+  DriverFormikTypes,
+  FilterUsersFormTypes,
+  FilterUsersFormikTypes,
+  TripFormTypes,
+  TripFormikTypes,
+  FilterTripsFormTypes,
+  FilterTripsFormikTypes,
+  VehicleTypeFormTypes,
+  VehicleTypeFormikTypes,
+  CouponFormTypes,
+  AdFormTypes,
+  ComplaintFormTypes,
+  ComplaintFormikTypes,
+  FilterComplaintsFormTypes,
+  FilterComplaintsFormikTypes,
+  NotificationFormTypes,
+  NotificationFormikTypes,
+  RoleFormTypes,
+  RoleFormikTypes,
+  PermissionFormTypes,
+  PermissionFormikTypes,
+  DepositFormTypes,
+  DepositFormikTypes,
+  FilterValuesTypes,
+  FormikMap,
+  FormiksTypes,
+  FormsType,
+  FormsTypes,
+  LoginFormikTypes,
+  LoginFormTypes,
+  UpdatePasswordFormikTypes,
+  UpdatePasswordFormTypes,
+  UserFormTypes,
+  UserFormikTypes,
+};

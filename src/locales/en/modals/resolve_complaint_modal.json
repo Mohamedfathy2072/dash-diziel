@@ -1,0 +1,13 @@
+{
+  "title": "Resolve Complaint",
+  "resolutionNotes": "Resolution Notes",
+  "resolutionNotesPlaceholder": "Enter resolution notes (optional)",
+  "resolutionNotesHelper": "Optional: Add notes about how this complaint was resolved",
+  "cancel": "Cancel",
+  "resolve": "Resolve",
+  "resolving": "Resolving...",
+  "complaintIdRequired": "Complaint ID is required",
+  "complaintResolvedSuccessfully": "Complaint resolved successfully",
+  "failedToResolveComplaint": "Failed to resolve complaint"
+}
+

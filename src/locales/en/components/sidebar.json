@@ -1,0 +1,18 @@
+{
+  "dashboard": "Dashboard",
+  "profile": "superAdmin Profile",
+  "users": "Users",
+  "drivers": "Drivers",
+  "vehicles": "Vehicles",
+  "trips": "Trips",
+  "vehicleTypes": "Vehicle Types",
+  "coupons": "Coupons",
+  "ads": "Ads",
+  "complaints": "Complaints",
+  "notifications": "Notifications",
+  "settings": "Settings",
+  "roles": "Roles",
+  "permissions": "Permissions",
+  "companyProfits": "Company Profits",
+  "logout": "Log Out"
+}

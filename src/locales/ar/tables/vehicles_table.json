@@ -1,0 +1,12 @@
+{
+  "labels": {
+    "vehicle": "المركبة",
+    "driver": "السائق",
+    "licensePlate": "رقم اللوحة",
+    "vehicleType": "نوع المركبة",
+    "status": "الحالة",
+    "verificationStatus": "التحقق",
+    "primary": "أساسي",
+    "actions": "الإجراءات"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "Hospital": "Hospital",
+  "Clinic": "Clinic",
+  "Primary Care Provider (PCP)": "Primary Care Provider (PCP)",
+  "Laboratory / Diagnostic Center": "Laboratory / Diagnostic Center",
+  "Pharmacy": "Pharmacy",
+  "Radiology / Imaging Center": "Radiology / Imaging Center",
+  "Dental Clinic": "Dental Clinic",
+  "Mental Health Provider / Psychiatric Clinic": "Mental Health Provider / Psychiatric Clinic",
+  "Telemedicine Provider": "Telemedicine Provider",
+  "male": "Male",
+  "female": "Female"
+}

@@ -1,0 +1,13 @@
+{
+  "labels": {
+    "trip": "الرحلة",
+    "user": "المستخدم",
+    "status": "الحالة",
+    "pickup": "الاستلام",
+    "destination": "الوجهة",
+    "vehicleType": "نوع المركبة",
+    "basePrice": "السعر الأساسي",
+    "driver": "السائق",
+    "actions": "الإجراءات"
+  }
+}

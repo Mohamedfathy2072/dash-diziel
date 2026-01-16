@@ -1,0 +1,18 @@
+{
+  "dashboard": "الرئيسية",
+  "profile": "ملف الادمن",
+  "users": "المستخدمين",
+  "drivers": "السائقون",
+  "vehicles": "المركبات",
+  "trips": "الرحلات",
+  "vehicleTypes": "أنواع المركبات",
+  "coupons": "الكوبونات",
+  "ads": "الإعلانات",
+  "complaints": "الشكاوى",
+  "notifications": "الإشعارات",
+  "settings": "الإعدادات",
+  "roles": "الأدوار",
+  "permissions": "الصلاحيات",
+  "companyProfits": "أرباح الشركة",
+  "logout": "تسجيل الخروج"
+}

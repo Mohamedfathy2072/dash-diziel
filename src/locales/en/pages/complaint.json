@@ -1,0 +1,21 @@
+{
+  "subtitle": "Complaint Details",
+  "basicInformation": "Basic Information",
+  "subject": "Subject",
+  "description": "Description",
+  "status": "Status",
+  "user": "User",
+  "complaintableType": "Complaint About",
+  "createdAt": "Created At",
+  "resolution": "Resolution",
+  "resolvedAt": "Resolved At",
+  "resolvedBy": "Resolved By",
+  "resolutionNotes": "Resolution Notes",
+  "edit": "Edit",
+  "delete": "Delete",
+  "resolve": "Resolve",
+  "enterResolutionNotes": "Enter resolution notes (optional):",
+  "complaintResolvedSuccessfully": "Complaint resolved successfully",
+  "failedToResolveComplaint": "Failed to resolve complaint"
+}
+

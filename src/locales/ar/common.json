@@ -1,0 +1,20 @@
+{
+  "rejectDocument": "رفض المستند",
+  "rejectionReason": "سبب الرفض",
+  "rejectionReasonRequired": "سبب الرفض مطلوب",
+  "enterRejectionReason": "أدخل سبب الرفض",
+  "cancel": "إلغاء",
+  "confirm": "تأكيد",
+  "vehicleVerification": "التحقق من المركبة",
+  "vehicleVerified": "تم التحقق من المركبة بنجاح",
+  "vehicleVerifyError": "فشل في التحقق من المركبة",
+  "vehicleRejected": "تم رفض المركبة بنجاح",
+  "vehicleRejectError": "فشل في رفض المركبة",
+  "rejectVehicle": "رفض المركبة",
+  "verify": "التحقق",
+  "reject": "رفض",
+  "vehicleAlreadyVerified": "تم التحقق من هذه المركبة بالفعل.",
+  "vehicleAlreadyRejected": "تم رفض هذه المركبة.",
+  "vehicleVerificationQuestion": "ما الإجراء الذي تريد تنفيذه على هذه المركبة؟"
+}
+

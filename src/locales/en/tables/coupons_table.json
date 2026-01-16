@@ -1,0 +1,17 @@
+{
+  "labels": {
+    "code": "Code",
+    "type": "Type",
+    "value": "Value",
+    "usage": "Usage",
+    "validFrom": "Valid From",
+    "validUntil": "Valid Until",
+    "status": "Status",
+    "actions": "Actions",
+    "percentage": "Percentage",
+    "fixedAmount": "Fixed Amount",
+    "active": "Active",
+    "inactive": "Inactive"
+  }
+}
+

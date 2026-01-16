@@ -1,0 +1,9 @@
+{
+  "labels": {
+    "vehicleTypes": "Vehicle Types"
+  },
+  "buttons": {
+    "addNewVehicleType": "Add New Vehicle Type"
+  }
+}
+

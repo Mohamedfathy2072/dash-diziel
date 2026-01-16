@@ -1,0 +1,19 @@
+{
+  "subtitle": "Ad Details",
+  "basicInformation": "Basic Information",
+  "titleEn": "Title (English)",
+  "titleAr": "Title (Arabic)",
+  "descriptionEn": "Description (English)",
+  "descriptionAr": "Description (Arabic)",
+  "link": "Link",
+  "image": "Image",
+  "status": "Status",
+  "active": "Active",
+  "inactive": "Inactive",
+  "order": "Order",
+  "validFrom": "Valid From",
+  "validUntil": "Valid Until",
+  "edit": "Edit",
+  "delete": "Delete"
+}
+

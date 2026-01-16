@@ -1,0 +1,14 @@
+{
+  "labels": {
+    "name": "Name",
+    "slug": "Slug",
+    "description": "Description",
+    "permissions": "Permissions",
+    "users": "Users",
+    "status": "Status",
+    "actions": "Actions",
+    "active": "Active",
+    "inactive": "Inactive"
+  }
+}
+

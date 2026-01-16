@@ -1,0 +1,17 @@
+{
+  "labels": {
+    "rowsToShow": "عدد الصفوف",
+    "status": "الحالة",
+    "verificationStatus": "حالة التحقق",
+    "vehicleType": "نوع المركبة",
+    "make": "الشركة المصنعة",
+    "model": "الموديل",
+    "licensePlate": "رقم اللوحة",
+    "driverId": "معرف السائق"
+  },
+  "buttons": {
+    "filter": "تصفية",
+    "applyFilter": "تطبيق التصفية",
+    "clearFilter": "مسح التصفية"
+  }
+}

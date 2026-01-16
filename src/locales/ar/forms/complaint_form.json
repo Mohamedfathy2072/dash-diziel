@@ -1,0 +1,27 @@
+{
+  "basicInformation": "المعلومات الأساسية",
+  "subject": "الموضوع",
+  "subjectPlaceholder": "أدخل موضوع الشكوى",
+  "subjectRequired": "الموضوع مطلوب",
+  "subjectMax": "يجب أن يكون الموضوع أقل من 255 حرفًا",
+  "description": "الوصف",
+  "descriptionPlaceholder": "أدخل وصف الشكوى",
+  "descriptionRequired": "الوصف مطلوب",
+  "descriptionMax": "يجب أن يكون الوصف أقل من 2000 حرف",
+  "complaintAbout": "الشكوى حول",
+  "complaintableType": "النوع",
+  "complaintableTypePlaceholder": "اختر النوع (اختياري)",
+  "complaintableTypeInvalid": "نوع غير صالح",
+  "complaintableId": "المعرف",
+  "complaintableIdPlaceholder": "أدخل المعرف",
+  "complaintableIdRequired": "معرف الشكوى مطلوب عند اختيار النوع",
+  "complaintableIdInteger": "يجب أن يكون معرف الشكوى رقمًا صحيحًا",
+  "cancel": "إلغاء",
+  "createComplaint": "إنشاء شكوى",
+  "updateComplaint": "تحديث الشكوى",
+  "complaintCreatedSuccessfully": "تم إنشاء الشكوى بنجاح",
+  "failedToCreateComplaint": "فشل في إنشاء الشكوى",
+  "complaintUpdatedSuccessfully": "تم تحديث الشكوى بنجاح",
+  "failedToUpdateComplaint": "فشل في تحديث الشكوى"
+}
+

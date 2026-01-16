@@ -1,0 +1,17 @@
+{
+  "labels": {
+    "title": "Title",
+    "image": "Image",
+    "link": "Link",
+    "order": "Order",
+    "validFrom": "Valid From",
+    "validUntil": "Valid Until",
+    "status": "Status",
+    "actions": "Actions",
+    "noImage": "No Image",
+    "active": "Active",
+    "inactive": "Inactive",
+    "viewLink": "View Link"
+  }
+}
+

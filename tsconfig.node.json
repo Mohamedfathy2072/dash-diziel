@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "module": "es2022",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Bundler mode */
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": false,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Compatibility */
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "types": ["node", "vite/client"]
+  },
+  "include": ["vite.config.ts", "server/**/*"]
+}

@@ -1,0 +1,13 @@
+{
+  "labels": {
+    "name": "Name",
+    "nameAr": "Arabic Name",
+    "status": "Status",
+    "order": "Order",
+    "createdAt": "Created At",
+    "actions": "Actions",
+    "active": "Active",
+    "inactive": "Inactive"
+  }
+}
+

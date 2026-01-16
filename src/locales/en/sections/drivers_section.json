@@ -1,0 +1,11 @@
+{
+  "title": "Drivers",
+  "description": "Manage and view all drivers",
+  "labels": {
+    "drivers": "Drivers"
+  },
+  "buttons": {
+    "addNewDriver": "Add New Driver"
+  }
+}
+

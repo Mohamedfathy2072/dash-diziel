@@ -1,0 +1,13 @@
+{
+  "labels": {
+    "trip": "Trip",
+    "user": "User",
+    "status": "Status",
+    "pickup": "Pickup",
+    "destination": "Destination",
+    "vehicleType": "Vehicle Type",
+    "basePrice": "Base Price",
+    "driver": "Driver",
+    "actions": "Actions"
+  }
+}

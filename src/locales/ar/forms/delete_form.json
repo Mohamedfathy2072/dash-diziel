@@ -1,0 +1,15 @@
+{
+  "delete": "حذف",
+  "cancel": "إلغاء",
+  "user_deleted": "تم حذف المستخدم بنجاح",
+  "vehicle_deleted": "تم حذف المركبة بنجاح",
+  "vehicle_delete_error": "فشل في حذف المركبة",
+  "trip_deleted": "تم حذف الرحلة بنجاح",
+  "trip_delete_error": "فشل في حذف الرحلة",
+  "vehicle_type_deleted": "تم حذف نوع المركبة بنجاح",
+  "vehicle_type_delete_error": "فشل في حذف نوع المركبة",
+  "coupon_deleted": "تم حذف الكوبون بنجاح",
+  "coupon_delete_error": "فشل في حذف الكوبون",
+  "complaint_deleted": "تم حذف الشكوى بنجاح",
+  "complaint_delete_error": "فشل في حذف الشكوى"
+}

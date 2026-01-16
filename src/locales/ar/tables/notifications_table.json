@@ -1,0 +1,20 @@
+{
+  "labels": {
+    "title": "العنوان",
+    "body": "المحتوى",
+    "targetType": "نوع الهدف",
+    "sentCount": "تم الإرسال",
+    "totalCount": "الإجمالي",
+    "createdAt": "تاريخ الإنشاء",
+    "actions": "الإجراءات",
+    "allUsers": "جميع المستخدمين",
+    "allDrivers": "جميع السائقين",
+    "specificUser": "مستخدم محدد",
+    "specificDriver": "سائق محدد"
+  },
+  "actions": {
+    "view": "عرض"
+  },
+  "noNotifications": "لا توجد إشعارات"
+}
+

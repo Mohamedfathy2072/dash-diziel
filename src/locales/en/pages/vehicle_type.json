@@ -1,0 +1,15 @@
+{
+  "subtitle": "Vehicle Type Details",
+  "edit": "Edit",
+  "delete": "Delete",
+  "basicInformation": "Basic Information",
+  "name": "Name",
+  "nameAr": "Arabic Name",
+  "status": "Status",
+  "order": "Order",
+  "createdAt": "Created At",
+  "updatedAt": "Updated At",
+  "active": "Active",
+  "inactive": "Inactive"
+}
+

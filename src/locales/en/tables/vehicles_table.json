@@ -1,0 +1,12 @@
+{
+  "labels": {
+    "vehicle": "Vehicle",
+    "driver": "Driver",
+    "licensePlate": "License Plate",
+    "vehicleType": "Vehicle Type",
+    "status": "Status",
+    "verificationStatus": "Verification",
+    "primary": "Primary",
+    "actions": "Actions"
+  }
+}

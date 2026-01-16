@@ -1,0 +1,19 @@
+{
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "permission_deleted": "Permission is deleted successfully",
+  "member_deleted": "Member is deleted successfully",
+  "user_deleted": "User is deleted successfully",
+  "vehicle_deleted": "Vehicle is deleted successfully",
+  "vehicle_delete_error": "Failed to delete vehicle",
+  "trip_deleted": "Trip is deleted successfully",
+  "trip_delete_error": "Failed to delete trip",
+  "vehicle_type_deleted": "Vehicle type is deleted successfully",
+  "vehicle_type_delete_error": "Failed to delete vehicle type",
+  "coupon_deleted": "Coupon is deleted successfully",
+  "coupon_delete_error": "Failed to delete coupon",
+  "complaint_deleted": "Complaint is deleted successfully",
+  "complaint_delete_error": "Failed to delete complaint",
+  "package_request_deleted": "Package Update Request is deleted successfully",
+  "network_request_deleted": "Network Update Request is deleted successfully"
+}

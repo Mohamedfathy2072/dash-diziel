@@ -1,0 +1,14 @@
+{
+  "title": "superAdmin Login",
+  "subtitle": "Please enter your information to access the superAdmin dashboard",
+  "email_label": "Email",
+  "password_label": "Password",
+  "login_button": "Log In",
+  "login_success": "Login Successfully",
+  "validation": {
+    "invalid_email": "Invalid email address",
+    "email_required": "Email is required",
+    "password_min": "Password must be at least 8 characters",
+    "password_required": "Password is required"
+  }
+}

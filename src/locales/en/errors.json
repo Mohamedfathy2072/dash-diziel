@@ -1,0 +1,26 @@
+{
+  "network_error": "Network error. Please check your connection.",
+  "unknown_error": "An error occurred",
+  "unauthorized": "Unauthorized. Please login again.",
+  "forbidden": "You don't have permission to perform this action",
+  "not_found": "Resource not found",
+  "server_error": "Internal server error occurred",
+  "service_unavailable": "Service temporarily unavailable. Please try again later.",
+  "operation_failed": "Operation failed",
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email address",
+    "min": "The value is too short",
+    "max": "The value is too long",
+    "numeric": "This field must be a number",
+    "url": "Please enter a valid URL",
+    "image": "Please upload a valid image file",
+    "file": "Please upload a valid file",
+    "size": "The file size is invalid",
+    "mimes": "The file type is not allowed",
+    "date": "Please enter a valid date",
+    "after": "The date must be after the specified date",
+    "before": "The date must be before the specified date"
+  }
+}
+

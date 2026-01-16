@@ -1,0 +1,26 @@
+{
+  "overallRating": "التقييم العام",
+  "overallRatingDescription": "قيم تجربتك العامة (مطلوب)",
+  "detailedRatings": "التقييمات التفصيلية (اختياري)",
+  "review": "المراجعة (اختياري)",
+  "reviewText": "اكتب مراجعة",
+  "reviewPlaceholder": "شارك تجربتك...",
+  "punctuality": "الالتزام بالمواعيد",
+  "service": "الخدمة",
+  "cleanliness": "النظافة",
+  "communication": "التواصل",
+  "safety": "الأمان",
+  "courtesy": "اللباقة",
+  "cancel": "إلغاء",
+  "submit": "إرسال التقييم",
+  "submitting": "جاري الإرسال...",
+  "overall_rating_required": "التقييم العام مطلوب",
+  "overall_rating_min": "يجب أن يكون التقييم 1 على الأقل",
+  "overall_rating_max": "يجب أن يكون التقييم 5 على الأكثر",
+  "rating_min": "يجب أن يكون التقييم 1 على الأقل",
+  "rating_max": "يجب أن يكون التقييم 5 على الأكثر",
+  "review_text_max": "يجب أن يكون نص المراجعة أقل من 2000 حرف",
+  "rating_submitted_successfully": "تم إرسال التقييم بنجاح",
+  "failed_to_submit_rating": "فشل في إرسال التقييم"
+}
+

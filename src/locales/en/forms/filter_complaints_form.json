@@ -1,0 +1,15 @@
+{
+  "labels": {
+    "rowsToShow": "Rows to Show",
+    "status": "Status",
+    "userId": "User ID",
+    "complaintableType": "Complaintable Type",
+    "subject": "Subject"
+  },
+  "buttons": {
+    "filter": "Filter",
+    "applyFilter": "Apply Filter",
+    "clearFilter": "Clear Filter"
+  }
+}
+

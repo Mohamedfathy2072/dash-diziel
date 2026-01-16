@@ -1,0 +1,13 @@
+{
+  "Hospital": "مستشفى",
+  "Clinic": "عيادة",
+  "Primary Care Provider (PCP)": "مقدم الرعاية الأولية",
+  "Laboratory / Diagnostic Center": "معمل / مركز تشخيص",
+  "Pharmacy": "صيدلية",
+  "Radiology / Imaging Center": "مركز أشعة / تصوير طبي",
+  "Dental Clinic": "عيادة أسنان",
+  "Mental Health Provider / Psychiatric Clinic": "عيادة الطب النفسي / مقدم الرعاية النفسية",
+  "Telemedicine Provider": "مقدم خدمات الطب عن بُعد",
+  "male": "ذكر",
+  "female": "انثى"
+}

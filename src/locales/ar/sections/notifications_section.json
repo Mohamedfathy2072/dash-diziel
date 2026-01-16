@@ -1,0 +1,11 @@
+{
+  "labels": {
+    "notifications": "الإشعارات"
+  },
+  "buttons": {
+    "sendNotification": "إرسال إشعار"
+  },
+  "noNotificationsYet": "لم يتم إرسال أي إشعارات بعد",
+  "sendFirstNotification": "إرسال أول إشعار"
+}
+

@@ -1,0 +1,11 @@
+{
+  "superAdmin_info": "superAdmin Info",
+  "commercial_register": "Unified facility number",
+  "tax_number": "Tax Number:",
+  "email": "Email:",
+  "phone": "Phone:",
+  "balance_info": "Balance Info",
+  "available_balance": "Available Balance:",
+  "consumed_balance": "Consumed Balance:",
+  "required_balance": "Required Balance:"
+}

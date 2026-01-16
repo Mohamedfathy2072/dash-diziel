@@ -1,0 +1,98 @@
+{
+  "filter_employees_form": {
+    "full_name_ar": "الاسم بالكامل (بالعربية)",
+    "coverage_activated": "تفعيل التغطية",
+    "nationality": "الجنسية",
+    "gender": "النوع"
+  },
+  "filter_approvals_form": {
+    "workflow_state": "حالة سير العمل",
+    "issue_date": "تاريخ الإصدار"
+  },
+  "filter_networks_form": {
+    "network_name": "اسم الشبكة",
+    "employee_count": "عدد الموظفين"
+  },
+  "filter_packages_form": {
+    "name1": "اسم الباقة"
+  },
+  "filter_permissions_form": {
+    "role_name": "اسم الدور"
+  },
+  "filter_providers_branches_form": {
+    "branch_name": "اسم الفرع",
+    "network_type": "نوع الشبكة",
+    "provider_type": "نوع المزود",
+    "branch_city_name": "اسم المدينة"
+  },
+  "filter_transactions_form": {
+    "name": "رقم التحويل",
+    "status": "حالة التحويل",
+    "transaction_date": "تاريخ التحويل",
+    "completed": "مدفوع",
+    "pending": "تحت المراجعة"
+  },
+  "filter_users_form": {
+    "name1": "اسم المستخدم"
+  },
+  "filter_drivers_form": {
+    "name1": "اسم السائق",
+    "status": "الحالة"
+  },
+  "filter_vehicles_form": {
+    "status": "الحالة",
+    "verification_status": "حالة التحقق",
+    "vehicle_type": "نوع المركبة",
+    "make": "الشركة المصنعة",
+    "model": "الموديل",
+    "license_plate": "رقم اللوحة",
+    "driver_id": "معرف السائق",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "maintenance": "صيانة",
+    "suspended": "معلق",
+    "pending": "قيد الانتظار",
+    "verified": "تم التحقق",
+    "rejected": "مرفوض",
+    "sedan": "سيدان",
+    "suv": "دفع رباعي",
+    "truck": "شاحنة",
+    "van": "فان",
+    "motorcycle": "دراجة نارية",
+    "coupe": "كوبيه",
+    "hatchback": "هاتشباك",
+    "convertible": "كابريوليه"
+  },
+  "filter_trips_form": {
+    "status": "الحالة",
+    "vehicle_type": "نوع المركبة",
+    "user_id": "معرف المستخدم",
+    "driver_id": "معرف السائق",
+    "pickup_address": "عنوان الاستلام",
+    "destination_address": "عنوان الوجهة",
+    "pending": "قيد الانتظار",
+    "accepted": "مقبول",
+    "started": "بدأ",
+    "completed": "مكتمل",
+    "cancelled": "ملغى",
+    "sedan": "سيدان",
+    "suv": "دفع رباعي",
+    "truck": "شاحنة",
+    "van": "فان",
+    "motorcycle": "دراجة نارية",
+    "coupe": "كوبيه",
+    "hatchback": "هاتشباك",
+    "convertible": "كابريوليه"
+  },
+  "filter_complaints_form": {
+    "status": "الحالة",
+    "user_id": "معرف المستخدم",
+    "complaintable_type": "نوع الشكوى",
+    "subject": "الموضوع",
+    "pending": "قيد الانتظار",
+    "resolved": "تم الحل",
+    "Trip": "رحلة",
+    "Driver": "سائق",
+    "User": "مستخدم"
+  }
+}

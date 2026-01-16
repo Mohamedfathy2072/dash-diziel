@@ -1,0 +1,14 @@
+{
+  "title": "Profile",
+  "loading_profile": "Loading profile...",
+  "email": "Email",
+  "phone": "Phone",
+  "date_of_birth": "Date of Birth",
+  "gender": "Gender",
+  "address": "Address",
+  "location": "Location",
+  "account_created": "Account Created",
+  "email_verified": "Email Verified",
+  "verified": "✓ Verified"
+}
+

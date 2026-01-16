@@ -1,0 +1,35 @@
+{
+  "home": "Home",
+  "crumbs": {
+    "profile": "Profile",
+    "employees": "Employees",
+    "networks": "Networks",
+    "packages": "Packages",
+    "approvals": "Approvals",
+    "invoices": "Invoices",
+    "permissions": "Permissions",
+    "payment": "Payment & Invoices",
+    "users": "Users",
+    "edit": "Edit",
+    "add": "Add",
+    "edit_requests_network": "Network Update Requests",
+    "edit_requests_package": "Package Update Requests",
+    "customer": {
+      "dashboard": "Dashboard",
+      "login": "Login",
+      "new-complaints": "New Complaints",
+      "working-complaints": "Working Complaints",
+      "add-new-complaint": "Add New Complaint",
+      "complaint-details": "Complaint Details",
+      "complaints-following-up": "Complaints Following Up"
+    },
+    "sales": {
+      "dashboard": "Dashboard",
+      "login": "Login",
+      "new-companies": "New Companies",
+      "companies-follow-up": "Companies Follow Up",
+      "companies-unqualified": "Companies Lost",
+      "add": "Add superAdmin"
+    }
+  }
+}

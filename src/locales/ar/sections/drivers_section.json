@@ -1,0 +1,11 @@
+{
+  "title": "السائقين",
+  "description": "إدارة وعرض جميع السائقين",
+  "labels": {
+    "drivers": "السائقين"
+  },
+  "buttons": {
+    "addNewDriver": "إضافة سائق جديد"
+  }
+}
+

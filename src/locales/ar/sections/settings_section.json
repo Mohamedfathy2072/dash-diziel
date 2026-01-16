@@ -1,0 +1,23 @@
+{
+  "title": "الإعدادات",
+  "platformFeePercentage": "نسبة العمولة",
+  "platformFeePercentageLabel": "نسبة العمولة (%)",
+  "platformFeePercentagePlaceholder": "أدخل نسبة العمولة (0-100)",
+  "platformFeePercentageRequired": "نسبة العمولة مطلوبة",
+  "platformFeePercentageMin": "يجب أن تكون القيمة على الأقل 0",
+  "platformFeePercentageMax": "يجب أن تكون القيمة على الأكثر 100",
+  "platformFeePercentageNote": "ملاحظة: يجب أن تكون القيمة بين 0 و 100. مثال: 15 يعني 15%",
+  "maxDriverDebtLimit": "الحد الأقصى للديون",
+  "maxDriverDebtLimitLabel": "الحد الأقصى للديون للسائقين",
+  "maxDriverDebtLimitPlaceholder": "أدخل الحد الأقصى للديون",
+  "maxDriverDebtLimitRequired": "الحد الأقصى للديون مطلوب",
+  "maxDriverDebtLimitMin": "يجب أن تكون القيمة على الأقل 0",
+  "maxDriverDebtLimitNote": "ملاحظة: اضبط على 0 للديون غير المحدودة. إذا تجاوز السائق هذا الحد، لا يمكنه قبول رحلات جديدة حتى يتم سداد الدين.",
+  "reset": "إعادة تعيين",
+  "updateSettings": "تحديث الإعدادات",
+  "settingsUpdatedSuccessfully": "تم تحديث الإعدادات بنجاح",
+  "errorUpdatingSettings": "حدث خطأ أثناء تحديث الإعدادات",
+  "errorLoadingSettings": "حدث خطأ أثناء تحميل الإعدادات"
+}
+
+

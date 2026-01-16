@@ -1,0 +1,199 @@
+import Box from "@mui/material/Box";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Input from "../../components/Input/Input";
+import SubmitButton from "../../components/SubmitButton/SubmitButton";
+import { useFormsStore } from "../../globals/formsStore";
+import { BasicButton } from "../../mui/buttons/BasicButton";
+import FormSection from "../../components/common/FormSection/FormSection";
+import type { FormiksTypes, NotificationFormTypes } from "../../types/forms";
+import { userService } from "../../services/api";
+import { driverService } from "../../services/api";
+import type { AppDispatch, RootState } from "../../store/store";
+import { getUsers } from "../../store/usersSlice";
+import { getDrivers } from "../../store/driversSlice";
+import type { User } from "../../types/domain";
+import type { Driver } from "../../types/domain";
+
+const NotificationForm = ({
+  formik,
+}: FormiksTypes<NotificationFormTypes>) => {
+  const { t } = useTranslation("forms/notification_form");
+  const isLoading = useFormsStore((state) => state.isLoading);
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  
+  const [users, setUsers] = useState<User[]>([]);
+  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [loadingDrivers, setLoadingDrivers] = useState(false);
+
+  const targetType = formik.values.target_type;
+  const showUserSelect = targetType === "user";
+  const showDriverSelect = targetType === "driver";
+
+  // Fetch users when target_type is "user"
+  useEffect(() => {
+    if (targetType === "user" && users.length === 0) {
+      setLoadingUsers(true);
+      userService.getAll(1, 1000)
+        .then((response) => {
+          const usersData = response.data.data?.data || [];
+          setUsers(usersData);
+        })
+        .catch(() => {
+          setUsers([]);
+        })
+        .finally(() => {
+          setLoadingUsers(false);
+        });
+    }
+  }, [targetType]);
+
+  // Fetch drivers when target_type is "driver"
+  useEffect(() => {
+    if (targetType === "driver" && drivers.length === 0) {
+      setLoadingDrivers(true);
+      driverService.getAll(1, 1000)
+        .then((response) => {
+          const driversData = response.data.data?.data || [];
+          setDrivers(driversData);
+        })
+        .catch(() => {
+          setDrivers([]);
+        })
+        .finally(() => {
+          setLoadingDrivers(false);
+        });
+    }
+  }, [targetType]);
+
+  // Reset user_id and driver_id when target_type changes
+  useEffect(() => {
+    if (targetType !== "user") {
+      formik.setFieldValue("user_id", null);
+    }
+    if (targetType !== "driver") {
+      formik.setFieldValue("driver_id", null);
+    }
+  }, [targetType]);
+
+  const userOptions = users.map((user) => `${user.name} (${user.email})`);
+  const userValues = users.map((user) => user.id.toString());
+
+  const driverOptions = drivers.map((driver) => {
+    const name = driver.user?.name || driver.name || "Unknown";
+    const email = driver.user?.email || driver.email || "";
+    return `${name}${email ? ` (${email})` : ""}`;
+  });
+  const driverValues = drivers.map((driver) => driver.id.toString());
+
+  // Handle user_id change - convert string to number
+  const handleUserIdChange = (value: string) => {
+    const numValue = value ? parseInt(value, 10) : null;
+    formik.setFieldValue("user_id", numValue);
+  };
+
+  // Handle driver_id change - convert string to number
+  const handleDriverIdChange = (value: string) => {
+    const numValue = value ? parseInt(value, 10) : null;
+    formik.setFieldValue("driver_id", numValue);
+  };
+
+  return (
+    <Box className="grid justify-stretch items-start gap-6">
+      {/* Notification Details Section */}
+      <FormSection title={t("notificationDetails", { defaultValue: "Notification Details" })}>
+        <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
+          <Input
+            formik={formik}
+            label={t("title", { defaultValue: "Title" })}
+            name="title"
+            placeholder={t("titlePlaceholder", { defaultValue: "Enter notification title" })}
+          />
+          <Input
+            formik={formik}
+            label={t("body", { defaultValue: "Body" })}
+            name="body"
+            textarea
+            rows={4}
+            placeholder={t("bodyPlaceholder", { defaultValue: "Enter notification body" })}
+          />
+        </Box>
+      </FormSection>
+
+      {/* Target Selection Section */}
+      <FormSection title={t("targetSelection", { defaultValue: "Target Selection" })}>
+        <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
+          <Input
+            formik={formik}
+            label={t("targetType", { defaultValue: "Target Type" })}
+            name="target_type"
+            select
+            options={[
+              t("allUsers", { defaultValue: "All Users" }),
+              t("allDrivers", { defaultValue: "All Drivers" }),
+              t("specificUser", { defaultValue: "Specific User" }),
+              t("specificDriver", { defaultValue: "Specific Driver" }),
+            ]}
+            values={["all_users", "all_drivers", "user", "driver"]}
+            placeholder={t("targetTypePlaceholder", { defaultValue: "Select target type" })}
+          />
+          {showUserSelect && (
+            <Input
+              formik={formik}
+              label={t("user", { defaultValue: "User" })}
+              name="user_id"
+              select
+              autocomplete
+              options={userOptions}
+              values={userValues}
+              loading={loadingUsers}
+              placeholder={t("userPlaceholder", { defaultValue: "Search and select user" })}
+              value={formik.values.user_id?.toString() || ""}
+              change={handleUserIdChange}
+            />
+          )}
+          {showDriverSelect && (
+            <Input
+              formik={formik}
+              label={t("driver", { defaultValue: "Driver" })}
+              name="driver_id"
+              select
+              autocomplete
+              options={driverOptions}
+              values={driverValues}
+              loading={loadingDrivers}
+              placeholder={t("driverPlaceholder", { defaultValue: "Search and select driver" })}
+              value={formik.values.driver_id?.toString() || ""}
+              change={handleDriverIdChange}
+            />
+          )}
+        </Box>
+      </FormSection>
+
+      {/* Action Buttons */}
+      <Box className="flex justify-end items-center gap-4">
+        <BasicButton
+          type="button"
+          onClick={() => navigate(-1)}
+          className="!px-6 !py-2.5"
+        >
+          {t("cancel", { defaultValue: "Cancel" })}
+        </BasicButton>
+        <SubmitButton
+          loading={isLoading}
+          variant="gradient"
+          className="!px-6 !py-2.5"
+        >
+          {t("sendNotification", { defaultValue: "Send Notification" })}
+        </SubmitButton>
+      </Box>
+    </Box>
+  );
+};
+
+export default NotificationForm;
+

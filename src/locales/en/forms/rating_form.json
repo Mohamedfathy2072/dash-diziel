@@ -1,0 +1,26 @@
+{
+  "overallRating": "Overall Rating",
+  "overallRatingDescription": "Rate your overall experience (required)",
+  "detailedRatings": "Detailed Ratings (Optional)",
+  "review": "Review (Optional)",
+  "reviewText": "Write a review",
+  "reviewPlaceholder": "Share your experience...",
+  "punctuality": "Punctuality",
+  "service": "Service",
+  "cleanliness": "Cleanliness",
+  "communication": "Communication",
+  "safety": "Safety",
+  "courtesy": "Courtesy",
+  "cancel": "Cancel",
+  "submit": "Submit Rating",
+  "submitting": "Submitting...",
+  "overall_rating_required": "Overall rating is required",
+  "overall_rating_min": "Rating must be at least 1",
+  "overall_rating_max": "Rating must be at most 5",
+  "rating_min": "Rating must be at least 1",
+  "rating_max": "Rating must be at most 5",
+  "review_text_max": "Review text must be less than 2000 characters",
+  "rating_submitted_successfully": "Rating submitted successfully",
+  "failed_to_submit_rating": "Failed to submit rating"
+}
+

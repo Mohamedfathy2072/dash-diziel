@@ -1,0 +1,20 @@
+{
+  "rejectDocument": "Reject Document",
+  "rejectionReason": "Rejection Reason",
+  "rejectionReasonRequired": "Rejection reason is required",
+  "enterRejectionReason": "Enter the reason for rejection",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "vehicleVerification": "Vehicle Verification",
+  "vehicleVerified": "Vehicle verified successfully",
+  "vehicleVerifyError": "Failed to verify vehicle",
+  "vehicleRejected": "Vehicle rejected successfully",
+  "vehicleRejectError": "Failed to reject vehicle",
+  "rejectVehicle": "Reject Vehicle",
+  "verify": "Verify",
+  "reject": "Reject",
+  "vehicleAlreadyVerified": "This vehicle is already verified.",
+  "vehicleAlreadyRejected": "This vehicle has been rejected.",
+  "vehicleVerificationQuestion": "What action would you like to perform on this vehicle?"
+}
+

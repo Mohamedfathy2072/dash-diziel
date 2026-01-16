@@ -1,0 +1,84 @@
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Radio from "@mui/material/Radio";
+import { styled } from "@mui/material/styles";
+import type { CustomRadioTypes } from "../../types/components";
+
+const BpIcon = styled("span")(({ theme }) => ({
+  borderRadius: "50%",
+  width: 16,
+  height: 16,
+  boxShadow:
+    "inset 0 0 0 1px rgba(16,22,26,.2), inset 0 -1px 0 rgba(16,22,26,.1)",
+  backgroundColor: "#f5f8fa",
+  backgroundImage:
+    "linear-gradient(180deg,hsla(0,0%,100%,.8),hsla(0,0%,100%,0))",
+  ".Mui-focusVisible &": {
+    outline: "2px auto rgba(19,124,189,.6)",
+    outlineOffset: 2,
+  },
+  "input:hover ~ &": {
+    backgroundColor: "#ebf1f5",
+    ...theme.applyStyles("dark", {
+      backgroundColor: "#30404d",
+    }),
+  },
+  "input:disabled ~ &": {
+    boxShadow: "none",
+    background: "rgba(206,217,224,.5)",
+    ...theme.applyStyles("dark", {
+      background: "rgba(57,75,89,.5)",
+    }),
+  },
+  ...theme.applyStyles("dark", {
+    boxShadow: "0 0 0 1px rgb(16 22 26 / 40%)",
+    backgroundColor: "#394b59",
+    backgroundImage:
+      "linear-gradient(180deg,hsla(0,0%,100%,.05),hsla(0,0%,100%,0))",
+  }),
+}));
+
+const BpCheckedIcon = styled(BpIcon)({
+  backgroundColor: "#003366",
+  backgroundImage:
+    "linear-gradient(180deg,hsla(0,0%,100%,.1),hsla(0,0%,100%,0))",
+  "&::before": {
+    display: "block",
+    width: 16,
+    height: 16,
+    backgroundImage: "radial-gradient(#fff,#fff 28%,transparent 32%)",
+    content: '""',
+  },
+  "input:hover ~ &": {
+    backgroundColor: "#5A46E6",
+  },
+});
+
+const CustomRadio = ({
+  label,
+  labelPlacement,
+  radioProps,
+  value,
+  className,
+  onChange
+}: CustomRadioTypes) => {
+  return (
+    <FormControlLabel
+      value={value}
+      className={`!m-[0px] ${className}`}
+      onChange={() => onChange && onChange(value || "")}
+      control={
+        <Radio
+          disableRipple
+          color="default"
+          checkedIcon={<BpCheckedIcon />}
+          icon={<BpIcon />}
+          {...radioProps}
+        />
+      }
+      label={label}
+      labelPlacement={labelPlacement || "end"}
+    />
+  );
+};
+
+export default CustomRadio;

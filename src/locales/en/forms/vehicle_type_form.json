@@ -1,0 +1,25 @@
+{
+  "basicInformation": "Basic Information",
+  "name": "Name",
+  "namePlaceholder": "Enter vehicle type name",
+  "nameRequired": "Name is required",
+  "nameMax": "Name must be less than 100 characters",
+  "nameAr": "Arabic Name",
+  "nameArPlaceholder": "Enter Arabic vehicle type name",
+  "nameArRequired": "Arabic name is required",
+  "nameArMax": "Arabic name must be less than 100 characters",
+  "status": "Status",
+  "statusPlaceholder": "Select status",
+  "statusInvalid": "Invalid status",
+  "order": "Order",
+  "orderPlaceholder": "Enter display order",
+  "orderMin": "Order must be at least 0",
+  "cancel": "Cancel",
+  "createVehicleType": "Create Vehicle Type",
+  "updateVehicleType": "Update Vehicle Type",
+  "vehicle_type_created_successfully": "Vehicle type created successfully",
+  "failed_to_create_vehicle_type": "Failed to create vehicle type",
+  "vehicle_type_updated_successfully": "Vehicle type updated successfully",
+  "failed_to_update_vehicle_type": "Failed to update vehicle type"
+}
+

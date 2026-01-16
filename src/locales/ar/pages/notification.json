@@ -1,0 +1,20 @@
+{
+  "subtitle": "تفاصيل الإشعار",
+  "basicInformation": "المعلومات الأساسية",
+  "title": "العنوان",
+  "body": "المحتوى",
+  "targetType": "نوع الهدف",
+  "user": "المستخدم",
+  "driver": "السائق",
+  "allUsers": "جميع المستخدمين",
+  "allDrivers": "جميع السائقين",
+  "specificUser": "مستخدم محدد",
+  "specificDriver": "سائق محدد",
+  "statistics": "الإحصائيات",
+  "sentCount": "عدد المرسل",
+  "totalCount": "العدد الإجمالي",
+  "timestamps": "الطوابع الزمنية",
+  "createdAt": "تاريخ الإنشاء",
+  "updatedAt": "تاريخ التحديث"
+}
+

@@ -1,0 +1,25 @@
+{
+  "basicInformation": "المعلومات الأساسية",
+  "name": "الاسم",
+  "namePlaceholder": "أدخل اسم نوع المركبة",
+  "nameRequired": "الاسم مطلوب",
+  "nameMax": "يجب أن يكون الاسم أقل من 100 حرف",
+  "nameAr": "الاسم بالعربية",
+  "nameArPlaceholder": "أدخل اسم نوع المركبة بالعربية",
+  "nameArRequired": "الاسم بالعربية مطلوب",
+  "nameArMax": "يجب أن يكون الاسم بالعربية أقل من 100 حرف",
+  "status": "الحالة",
+  "statusPlaceholder": "اختر الحالة",
+  "statusInvalid": "حالة غير صالحة",
+  "order": "الترتيب",
+  "orderPlaceholder": "أدخل ترتيب العرض",
+  "orderMin": "يجب أن يكون الترتيب على الأقل 0",
+  "cancel": "إلغاء",
+  "createVehicleType": "إنشاء نوع مركبة",
+  "updateVehicleType": "تحديث نوع المركبة",
+  "vehicle_type_created_successfully": "تم إنشاء نوع المركبة بنجاح",
+  "failed_to_create_vehicle_type": "فشل في إنشاء نوع المركبة",
+  "vehicle_type_updated_successfully": "تم تحديث نوع المركبة بنجاح",
+  "failed_to_update_vehicle_type": "فشل في تحديث نوع المركبة"
+}
+

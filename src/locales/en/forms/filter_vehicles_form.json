@@ -1,0 +1,17 @@
+{
+  "labels": {
+    "rowsToShow": "Rows to Show",
+    "status": "Status",
+    "verificationStatus": "Verification Status",
+    "vehicleType": "Vehicle Type",
+    "make": "Make",
+    "model": "Model",
+    "licensePlate": "License Plate",
+    "driverId": "Driver ID"
+  },
+  "buttons": {
+    "filter": "Filter",
+    "applyFilter": "Apply Filter",
+    "clearFilter": "Clear Filter"
+  }
+}

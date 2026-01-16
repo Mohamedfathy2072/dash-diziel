@@ -1,0 +1,17 @@
+{
+  "labels": {
+    "title": "العنوان",
+    "image": "الصورة",
+    "link": "الرابط",
+    "order": "الترتيب",
+    "validFrom": "صالح من",
+    "validUntil": "صالح حتى",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "noImage": "لا توجد صورة",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "viewLink": "عرض الرابط"
+  }
+}
+

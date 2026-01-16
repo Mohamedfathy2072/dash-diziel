@@ -1,0 +1,23 @@
+{
+  "title": "Settings",
+  "platformFeePercentage": "Platform Fee Percentage",
+  "platformFeePercentageLabel": "Platform Fee Percentage (%)",
+  "platformFeePercentagePlaceholder": "Enter platform fee percentage (0-100)",
+  "platformFeePercentageRequired": "Platform fee percentage is required",
+  "platformFeePercentageMin": "Must be at least 0",
+  "platformFeePercentageMax": "Must be at most 100",
+  "platformFeePercentageNote": "Note: The value must be between 0 and 100. Example: 15 means 15%",
+  "maxDriverDebtLimit": "Max Driver Debt Limit",
+  "maxDriverDebtLimitLabel": "Max Driver Debt Limit",
+  "maxDriverDebtLimitPlaceholder": "Enter max driver debt limit",
+  "maxDriverDebtLimitRequired": "Max driver debt limit is required",
+  "maxDriverDebtLimitMin": "Must be at least 0",
+  "maxDriverDebtLimitNote": "Note: Set to 0 for unlimited debt. If a driver exceeds this limit, they cannot accept new trips until the debt is paid.",
+  "reset": "Reset",
+  "updateSettings": "Update Settings",
+  "settingsUpdatedSuccessfully": "Settings updated successfully",
+  "errorUpdatingSettings": "Error updating settings",
+  "errorLoadingSettings": "Error loading settings"
+}
+
+

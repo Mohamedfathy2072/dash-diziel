@@ -1,0 +1,13 @@
+{
+  "title": "حل الشكوى",
+  "resolutionNotes": "ملاحظات الحل",
+  "resolutionNotesPlaceholder": "أدخل ملاحظات الحل (اختياري)",
+  "resolutionNotesHelper": "اختياري: أضف ملاحظات حول كيفية حل هذه الشكوى",
+  "cancel": "إلغاء",
+  "resolve": "حل",
+  "resolving": "جاري الحل...",
+  "complaintIdRequired": "معرف الشكوى مطلوب",
+  "complaintResolvedSuccessfully": "تم حل الشكوى بنجاح",
+  "failedToResolveComplaint": "فشل في حل الشكوى"
+}
+

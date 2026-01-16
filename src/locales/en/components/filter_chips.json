@@ -1,0 +1,98 @@
+{
+  "filter_employees_form": {
+    "full_name_ar": "Full Name (Arabic)",
+    "coverage_activated": "Coverage Activated",
+    "nationality": "Nationality",
+    "gender": "Gender"
+  },
+  "filter_approvals_form": {
+    "workflow_state": "Workflow State",
+    "issue_date": "Issue Date"
+  },
+  "filter_networks_form": {
+    "network_name": "Network Name",
+    "employee_count": "Employee Count"
+  },
+  "filter_packages_form": {
+    "name1": "Package Name"
+  },
+  "filter_permissions_form": {
+    "role_name": "Role Name"
+  },
+  "filter_providers_branches_form": {
+    "branch_name": "Branch Name",
+    "network_type": "Network Type",
+    "provider_type": "Provider Type",
+    "branch_city_name": "City Name"
+  },
+  "filter_transactions_form": {
+    "name": "Transaction Name",
+    "status": "Transaction Status",
+    "transaction_date": "Transaction Date",
+    "completed": "Completed",
+    "pending": "Pending"
+  },
+  "filter_users_form": {
+    "name1": "User Name"
+  },
+  "filter_drivers_form": {
+    "name1": "Driver Name",
+    "status": "Status"
+  },
+  "filter_vehicles_form": {
+    "status": "Status",
+    "verification_status": "Verification Status",
+    "vehicle_type": "Vehicle Type",
+    "make": "Make",
+    "model": "Model",
+    "license_plate": "License Plate",
+    "driver_id": "Driver ID",
+    "active": "Active",
+    "inactive": "Inactive",
+    "maintenance": "Maintenance",
+    "suspended": "Suspended",
+    "pending": "Pending",
+    "verified": "Verified",
+    "rejected": "Rejected",
+    "sedan": "Sedan",
+    "suv": "SUV",
+    "truck": "Truck",
+    "van": "Van",
+    "motorcycle": "Motorcycle",
+    "coupe": "Coupe",
+    "hatchback": "Hatchback",
+    "convertible": "Convertible"
+  },
+  "filter_trips_form": {
+    "status": "Status",
+    "vehicle_type": "Vehicle Type",
+    "user_id": "User ID",
+    "driver_id": "Driver ID",
+    "pickup_address": "Pickup Address",
+    "destination_address": "Destination Address",
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "started": "Started",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "sedan": "Sedan",
+    "suv": "SUV",
+    "truck": "Truck",
+    "van": "Van",
+    "motorcycle": "Motorcycle",
+    "coupe": "Coupe",
+    "hatchback": "Hatchback",
+    "convertible": "Convertible"
+  },
+  "filter_complaints_form": {
+    "status": "Status",
+    "user_id": "User ID",
+    "complaintable_type": "Complaintable Type",
+    "subject": "Subject",
+    "pending": "Pending",
+    "resolved": "Resolved",
+    "Trip": "Trip",
+    "Driver": "Driver",
+    "User": "User"
+  }
+}

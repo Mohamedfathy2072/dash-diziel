@@ -1,0 +1,27 @@
+{
+  "basicInformation": "Basic Information",
+  "subject": "Subject",
+  "subjectPlaceholder": "Enter complaint subject",
+  "subjectRequired": "Subject is required",
+  "subjectMax": "Subject must be less than 255 characters",
+  "description": "Description",
+  "descriptionPlaceholder": "Enter complaint description",
+  "descriptionRequired": "Description is required",
+  "descriptionMax": "Description must be less than 2000 characters",
+  "complaintAbout": "Complaint About",
+  "complaintableType": "Type",
+  "complaintableTypePlaceholder": "Select type (optional)",
+  "complaintableTypeInvalid": "Invalid complaintable type",
+  "complaintableId": "ID",
+  "complaintableIdPlaceholder": "Enter ID",
+  "complaintableIdRequired": "Complaintable ID is required when type is selected",
+  "complaintableIdInteger": "Complaintable ID must be an integer",
+  "cancel": "Cancel",
+  "createComplaint": "Create Complaint",
+  "updateComplaint": "Update Complaint",
+  "complaintCreatedSuccessfully": "Complaint created successfully",
+  "failedToCreateComplaint": "Failed to create complaint",
+  "complaintUpdatedSuccessfully": "Complaint updated successfully",
+  "failedToUpdateComplaint": "Failed to update complaint"
+}
+

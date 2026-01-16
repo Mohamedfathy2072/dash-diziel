@@ -1,0 +1,12 @@
+{
+  "searchLabel": "ابحث عن {{label}}",
+  "searchPlaceholder": "ابحث عن {{label}}",
+  "choosePlaceholder": "اختر {{label}}",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "profile": "الملف الشخصي",
+  "characters": "حرف",
+  "add": "إضافة",
+  "noOptions": "لا توجد خيارات",
+  "loading": "جاري التحميل..."
+}

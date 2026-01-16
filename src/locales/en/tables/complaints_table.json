@@ -1,0 +1,11 @@
+{
+  "labels": {
+    "subject": "Subject",
+    "status": "Status",
+    "user": "User",
+    "type": "Type",
+    "created": "Created",
+    "actions": "Actions"
+  }
+}
+

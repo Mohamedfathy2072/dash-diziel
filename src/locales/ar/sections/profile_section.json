@@ -1,0 +1,11 @@
+{
+  "superAdmin_info": "معلومات الادمن",
+  "commercial_register": "رقم الموحد للمنشاة :",
+  "tax_number": "رقم الضريبة :",
+  "email": "البريد الإلكتروني :",
+  "phone": "رقم الهاتف :",
+  "balance_info": "معلومات الرصيد",
+  "available_balance": "الرصيد المتاح :",
+  "consumed_balance": "الرصيد المستهلك :",
+  "required_balance": "الرصيد المطلوب :"
+}

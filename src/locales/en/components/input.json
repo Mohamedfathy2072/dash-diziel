@@ -1,0 +1,12 @@
+{
+  "searchLabel": "Search for {{label}}",
+  "searchPlaceholder": "Search for {{label}}",
+  "choosePlaceholder": "Choose {{label}}",
+  "email": "Email",
+  "password": "Password",
+  "profile": "Profile",
+  "characters": "Characters",
+  "add": "Add",
+  "noOptions": "No options found",
+  "loading": "Loading..."
+}

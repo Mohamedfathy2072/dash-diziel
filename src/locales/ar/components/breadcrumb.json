@@ -1,0 +1,35 @@
+{
+  "home": "الرئيسية",
+  "crumbs": {
+    "profile": "الملف الشخصى",
+    "employees": "الموظفين",
+    "networks": "الشبكات",
+    "packages": "الباقات",
+    "approvals": "المطالبات",
+    "invoices": "الفواتير",
+    "permissions": "الادوار الوظيفية",
+    "users": "المستخدمين",
+    "payment": "الدفع والفواتير",
+    "edit": "تعديل",
+    "add": "إضافة",
+    "edit_requests_network": "طلبات تعديلات الشبكات",
+    "edit_requests_package": "طلبات تعديلات الباقات",
+    "customer": {
+      "dashboard": "لوحة التحكم",
+      "login": "تسجيل الدخول",
+      "new-complaints": "الشكاوى الجديدة",
+      "working-complaints": "الشكاوى قيد المتابعة",
+      "add-new-complaint": "إضافة شكوى جديدة",
+      "complaint-details": "تفاصيل الشكوى",
+      "complaints-following-up": "الشكاوى قيد المتابعة"
+    },
+    "sales": {
+      "dashboard": "لوحة التحكم",
+      "login": "تسجيل الدخول",
+      "new-companies": "الشركات الجديدة",
+      "companies-follow-up": "متابعة الشركات",
+      "companies-unqualified": "الشركات المفقودة",
+      "add": "إضافة شركة"
+    }
+  }
+}

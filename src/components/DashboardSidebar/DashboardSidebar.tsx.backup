@@ -1,0 +1,156 @@
+import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { useAppStore } from "../../globals/appStore";
+import DashboardIcon from "../../icons/DashboardIcon";
+import UsersIcon from "../../icons/UsersIcon";
+import LogoutIcon from "../../icons/LogoutIcon";
+import ProfileIcon from "../../icons/ProfileIcon";
+import NotificationIcon from "../../icons/NotificationIcon";
+import SettingsIcon from "../../icons/SettingsIcon";
+import RolesIcon from "../../icons/RolesIcon";
+import PermissionsIcon from "../../icons/PermissionsIcon";
+import TransactionsIcon from "../../icons/TransactionsIcon";
+import { logout } from "../../store/authSlice";
+import type { AppDispatch } from "../../store/store";
+import NewSidebar from "../Sidebar/NewSidebar";
+import useAuth from "../../hooks/useAuth";
+
+const DashboardSidebar = () => {
+  const { t } = useTranslation("components/sidebar");
+  const dispatch = useDispatch<AppDispatch>();
+  const sidebar = useAppStore((state) => state.sidebar);
+  const setSidebar = useAppStore((state) => state.setSidebar);
+  const { isSuperAdmin } = useAuth();
+
+  const handleToggleSidebar = () => {
+    setSidebar(!sidebar);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
+  const items = [
+    {
+      key: "dashboard",
+      icon: <DashboardIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("dashboard"),
+      link: import.meta.env.VITE_DASHBOARD_ROUTE,
+      visible: true,
+    },
+    {
+      key: "companyProfits",
+      icon: <TransactionsIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("companyProfits", { defaultValue: "Company Profits" }),
+      link: import.meta.env.VITE_COMPANY_PROFITS_ROUTE || "/company-profits",
+      visible: isSuperAdmin(),
+    },
+    {
+      key: "users",
+      icon: <UsersIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("users"),
+      link: import.meta.env.VITE_USERS_ROUTE,
+      visible: true,
+    },
+    {
+      key: "drivers",
+      icon: <UsersIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("drivers"),
+      link: import.meta.env.VITE_DRIVERS_ROUTE,
+      visible: true,
+    },
+    {
+      key: "vehicles",
+      icon: <UsersIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("vehicles"),
+      link: import.meta.env.VITE_VEHICLES_ROUTE,
+      visible: true,
+    },
+    {
+      key: "trips",
+      icon: <UsersIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("trips"),
+      link: import.meta.env.VITE_TRIPS_ROUTE,
+      visible: true,
+    },
+    {
+      key: "vehicleTypes",
+      icon: <UsersIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("vehicleTypes", { defaultValue: "Vehicle Types" }),
+      link: import.meta.env.VITE_VEHICLE_TYPES_ROUTE || "/vehicle-types",
+      visible: isSuperAdmin(),
+    },
+    {
+      key: "coupons",
+      icon: <UsersIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("coupons", { defaultValue: "Coupons" }),
+      link: import.meta.env.VITE_COUPONS_ROUTE || "/coupons",
+      visible: isSuperAdmin(),
+    },
+    {
+      key: "ads",
+      icon: <UsersIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("ads", { defaultValue: "Ads" }),
+      link: import.meta.env.VITE_ADS_ROUTE || "/ads",
+      visible: isSuperAdmin(),
+    },
+    {
+      key: "complaints",
+      icon: <UsersIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("complaints", { defaultValue: "Complaints" }),
+      link: import.meta.env.VITE_COMPLAINTS_ROUTE || "/complaints",
+      visible: true,
+    },
+    {
+      key: "notifications",
+      icon: <NotificationIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("notifications", { defaultValue: "Notifications" }),
+      link: import.meta.env.VITE_NOTIFICATIONS_ROUTE || "/notifications",
+      visible: isSuperAdmin(),
+    },
+    {
+      key: "settings",
+      icon: <SettingsIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("settings", { defaultValue: "Settings" }),
+      link: import.meta.env.VITE_SETTINGS_ROUTE || "/settings",
+      visible: isSuperAdmin(),
+    },
+    {
+      key: "roles",
+      icon: <RolesIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("roles", { defaultValue: "Roles" }),
+      link: import.meta.env.VITE_ROLES_ROUTE || "/roles",
+      visible: isSuperAdmin(),
+    },
+    {
+      key: "permissions",
+      icon: <PermissionsIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("permissions", { defaultValue: "Permissions" }),
+      link: import.meta.env.VITE_PERMISSIONS_ROUTE || "/permissions",
+      visible: isSuperAdmin(),
+    },
+    {
+      key: "profile",
+      icon: <ProfileIcon className={`text-[#B3B3B3]`} key={Math.random()} />,
+      title: t("profile"),
+      link: import.meta.env.VITE_PROFILE_ROUTE,
+      visible: true,
+    },
+  ];
+
+  return (
+    <NewSidebar
+      open={sidebar}
+      items={items}
+      logoutItem={{
+        key: "logout",
+        title: t("logout"),
+        icon: <LogoutIcon className={`text-[#B3B3B3]`} />,
+        handle: handleLogout,
+      }}
+      handleToggleSidebar={handleToggleSidebar}
+    />
+  );
+};
+
+export default DashboardSidebar;

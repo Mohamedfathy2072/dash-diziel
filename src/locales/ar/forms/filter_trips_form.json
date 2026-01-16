@@ -1,0 +1,16 @@
+{
+  "labels": {
+    "rowsToShow": "عدد الصفوف",
+    "status": "الحالة",
+    "vehicleType": "نوع المركبة",
+    "userId": "معرف المستخدم",
+    "driverId": "معرف السائق",
+    "pickupAddress": "عنوان الاستلام",
+    "destinationAddress": "عنوان الوجهة"
+  },
+  "buttons": {
+    "filter": "فلترة",
+    "applyFilter": "تطبيق الفلترة",
+    "clearFilter": "إزالة الفلترة"
+  }
+}

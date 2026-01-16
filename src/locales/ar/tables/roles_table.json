@@ -1,0 +1,14 @@
+{
+  "labels": {
+    "name": "الاسم",
+    "slug": "الـ Slug",
+    "description": "الوصف",
+    "permissions": "الصلاحيات",
+    "users": "المستخدمون",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "active": "نشط",
+    "inactive": "غير نشط"
+  }
+}
+
