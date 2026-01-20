@@ -3,7 +3,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import Input from "../../components/Input/Input";
 import PhoneNumberInput from "../../components/PhoneNumberInput/PhoneNumberInput";
 import SubmitButton from "../../components/SubmitButton/SubmitButton";
@@ -13,6 +13,8 @@ import PhotoUpload from "../../components/common/PhotoUpload/PhotoUpload";
 import FormSection from "../../components/common/FormSection/FormSection";
 import DocumentUpload from "../../components/common/DocumentUpload/DocumentUpload";
 import type { FormiksTypes, DriverFormTypes } from "../../types/forms";
+import {driverService} from "../../services/api"
+import {toast} from "react-hot-toast"
 import {
   DRIVER_STATUSES,
   DRIVER_AVAILABILITY_STATUSES,
@@ -33,6 +35,17 @@ const DriverForm = ({
   const navigate = useNavigate();
   const isEdit = type === "editDriver";
   
+ const handleSubmit = async (data: any) => {
+  try {
+    await driverService.create(data);
+    toast.success("تم إنشاء السائق بنجاح");
+  } catch (error: any) {
+    console.error(error);
+    toast.error(error?.message || "حدث خطأ أثناء إنشاء السائق");
+  }
+};
+
+
   // State to track document files
   const [documents, setDocuments] = useState<{ [key: string]: File | null }>({});
 
@@ -48,7 +61,7 @@ const DriverForm = ({
     }
   };
 
-
+    console.log(formik.values)
 
   return (
     <Box className="grid justify-stretch items-start gap-6">
@@ -186,19 +199,19 @@ const DriverForm = ({
   <Box className="grid grid-cols-2 md:grid-cols-1 gap-5">
 
     {/* العنوان */}
-    <Input
+    {/* <Input
       formik={formik}
       name="address"
       label={t("", { defaultValue: "العنوان" })}
       placeholder={t("", { defaultValue: "أدخل العنوان" })}
-    />
+    /> */}
 
     {/* المحافظة */}
     <Input
       formik={formik}
       name="governorate_id"
       label={t("", { defaultValue: "المحافظة" })}
-      select
+      // select
       // options={governorates.map(g => g.name_ar)}
       // values={governorates.map(g => g.id.toString())}
       placeholder={t("", { defaultValue: "اختر المحافظة" })}
@@ -392,13 +405,21 @@ const DriverForm = ({
           >
             {t("cancel", { defaultValue: "Cancel" })}
           </BasicButton>
-          <SubmitButton
+          {/* <SubmitButton
             variant="gradient"
             loading={isLoading}
             className="!min-w-[120px] !px-6 !py-2.5 hover:!shadow-lg transition-all"
           >
             {t("save", { defaultValue: "Save Changes" })}
-          </SubmitButton>
+          </SubmitButton> */}
+          <BasicButton
+            type="button"
+            onClick={() =>handleSubmit(formik.values)}
+            className="!min-w-[120px] !px-6 !py-2.5 hover:!shadow-md transition-all"
+          >
+            {t("", { defaultValue: "اضافة سائق" })}
+          </BasicButton>
+
         </Box>
       </Paper>
     </Box>
