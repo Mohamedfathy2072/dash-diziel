@@ -63,6 +63,11 @@ export interface Driver {
   email_verified_at?: string | null;
   phone?: string | null;
   photo_url?: string | null;
+  address?: string | null;
+  governorate_id?: number | null;
+  driver_type?: string | null;
+  license_degree?: string | null;
+  national_id?: string | null;
   date_of_birth?: string | null;
   gender?: string | null;
   address?: string;

@@ -77,8 +77,28 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
       .oneOf(["male", "female", "other"], t("gender_invalid", { defaultValue: "Invalid gender" })),
     address: yup
       .string()
-      .required("العنوان مطلوب")
+      // .required("العنوان مطلوب")
       .max(255, t("address_max", { defaultValue: "Address must be less than 255 characters" })),
+    governorate_id: yup
+      .number()
+      .nullable()
+      .typeError(t("", { defaultValue: "يرجى اختيار المحافظة" })),
+
+    driver_type: yup
+      .string()
+      .nullable()
+      .max(50, t("", { defaultValue: "نوع السائق لا يجب أن يزيد عن 50 حرفًا" })),
+
+    license_degree: yup
+      .string()
+      .nullable()
+      .max(50, t("", { defaultValue: "درجة الرخصة لا يجب أن تزيد عن 50 حرفًا" })),
+
+    national_id: yup
+      .string()
+      .nullable()
+      .max(20, t("", { defaultValue: "الرقم القومي لا يجب أن يزيد عن 20 رقمًا" })),
+   
     city: yup
       .string()
       .nullable()
@@ -153,7 +173,11 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
         photo_url: selectedDriver.photo_url || null,
         date_of_birth: selectedDriver.date_of_birth || null,
         gender: selectedDriver.gender || null,
-        address: selectedDriver.address || "",
+        address: selectedDriver?.address || "",
+        governorate_id: selectedDriver?.governorate_id ?? "",
+        driver_type: selectedDriver?.driver_type || "",
+        license_degree: selectedDriver?.license_degree || "",
+        national_id: selectedDriver?.national_id || "",
         city: selectedDriver.city || null,
         state: selectedDriver.state || null,
         postal_code: selectedDriver.postal_code || null,
@@ -180,7 +204,11 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
         photo_url: null as string | null,
         date_of_birth: null as string | null,
         gender: null as "male" | "female" | "other" | null,
-        address: "",
+        address: null as string | null,
+        governorate_id: "",
+        driver_type: null as string | null,
+        license_degree: null as string | null,
+        national_id: null as string | null,
         city: null as string | null,
         state: null as string | null,
         postal_code: null as string | null,

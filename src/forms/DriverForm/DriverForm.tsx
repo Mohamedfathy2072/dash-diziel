@@ -123,15 +123,10 @@ const DriverForm = ({
             placeholder={t("genderPlaceholder", { defaultValue: "Select gender" })}
             optional
           />
-          <Input
-            formik={formik}
-            label={t("", { defaultValue: "العنوان" })}
-            name="address"
-            placeholder={t("", { defaultValue: "ادخل العنوان" })}
-          />
+          
         </Box>
       </FormSection>
-
+      
       {/* Driver Information Section */}
       <FormSection title={t("driverInformation", { defaultValue: "Driver Information" })}>
         <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
@@ -185,6 +180,55 @@ const DriverForm = ({
             optional
           />
         </Box>
+      </FormSection>
+
+      <FormSection title={t("", { defaultValue: "بيانات إضافية" })}>
+  <Box className="grid grid-cols-2 md:grid-cols-1 gap-5">
+
+    {/* العنوان */}
+    <Input
+      formik={formik}
+      name="address"
+      label={t("", { defaultValue: "العنوان" })}
+      placeholder={t("", { defaultValue: "أدخل العنوان" })}
+    />
+
+    {/* المحافظة */}
+    <Input
+      formik={formik}
+      name="governorate_id"
+      label={t("", { defaultValue: "المحافظة" })}
+      select
+      // options={governorates.map(g => g.name_ar)}
+      // values={governorates.map(g => g.id.toString())}
+      placeholder={t("", { defaultValue: "اختر المحافظة" })}
+    />
+
+    {/* نوع السائق */}
+    <Input
+      formik={formik}
+      name="driver_type"
+      label={t("", { defaultValue: "نوع السائق" })}
+      placeholder={t("", { defaultValue: "أدخل نوع السائق" })}
+    />
+
+    {/* درجة الرخصة */}
+    <Input
+      formik={formik}
+      name="license_degree"
+      label={t("", { defaultValue: "درجة الرخصة" })}
+      placeholder={t("", { defaultValue: "أدخل درجة الرخصة" })}
+    />
+
+    {/* الرقم القومي */}
+    <Input
+      formik={formik}
+      name="national_id"
+      label={t("", { defaultValue: "الرقم القومي" })}
+      placeholder={t("", { defaultValue: "أدخل الرقم القومي" })}
+    />
+
+  </Box>
       </FormSection>
 
       {/* Emergency Contact Section */}
