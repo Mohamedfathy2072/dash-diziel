@@ -164,27 +164,46 @@ interface VehicleFormTypes {
   license_plate: string;
   vin: string | null;
   vehicle_type_id: number;
-  fuel_type: string | null;
-  transmission: string | null;
-  doors: number | null;
-  seats: number | null;
-  is_primary: boolean;
-  status: string | null;
-  verification_status: string | null;
-  registration_number: string | null;
-  registration_expiry: string | null;
-  registration_state: string | null;
-  insurance_provider: string | null;
-  insurance_policy_number: string | null;
-  insurance_expiry: string | null;
-  inspection_date: string | null;
-  inspection_expiry: string | null;
-  inspection_certificate: string | null;
-  mileage: number | null;
-  condition_rating: number | null;
-  last_maintenance_date: string | null;
-  next_maintenance_due: string | null;
-  notes: string | null;
+  head: {
+    model: string,
+    year: number,
+    license_plate: string,
+    chassis_number: string,
+    engine_number: string,
+    number_of_axles: number,
+    max_load: number,
+    length: number,
+  };
+  trailer: {
+    model: string,
+    year: number,
+    license_plate: string,
+    chassis_number: string,
+    number_of_axles: number,
+    max_load: number,
+    length: number,
+  }
+  // fuel_type: string | null;
+  // transmission: string | null;
+  // doors: number | null;
+  // seats: number | null;
+  // is_primary: boolean;
+  // status: string | null;
+  // verification_status: string | null;
+  // registration_number: string | null;
+  // registration_expiry: string | null;
+  // registration_state: string | null;
+  // insurance_provider: string | null;
+  // insurance_policy_number: string | null;
+  // insurance_expiry: string | null;
+  // inspection_date: string | null;
+  // inspection_expiry: string | null;
+  // inspection_certificate: string | null;
+  // mileage: number | null;
+  // condition_rating: number | null;
+  // last_maintenance_date: string | null;
+  // next_maintenance_due: string | null;
+  // notes: string | null;
 }
 
 interface VehicleFormikTypes {

@@ -43,7 +43,7 @@ export const handleGetFileFromServer = (file: string | null | undefined): string
   }
 
   // Get backend URL from env and prepend it
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_SERVER_URL || '';
+  const backendUrl = 'https://newapi.diziel.com/api/v1';
   
   // Remove trailing slash from backend URL if present
   const cleanBackendUrl = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;

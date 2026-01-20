@@ -77,7 +77,7 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
       .oneOf(["male", "female", "other"], t("gender_invalid", { defaultValue: "Invalid gender" })),
     address: yup
       .string()
-      .nullable()
+      .required("العنوان مطلوب")
       .max(255, t("address_max", { defaultValue: "Address must be less than 255 characters" })),
     city: yup
       .string()
@@ -153,7 +153,7 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
         photo_url: selectedDriver.photo_url || null,
         date_of_birth: selectedDriver.date_of_birth || null,
         gender: selectedDriver.gender || null,
-        address: selectedDriver.address || null,
+        address: selectedDriver.address || "",
         city: selectedDriver.city || null,
         state: selectedDriver.state || null,
         postal_code: selectedDriver.postal_code || null,
@@ -180,7 +180,7 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
         photo_url: null as string | null,
         date_of_birth: null as string | null,
         gender: null as "male" | "female" | "other" | null,
-        address: null as string | null,
+        address: "",
         city: null as string | null,
         state: null as string | null,
         postal_code: null as string | null,

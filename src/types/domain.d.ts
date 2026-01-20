@@ -65,7 +65,7 @@ export interface Driver {
   photo_url?: string | null;
   date_of_birth?: string | null;
   gender?: string | null;
-  address?: string | null;
+  address?: string;
   city?: string | null;
   state?: string | null;
   postal_code?: string | null;
@@ -197,66 +197,88 @@ export interface VehicleType {
 }
 
 export interface Vehicle {
-  id: number;
+  id: number;                                   
+  color:string,
+  make: string,
+  vehicle_type_id: 2,
   driver_id: number;
   driver?: {
     id: number;
     name: string | null;
     email: string | null;
   };
-  make: string;
-  model: string;
-  year: number;
-  color: string | null;
-  license_plate: string;
-  vin: string | null;
-  vehicle_type_id: number;
+  // make: string;
+  // model: string;
+  // year: number;
+  // color: string | null;
+  // license_plate: string;
+  // vin: string | null;
+  // vehicle_type_id: number;
   vehicle_type?: VehicleType; // Optional relationship object (when loaded)
-  fuel_type: string | null;
-  transmission: string | null;
-  doors: number | null;
-  seats: number | null;
-  is_primary: boolean;
-  status: VehicleStatus;
-  verification_status: VehicleVerificationStatus;
-  verification_date: string | null;
-  verified_by: number | null;
-  verifier?: {
-    id: number;
-    name: string;
-    email: string;
-  } | null;
-  verification_notes: string | null;
-  registration_number: string | null;
-  registration_expiry: string | null;
-  registration_state: string | null;
-  insurance_provider: string | null;
-  insurance_policy_number: string | null;
-  insurance_expiry: string | null;
-  inspection_date: string | null;
-  inspection_expiry: string | null;
-  inspection_certificate: string | null;
-  mileage: number | null;
-  condition_rating: number | null;
-  last_maintenance_date: string | null;
-  next_maintenance_due: string | null;
-  photos: string[] | null;
-  features: string[] | null;
-  notes: string | null;
-  created_by: number | null;
-  creator?: {
-    id: number;
-    name: string;
-    email: string;
-  } | null;
-  updated_by: number | null;
-  updater?: {
-    id: number;
-    name: string;
-    email: string;
-  } | null;
-  created_at: string;
-  updated_at: string;
+  head?: {
+    model: string,
+    year: number,
+    license_plate: string,
+    chassis_number: string,
+    engine_number: string,
+    number_of_axles: number,
+    max_load: number,
+    length: number,
+  };
+  trailer?: {
+    model: string,
+    year: number,
+    license_plate: string,
+    chassis_number: string,
+    number_of_axles: number,
+    max_load: number,
+    length: number,
+  }
+  //   fuel_type: string | null;
+  //   transmission: string | null;
+  //   doors: number | null;
+  // seats: number | null;
+  // is_primary: boolean;
+  // status: VehicleStatus;
+  // verification_status: VehicleVerificationStatus;
+  // verification_date: string | null;
+  // verified_by: number | null;
+  // verifier?: {
+  //   id: number;
+  //   name: string;
+  //   email: string;
+  // } | null;
+  // verification_notes: string | null;
+  // registration_number: string | null;
+  // registration_expiry: string | null;
+  // registration_state: string | null;
+  // insurance_provider: string | null;
+  // insurance_policy_number: string | null;
+  // insurance_expiry: string | null;
+  // inspection_date: string | null;
+  // inspection_expiry: string | null;
+  // inspection_certificate: string | null;
+  // mileage: number | null;
+  // condition_rating: number | null;
+  // last_maintenance_date: string | null;
+  // next_maintenance_due: string | null;
+  // photos: string[] | null;
+  // features: string[] | null;
+  // notes: string | null;
+  // created_by: number | null;
+  // creator?: {
+  //   id: number;
+  //   name: string;
+  //   email: string;
+  // } | null;
+  // updated_by: number | null;
+  // updater?: {
+  //   id: number;
+  //   name: string;
+  //   email: string;
+  // } | null;
+  // created_at: string;
+  // updated_at: string;
 }
 
 export type TripStatus = 

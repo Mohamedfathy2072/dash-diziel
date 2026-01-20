@@ -123,6 +123,12 @@ const DriverForm = ({
             placeholder={t("genderPlaceholder", { defaultValue: "Select gender" })}
             optional
           />
+          <Input
+            formik={formik}
+            label={t("", { defaultValue: "العنوان" })}
+            name="address"
+            placeholder={t("", { defaultValue: "ادخل العنوان" })}
+          />
         </Box>
       </FormSection>
 
@@ -267,65 +273,65 @@ const DriverForm = ({
           />
           
           {/* Power of Attorney Front (Optional) */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="power_of_attorney_front"
             label={t("documents.powerOfAttorneyFront", { defaultValue: "الوكالة (أمام) – اختياري" })}
             onChange={handleDocumentChange}
             value={documents['power_of_attorney_front'] || null}
-          />
+          /> */}
           
           {/* Power of Attorney Back (Optional) */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="power_of_attorney_back"
             label={t("documents.powerOfAttorneyBack", { defaultValue: "الوكالة (خلف) – اختياري" })}
             onChange={handleDocumentChange}
             value={documents['power_of_attorney_back'] || null}
-          />
+          /> */}
           
           {/* Vehicle License Front */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="vehicle_license_front"
             label={t("documents.vehicleLicenseFront", { defaultValue: "رخصة المركبة (وجه)" })}
             onChange={handleDocumentChange}
             value={documents['vehicle_license_front'] || null}
-          />
+          /> */}
           
           {/* Vehicle License Back */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="vehicle_license_back"
             label={t("documents.vehicleLicenseBack", { defaultValue: "رخصة المركبة (خلف)" })}
             onChange={handleDocumentChange}
             value={documents['vehicle_license_back'] || null}
-          />
+          /> */}
           
           {/* Insurance Certificate */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="insurance_certificate"
             label={t("documents.insuranceCertificate", { defaultValue: "شهادة التأمين" })}
             onChange={handleDocumentChange}
             value={documents['insurance_certificate'] || null}
-          />
+          /> */}
           
           {/* Vehicle Photos */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="vehicle_photo"
             label={t("documents.vehiclePhotos", { defaultValue: "صور المركبة" })}
             onChange={handleDocumentChange}
             value={documents['vehicle_photo'] || null}
           />
-          
-          {/* Residence Card Front */}
+           */}
+          {/**/}
           <DocumentUpload
             type="residence_card_front"
-            label={t("documents.residenceCardFront", { defaultValue: "بطاقة السكن (وجه)" })}
+            label={"الصحيفة الجنائية"}
             onChange={handleDocumentChange}
             value={documents['residence_card_front'] || null}
           />
           
-          {/* Residence Card Back */}
+          {/**/}
           <DocumentUpload
             type="residence_card_back"
-            label={t("documents.residenceCardBack", { defaultValue: "بطاقة السكن (ضهر)" })}
+            label={"تحليل المخدرات"}
             onChange={handleDocumentChange}
             value={documents['residence_card_back'] || null}
           />

@@ -269,17 +269,17 @@ const vehiclesSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(setPrimaryVehicle.fulfilled, (state, action) => {
-        state.loading = false;
-        // Update all vehicles to mark only this one as primary
-        state.vehicles = state.vehicles.map((v) => ({
-          ...v,
-          is_primary: v.id === action.payload.id,
-        }));
-        if (state.selectedVehicle) {
-          state.selectedVehicle.is_primary = state.selectedVehicle.id === action.payload.id;
-        }
-      })
+      // .addCase(setPrimaryVehicle.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   // Update all vehicles to mark only this one as primary
+      //   state.vehicles = state.vehicles.map((v) => ({
+      //     ...v,
+      //     is_primary: v.id === action.payload.id,
+      //   }));
+      //   if (state.selectedVehicle) {
+      //     state.selectedVehicle.is_primary = state.selectedVehicle.id === action.payload.id;
+      //   }
+      // })
       .addCase(setPrimaryVehicle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to set primary vehicle";

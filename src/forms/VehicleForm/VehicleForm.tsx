@@ -10,7 +10,25 @@ import { BasicButton } from "../../mui/buttons/BasicButton";
 import FormSection from "../../components/common/FormSection/FormSection";
 import type { FormiksTypes, VehicleFormTypes } from "../../types/forms";
 import { VEHICLE_STATUSES, VEHICLE_VERIFICATION_STATUSES } from "../../types/enums";
+import DocumentUpload from "../../components/common/DocumentUpload/DocumentUpload";
 import useVehicleTypes from "../../hooks/useVehicleTypes";
+import {vehicleService} from "../../services/api" 
+import axios from "axios";
+import i18n from "../../i18n"
+import { useState } from "react";
+import {toast} from "react-hot-toast"
+
+// const createAxios=axios.create({
+//     baseURL: 'https://newapi.diziel.com/api/v1',
+//     withCredentials: true,
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Accept': 'application/json',
+//       'Accept-Language': i18n.language || 'en',
+//     },
+//   });
+
+
 
 const VehicleForm = ({
   formik,
@@ -23,287 +41,379 @@ const VehicleForm = ({
   const navigate = useNavigate();
   const isEdit = type === "editVehicle";
   const { activeVehicleTypes } = useVehicleTypes();
+  const [photos, setPhotos] = useState<{
+  license_front: File | null;
+  license_back: File | null;
+  four_sides: (File | null)[];
+   }>({
+  license_front: null,
+  license_back: null,
+  four_sides: [null, null, null, null], // placeholder for four sides
+  });
+
+  interface VehiclePayload {
+  driver_id: number;
+  make: string;
+  color: string | null;
+  vehicle_type_id: number;
+  head: {
+    model: string;
+    year: number;
+    license_plate: string;
+    chassis_number: string;
+    engine_number: string;
+    number_of_axles: number;
+    max_load: number;
+    length: number;
+    photos: {
+      license_front?: File | null;
+      license_back?: File | null;
+      four_sides?: (File | null)[];
+    };
+  };
+  trailer: {
+    model: string;
+    year: number;
+    license_plate: string;
+    chassis_number: string;
+    number_of_axles: number;
+    max_load: number;
+    length: number;
+  };
+}
+
+  const handlePhotoChange = (
+    file: File | null,
+    key: "license_front" | "license_back"
+  ) => {
+    setPhotos(prev => ({
+      ...prev,
+      [key]: file,
+    }));
+    console.log("2photo",photos)
+  };
+
+  const payload: VehiclePayload = {
+  driver_id: formik.values.driver_id,
+  make: formik.values.make,
+  color: formik.values.color,
+  vehicle_type_id: formik.values.vehicle_type_id,
+  head: {
+    ...formik.values.head, // all head fields from the form
+    photos: {
+      license_front: photos.license_front,
+      license_back: photos.license_back,
+      four_sides: photos.four_sides.filter(f => f !== null)
+    }
+  },
+  trailer: {
+    ...formik.values.trailer // all trailer fields from the form
+  }
+};
+  
+
+ const formData = new FormData();
+
+
+
+  const handleFourSidesChange = (file: File | null, index: number) => {
+  setPhotos(prev => {
+    const updated = [...prev.four_sides];
+    updated[index] = file;
+    return { ...prev, four_sides: updated };
+  });
+};
+
+
+const handleSubmit =() => {
+  const formData = new FormData();
+
+  if (photos.license_front) formData.append("photos[license_front]", photos.license_front);
+  if (photos.license_back) formData.append("photos[license_back]", photos.license_back);
+
+  photos.four_sides.forEach((file, idx) => {
+    if (file) formData.append(`photos[four_sides][${idx}]`, file);
+    console.log("formdata",formData)
+  });
+};
+
+
+   
+const handleCreateVehicle = async (payload: VehiclePayload) => {
+  try {
+    const formData = new FormData();
+
+    // 1️⃣ Top-level fields
+    formData.append("driver_id", String(payload.driver_id));
+    formData.append("make", payload.make);
+    formData.append("color", payload.color || "");
+    formData.append("vehicle_type_id", String(payload.vehicle_type_id));
+
+    // 2️⃣ Head fields
+    Object.entries(payload.head).forEach(([key, value]) => {
+      if (key === "photos" && value) {
+        // Tell TS this is the photos object
+        const photos = value as {
+          license_front?: File | null;
+          license_back?: File | null;
+          four_sides?: (File | null)[];
+        };
+
+        if (photos.license_front) {
+          formData.append("head[photos][license_front]", photos.license_front);
+        }
+
+        if (photos.license_back) {
+          formData.append("head[photos][license_back]", photos.license_back);
+        }
+
+        photos.four_sides?.forEach((file, idx) => {
+          if (file) {
+            formData.append(`head[photos][four_sides][${idx}]`, file);
+          }
+        });
+      } else {
+        // Cast value to string for FormData
+        formData.append(`head[${key}]`, String(value));
+      }
+    });
+
+    // 3️⃣ Trailer fields
+    Object.entries(payload.trailer).forEach(([key, value]) => {
+      formData.append(`trailer[${key}]`, String(value));
+    });
+
+    // 4️⃣ Call the API
+    const response = await vehicleService.create(formData);
+    console.log("Vehicle created:", response);
+
+    toast.success("Vehicle created successfully!");
+  } catch (error: any) {
+    console.error("Error creating vehicle:", error);
+    toast.error(error?.message || "Failed to create vehicle");
+  }
+};
+
+
 
   return (
     <Box className="grid justify-stretch items-start gap-6">
-      {/* Basic Information Section */}
-      <FormSection title={t("basicInformation", { defaultValue: "Basic Information" })}>
-        <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
-          <Input
-            formik={formik}
-            label={t("driverId", { defaultValue: "Driver ID" })}
-            name="driver_id"
-            type="number"
-            placeholder={t("driverIdPlaceholder", { defaultValue: "Enter driver ID" })}
-          />
-          <Input
-            formik={formik}
-            label={t("make", { defaultValue: "Make" })}
-            name="make"
-            placeholder={t("makePlaceholder", { defaultValue: "Enter make" })}
-          />
-          <Input
-            formik={formik}
-            label={t("model", { defaultValue: "Model" })}
-            name="model"
-            placeholder={t("modelPlaceholder", { defaultValue: "Enter model" })}
-          />
-          <Input
-            formik={formik}
-            label={t("year", { defaultValue: "Year" })}
-            name="year"
-            type="number"
-            placeholder={t("yearPlaceholder", { defaultValue: "Enter year" })}
-          />
-          <Input
-            formik={formik}
-            label={t("color", { defaultValue: "Color" })}
-            name="color"
-            placeholder={t("colorPlaceholder", { defaultValue: "Enter color" })}
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("licensePlate", { defaultValue: "License Plate" })}
-            name="license_plate"
-            placeholder={t("licensePlatePlaceholder", { defaultValue: "Enter license plate" })}
-          />
-          <Input
-            formik={formik}
-            label={t("vin", { defaultValue: "VIN" })}
-            name="vin"
-            placeholder={t("vinPlaceholder", { defaultValue: "Enter VIN" })}
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("vehicleType", { defaultValue: "Vehicle Type" })}
-            name="vehicle_type_id"
-            select
-            options={activeVehicleTypes.map(vt => vt.name)}
-            values={activeVehicleTypes.map(vt => vt.id.toString())}
-            placeholder={t("vehicleTypePlaceholder", { defaultValue: "Select vehicle type" })}
-          />
-        </Box>
+       
+      <FormSection title={t("", { defaultValue: "المعلومات الأساسية" })}>
+    <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "رقم السائق" })}
+      name="driver_id"
+      type="number"
+      placeholder={t("", { defaultValue: "أدخل رقم السائق" })}
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "الشركة المصنعة" })}
+      name="make"
+      placeholder={t("", { defaultValue: "أدخل الشركة المصنعة" })}
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "اللون" })}
+      name="color"
+      placeholder={t("", { defaultValue: "أدخل اللون" })}
+      optional
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "نوع المركبة" })}
+      name="vehicle_type_id"
+      select
+      options={activeVehicleTypes.map(vt => vt.name)}
+      values={activeVehicleTypes.map(vt => vt.id.toString())}
+      placeholder={t("", { defaultValue: "اختر نوع المركبة" })}
+    />
+
+  </Box>
       </FormSection>
 
-      {/* Vehicle Specifications Section */}
-      <FormSection title={t("vehicleSpecifications", { defaultValue: "Vehicle Specifications" })}>
-        <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
-          <Input
-            formik={formik}
-            label={t("fuelType", { defaultValue: "Fuel Type" })}
-            name="fuel_type"
-            placeholder={t("fuelTypePlaceholder", { defaultValue: "Enter fuel type" })}
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("transmission", { defaultValue: "Transmission" })}
-            name="transmission"
-            select
-            options={["Automatic", "Manual", "CVT"]}
-            values={["automatic", "manual", "cvt"]}
-            placeholder={t("transmissionPlaceholder", { defaultValue: "Select transmission" })}
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("doors", { defaultValue: "Doors" })}
-            name="doors"
-            type="number"
-            placeholder={t("doorsPlaceholder", { defaultValue: "Enter number of doors" })}
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("seats", { defaultValue: "Seats" })}
-            name="seats"
-            type="number"
-            placeholder={t("seatsPlaceholder", { defaultValue: "Enter number of seats" })}
-            optional
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={formik.values.is_primary || false}
-                onChange={(e) => formik.setFieldValue("is_primary", e.target.checked)}
-                name="is_primary"
-              />
-            }
-            label={t("isPrimary", { defaultValue: "Primary Vehicle" })}
-          />
-          {isEdit && (
-            <>
-              <Input
-                formik={formik}
-                label={t("status", { defaultValue: "Status" })}
-                name="status"
-                select
-                options={VEHICLE_STATUSES.map(s => s.charAt(0).toUpperCase() + s.slice(1))}
-                values={VEHICLE_STATUSES}
-                placeholder={t("statusPlaceholder", { defaultValue: "Select status" })}
-                optional
-              />
-              <Input
-                formik={formik}
-                label={t("verificationStatus", { defaultValue: "Verification Status" })}
-                name="verification_status"
-                select
-                options={VEHICLE_VERIFICATION_STATUSES.map(s => s.charAt(0).toUpperCase() + s.slice(1))}
-                values={VEHICLE_VERIFICATION_STATUSES}
-                placeholder={t("verificationStatusPlaceholder", { defaultValue: "Select verification status" })}
-                optional
-              />
-            </>
-          )}
-        </Box>
+      <FormSection title={t("", { defaultValue: "رأس الشاحنة" })}>
+  <Box className="grid grid-cols-2 md:grid-cols-1 gap-5">
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "الموديل" })}
+      name="head.model"
+      placeholder={t("", { defaultValue: "أدخل موديل الرأس" })}
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "سنة الصنع" })}
+      name="head.year"
+      type="number"
+      placeholder={t("", { defaultValue: "أدخل سنة الصنع" })}
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "رقم اللوحة" })}
+      name="head.license_plate"
+      placeholder={t("", { defaultValue: "أدخل رقم اللوحة" })}
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "رقم الشاصي" })}
+      name="head.chassis_number"
+      placeholder={t("", { defaultValue: "أدخل رقم الشاصي" })}
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "رقم المحرك" })}
+      name="head.engine_number"
+      placeholder={t("", { defaultValue: "أدخل رقم المحرك" })}
+      optional
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "عدد المحاور" })}
+      name="head.number_of_axles"
+      type="number"
+      placeholder={t("", { defaultValue: "أدخل عدد المحاور" })}
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "الحمولة القصوى (طن)" })}
+      name="head.max_load"
+      type="number"
+      placeholder={t("", { defaultValue: "أدخل الحمولة القصوى" })}
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "الطول (متر)" })}
+      name="head.length"
+      type="number"
+      placeholder={t("", { defaultValue: "أدخل الطول" })}
+    />
+
+  </Box>
       </FormSection>
 
-      {/* Registration Information Section */}
-      <FormSection title={t("registrationInformation", { defaultValue: "Registration Information" })}>
-        <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
-          <Input
-            formik={formik}
-            label={t("registrationNumber", { defaultValue: "Registration Number" })}
-            name="registration_number"
-            placeholder={t("registrationNumberPlaceholder", { defaultValue: "Enter registration number" })}
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("registrationExpiry", { defaultValue: "Registration Expiry" })}
-            name="registration_expiry"
-            type="date"
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("registrationState", { defaultValue: "Registration State" })}
-            name="registration_state"
-            placeholder={t("registrationStatePlaceholder", { defaultValue: "Enter registration state" })}
-            optional
-          />
-        </Box>
-      </FormSection>
+        <FormSection title={t("", { defaultValue: "المقطورة" })}>
+  <Box className="grid grid-cols-2 md:grid-cols-1 gap-5">
 
-      {/* Insurance Information Section */}
-      <FormSection title={t("insuranceInformation", { defaultValue: "Insurance Information" })}>
-        <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
-          <Input
-            formik={formik}
-            label={t("insuranceProvider", { defaultValue: "Insurance Provider" })}
-            name="insurance_provider"
-            placeholder={t("insuranceProviderPlaceholder", { defaultValue: "Enter insurance provider" })}
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("insurancePolicyNumber", { defaultValue: "Insurance Policy Number" })}
-            name="insurance_policy_number"
-            placeholder={t("insurancePolicyNumberPlaceholder", { defaultValue: "Enter insurance policy number" })}
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("insuranceExpiry", { defaultValue: "Insurance Expiry" })}
-            name="insurance_expiry"
-            type="date"
-            optional
-          />
-        </Box>
-      </FormSection>
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "موديل المقطورة" })}
+      name="trailer.model"
+      placeholder={t("", { defaultValue: "أدخل موديل المقطورة" })}
+    />
 
-      {/* Inspection Information Section */}
-      <FormSection title={t("inspectionInformation", { defaultValue: "Inspection Information" })}>
-        <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
-          <Input
-            formik={formik}
-            label={t("inspectionDate", { defaultValue: "Inspection Date" })}
-            name="inspection_date"
-            type="date"
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("inspectionExpiry", { defaultValue: "Inspection Expiry" })}
-            name="inspection_expiry"
-            type="date"
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("inspectionCertificate", { defaultValue: "Inspection Certificate" })}
-            name="inspection_certificate"
-            placeholder={t("inspectionCertificatePlaceholder", { defaultValue: "Enter inspection certificate" })}
-            optional
-          />
-        </Box>
-      </FormSection>
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "سنة الصنع" })}
+      name="trailer.year"
+      type="number"
+      placeholder={t("", { defaultValue: "أدخل سنة الصنع" })}
+    />
 
-      {/* Maintenance Information Section */}
-      <FormSection title={t("maintenanceInformation", { defaultValue: "Maintenance Information" })}>
-        <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
-          <Input
-            formik={formik}
-            label={t("mileage", { defaultValue: "Mileage" })}
-            name="mileage"
-            type="number"
-            placeholder={t("mileagePlaceholder", { defaultValue: "Enter mileage" })}
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("conditionRating", { defaultValue: "Condition Rating" })}
-            name="condition_rating"
-            type="number"
-            placeholder={t("conditionRatingPlaceholder", { defaultValue: "Enter condition rating (0-10)" })}
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("lastMaintenanceDate", { defaultValue: "Last Maintenance Date" })}
-            name="last_maintenance_date"
-            type="date"
-            optional
-          />
-          <Input
-            formik={formik}
-            label={t("nextMaintenanceDue", { defaultValue: "Next Maintenance Due" })}
-            name="next_maintenance_due"
-            type="date"
-            optional
-          />
-        </Box>
-      </FormSection>
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "رقم اللوحة" })}
+      name="trailer.license_plate"
+      placeholder={t("", { defaultValue: "أدخل رقم اللوحة" })}
+    />
 
-      {/* Additional Information Section */}
-      <FormSection title={t("additionalInformation", { defaultValue: "Additional Information" })}>
-        <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
-          <Box className="col-span-full">
-            <Input
-              formik={formik}
-              label={t("notes", { defaultValue: "Notes" })}
-              name="notes"
-              textarea
-              rows={4}
-              placeholder={t("notesPlaceholder", { defaultValue: "Enter additional notes" })}
-              optional
-            />
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "رقم الشاصي" })}
+      name="trailer.chassis_number"
+      placeholder={t("", { defaultValue: "أدخل رقم الشاصي" })}
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "عدد المحاور" })}
+      name="trailer.number_of_axles"
+      type="number"
+      placeholder={t("", { defaultValue: "أدخل عدد المحاور" })}
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "الحمولة القصوى (طن)" })}
+      name="trailer.max_load"
+      type="number"
+      placeholder={t("", { defaultValue: "أدخل الحمولة القصوى" })}
+    />
+
+    <Input
+      formik={formik}
+      label={t("", { defaultValue: "الطول (متر)" })}
+      name="trailer.length"
+      type="number"
+      placeholder={t("", { defaultValue: "أدخل الطول" })}
+    />
+
+  </Box>
+        </FormSection>
+
+    
+      <FormSection title={t("documents", { defaultValue: "Documents" })}>
+         <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
+          <DocumentUpload
+            type="license_front"
+                  label="رخصة القيادة (أمام)"
+                 value={photos.license_front}
+           onChange={(file) => handlePhotoChange(file, "license_front")}  />
+          
+          <DocumentUpload
+               type="license_back"
+               label="رخصة القيادة (خلف)"
+               value={photos.license_back}
+             onChange={(file) => handlePhotoChange(file, "license_back")}
+             />
+          
+                  {photos.four_sides.map((file, idx) => (
+                      <DocumentUpload
+                           key={idx}
+                           type={`four_sides_${idx}`}
+                           label={`Side ${idx + 1}`}
+                          value={file}
+                        onChange={(f) => handleFourSidesChange(f, idx)}
+                        />
+              ))
+               }
+
+
           </Box>
-        </Box>
       </FormSection>
+
+      
+     
 
       {/* Form Actions */}
       <Box className="flex justify-end items-center gap-3">
         <BasicButton onClick={() => navigate(`${import.meta.env.VITE_VEHICLES_ROUTE}`)}>
           {t("cancel", { defaultValue: "Cancel" })}
         </BasicButton>
-        <SubmitButton loading={isLoading}>
+        {/* <SubmitButton loading={isLoading}>
           {isEdit
             ? t("update", { defaultValue: "Update Vehicle" })
             : t("create", { defaultValue: "Create Vehicle" })}
-        </SubmitButton>
+        </SubmitButton> */}
+         <BasicButton
+          // onClick={()=>handleCreateVehicle(formik.values)}
+            onClick={()=>{handleCreateVehicle(payload)}}
+          >
+          {t("", { defaultValue: "انشاء مركبة" })}
+        </BasicButton>
       </Box>
     </Box>
   );
