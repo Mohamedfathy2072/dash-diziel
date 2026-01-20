@@ -58,7 +58,7 @@ const FilterTripsForm = ({
 
   return (
     <Box className={`flex justify-start items-center flex-wrap gap-2`}>
-      <Typography variant="subtitle1" className={`text-Jeeteak_gray !font-[600]`}>
+      <Typography variant="subtitle1" className={`text-Diziel_gray !font-[600]`}>
         {t("labels.rowsToShow", { defaultValue: "Rows to Show" })}
       </Typography>
 

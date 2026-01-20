@@ -71,7 +71,7 @@ export default {
         profile_employees_counter_light: "#d2f6f3",
         profile_employees_counter_gray: "#fafafa",
         profile_employees_counter_text_gray: "#636466",
-        Jeeteak_gray: "#82808D",
+        Diziel_gray: "#82808D",
         text_label_border: "#EEEEEE",
       },
       boxShadow: {

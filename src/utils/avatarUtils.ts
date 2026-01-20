@@ -36,7 +36,7 @@ export const getAvatarUrl = (url: string | null | undefined): string => {
     // Allow HTTPS URLs from our backend domain
     const backendUrl = 'https://newapi.diziel.com/api/v1';
     const serverUrl = 'https://newapi.diziel.com/api/v1';
-    const ourDomains = ['api.jeeteak.com', 'jeeteak.com', backendUrl, serverUrl].filter(Boolean);
+    const ourDomains = ['api.Diziel.com', 'Diziel.com', backendUrl, serverUrl].filter(Boolean);
     
     // Check if URL is from our domain
     const isFromOurDomain = ourDomains.some(domain => {

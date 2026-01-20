@@ -1,4 +1,4 @@
-// Domain types for Jeeteak ride-sharing application
+// Domain types for Diziel ride-sharing application
 
 import type {
   UserType,

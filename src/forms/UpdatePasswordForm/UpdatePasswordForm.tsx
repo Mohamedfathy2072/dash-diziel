@@ -20,7 +20,7 @@ const UpdatePasswordForm = ({
         <Typography variant="subtitle1" className="text-[#121212] !font-[600]">
           {t("title", {
             defaultValue:
-              "مرحبًا بك في Jeeteak! لأمان حسابك، يُرجى تحديث كلمة المرور الخاصة بك قبل المتابعة.",
+              "مرحبًا بك في Diziel! لأمان حسابك، يُرجى تحديث كلمة المرور الخاصة بك قبل المتابعة.",
           })}
         </Typography>
       </Box>

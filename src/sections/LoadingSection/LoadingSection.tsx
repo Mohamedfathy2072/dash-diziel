@@ -1,5 +1,5 @@
 import LoadingIcon from "../../icons/LoadingIcon";
-import DizielIcon from "../../icons/DizielIcon";
+import JeeteakIcon from "../../icons/DizielIcon";
 
 const LoadingSection = () => {
     const lang = localStorage.getItem(`${import.meta.env.VITE_TOKEN_LANG_STORAGE}`) as "ar" | "en"
