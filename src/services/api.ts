@@ -5,9 +5,15 @@ import i18n from '../i18n';
 
 // Create base axios instance
 const createApiClient = (): AxiosInstance => {
+  // Use direct URL in production/build, proxy in development
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+  const isDev = import.meta.env.DEV;
+  const baseURL = isDev ? '/api/v1' : `${backendUrl}/api/v1`;
+  
   const client = axios.create({
-    baseURL: '/api/v1',
+    baseURL: baseURL,
     withCredentials: true,
+    maxRedirects: 0, // Prevent automatic redirects
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -22,6 +28,10 @@ const createApiClient = (): AxiosInstance => {
       if (config.headers) {
         config.headers['Accept-Language'] = i18n.language || 'en';
       }
+      // Debug: Log the full URL being requested
+      if (import.meta.env.DEV) {
+        console.log('API Request URL:', config.baseURL + (config.url || ''));
+      }
       return config;
     },
     (error) => {
@@ -31,7 +41,13 @@ const createApiClient = (): AxiosInstance => {
 
   // Add response interceptor to handle 401 Unauthorized
   client.interceptors.response.use(
-    (response: AxiosResponse) => response,
+    (response: AxiosResponse) => {
+      // Debug: Log response URL if redirected
+      if (import.meta.env.DEV && response.request?.responseURL) {
+        console.log('API Response URL:', response.request.responseURL);
+      }
+      return response;
+    },
     (error: AxiosError) => {
       // Handle 401 Unauthorized - redirect to login
       if (error.response?.status === 401) {
@@ -1051,6 +1067,24 @@ export const userRolesService = {
   checkPermission: (userId: number, permissionSlug: string) => {
     const client = createApiClient();
     return client.get(`/admin/users/${userId}/permissions/check/${permissionSlug}`);
+  },
+};
+
+// Governorates Service
+export const governoratesService = {
+  getAll: () => {
+    // Use direct URL instead of proxy
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+    const client = axios.create({
+      baseURL: `${backendUrl}/api/v1`,
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Accept-Language': i18n.language || 'en',
+      },
+    });
+    return client.get('/governorates');
   },
 };
 

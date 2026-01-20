@@ -43,19 +43,14 @@ export const handleGetFileFromServer = (file: string | null | undefined): string
   }
 
   // Get backend URL from env and prepend it
-  const backendUrl = 'https://newapi.diziel.com/api/v1';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+  const fullBackendUrl = `${backendUrl}/api/v1`;
   
   // Remove trailing slash from backend URL if present
-  const cleanBackendUrl = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
+  const cleanBackendUrl = fullBackendUrl.endsWith('/') ? fullBackendUrl.slice(0, -1) : fullBackendUrl;
   
   // Ensure path starts with / if it doesn't already
   const path = trimmedFile.startsWith('/') ? trimmedFile : `/${trimmedFile}`;
-  
-  // If no backend URL is set, return null to avoid broken URLs
-  if (!cleanBackendUrl || cleanBackendUrl.includes('localhost')) {
-    console.warn('Backend URL not configured properly:', cleanBackendUrl);
-    return null;
-  }
   
   // Construct full URL
   return `${cleanBackendUrl}${path}`;

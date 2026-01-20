@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { data, useNavigate } from "react-router-dom";
 import Input from "../../components/Input/Input";
@@ -13,12 +13,11 @@ import PhotoUpload from "../../components/common/PhotoUpload/PhotoUpload";
 import FormSection from "../../components/common/FormSection/FormSection";
 import DocumentUpload from "../../components/common/DocumentUpload/DocumentUpload";
 import type { FormiksTypes, DriverFormTypes } from "../../types/forms";
-import {driverService} from "../../services/api"
-import {toast} from "react-hot-toast"
 import {
   DRIVER_STATUSES,
   DRIVER_AVAILABILITY_STATUSES,
 } from "../../types/enums";
+import { governoratesService } from "../../services/api";
 
 const DriverForm = ({
   formik,
@@ -34,20 +33,38 @@ const DriverForm = ({
   const isLoading = useFormsStore((state) => state.isLoading);
   const navigate = useNavigate();
   const isEdit = type === "editDriver";
-  
- const handleSubmit = async (data: any) => {
-  try {
-    await driverService.create(data);
-    toast.success("تم إنشاء السائق بنجاح");
-  } catch (error: any) {
-    console.error(error);
-    toast.error(error?.message || "حدث خطأ أثناء إنشاء السائق");
-  }
-};
-
 
   // State to track document files
   const [documents, setDocuments] = useState<{ [key: string]: File | null }>({});
+  
+  // State for governorates
+  const [governorates, setGovernorates] = useState<Array<{ id: number; name_ar: string; name_en: string }>>([]);
+  const [loadingGovernorates, setLoadingGovernorates] = useState(false);
+
+  // Fetch governorates on component mount
+  useEffect(() => {
+    setLoadingGovernorates(true);
+    governoratesService.getAll()
+      .then((response) => {
+        const data = response.data?.data || response.data || [];
+        setGovernorates(Array.isArray(data) ? data : []);
+      })
+      .catch((error) => {
+        console.error("Error fetching governorates:", error);
+        setGovernorates([]);
+      })
+      .finally(() => {
+        setLoadingGovernorates(false);
+      });
+  }, []);
+
+  // Driver type options
+  const driverTypeOptions = ["محلي", "دولي", "الاتنين معا"];
+  const driverTypeValues = ["محلي", "دولي", "الاتنين معا"];
+
+  // License degree options
+  const licenseDegreeOptions = ["أولى", "ثانية", "ثالثة"];
+  const licenseDegreeValues = ["أولى", "ثانية", "ثالثة"];
 
   const handleDocumentChange = (file: File | null, docType: string) => {
     const updated = {
@@ -60,8 +77,6 @@ const DriverForm = ({
       documentsRef.current = updated;
     }
   };
-
-    console.log(formik.values)
 
   return (
     <Box className="grid justify-stretch items-start gap-6">
@@ -211,10 +226,15 @@ const DriverForm = ({
       formik={formik}
       name="governorate_id"
       label={t("", { defaultValue: "المحافظة" })}
-      // select
-      // options={governorates.map(g => g.name_ar)}
-      // values={governorates.map(g => g.id.toString())}
+      select
+      options={governorates.map(g => g.name_ar || g.name_en)}
+      values={governorates.map(g => g.id.toString())}
+      loading={loadingGovernorates}
       placeholder={t("", { defaultValue: "اختر المحافظة" })}
+      optional
+      change={(value) => {
+        formik.setFieldValue("governorate_id", value ? Number(value) : null);
+      }}
     />
 
     {/* نوع السائق */}
@@ -222,7 +242,11 @@ const DriverForm = ({
       formik={formik}
       name="driver_type"
       label={t("", { defaultValue: "نوع السائق" })}
-      placeholder={t("", { defaultValue: "أدخل نوع السائق" })}
+      select
+      options={driverTypeOptions}
+      values={driverTypeValues}
+      placeholder={t("", { defaultValue: "اختر نوع السائق" })}
+      optional
     />
 
     {/* درجة الرخصة */}
@@ -230,7 +254,11 @@ const DriverForm = ({
       formik={formik}
       name="license_degree"
       label={t("", { defaultValue: "درجة الرخصة" })}
-      placeholder={t("", { defaultValue: "أدخل درجة الرخصة" })}
+      select
+      options={licenseDegreeOptions}
+      values={licenseDegreeValues}
+      placeholder={t("", { defaultValue: "اختر درجة الرخصة" })}
+      optional
     />
 
     {/* الرقم القومي */}
@@ -405,20 +433,14 @@ const DriverForm = ({
           >
             {t("cancel", { defaultValue: "Cancel" })}
           </BasicButton>
-          {/* <SubmitButton
+          <SubmitButton
             variant="gradient"
             loading={isLoading}
             className="!min-w-[120px] !px-6 !py-2.5 hover:!shadow-lg transition-all"
+            type="submit"
           >
-            {t("save", { defaultValue: "Save Changes" })}
-          </SubmitButton> */}
-          <BasicButton
-            type="button"
-            onClick={() =>handleSubmit(formik.values)}
-            className="!min-w-[120px] !px-6 !py-2.5 hover:!shadow-md transition-all"
-          >
-            {t("", { defaultValue: "اضافة سائق" })}
-          </BasicButton>
+            {isEdit ? t("save", { defaultValue: "Save Changes" }) : t("", { defaultValue: "اضافة سائق" })}
+          </SubmitButton>
 
         </Box>
       </Paper>

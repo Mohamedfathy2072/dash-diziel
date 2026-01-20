@@ -70,33 +70,57 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
     date_of_birth: yup
       .string()
       .nullable()
-      .matches(/^\d{4}-\d{2}-\d{2}$/, t("date_invalid", { defaultValue: "Invalid date format (YYYY-MM-DD)" })),
+      .transform((value, originalValue) => {
+        return originalValue === "" ? null : originalValue;
+      })
+      .matches(/^\d{4}-\d{2}-\d{2}$|^$/, t("date_invalid", { defaultValue: "Invalid date format (YYYY-MM-DD)" })),
     gender: yup
       .string()
       .nullable()
       .oneOf(["male", "female", "other"], t("gender_invalid", { defaultValue: "Invalid gender" })),
     address: yup
       .string()
-      // .required("العنوان مطلوب")
+      .nullable()
+      .transform((value, originalValue) => {
+        return originalValue === "" || originalValue === null ? null : originalValue;
+      })
       .max(255, t("address_max", { defaultValue: "Address must be less than 255 characters" })),
     governorate_id: yup
-      .number()
+      .mixed()
       .nullable()
-      .typeError(t("", { defaultValue: "يرجى اختيار المحافظة" })),
+      .transform((value, originalValue) => {
+        if (originalValue === "" || originalValue === null || originalValue === undefined) {
+          return null;
+        }
+        const num = Number(originalValue);
+        return isNaN(num) ? originalValue : num;
+      })
+      .test("is-number-or-null", t("", { defaultValue: "يرجى اختيار المحافظة" }), (value) => {
+        return value === null || value === undefined || typeof value === "number";
+      }),
 
     driver_type: yup
       .string()
       .nullable()
+      .transform((value, originalValue) => {
+        return originalValue === "" ? null : originalValue;
+      })
       .max(50, t("", { defaultValue: "نوع السائق لا يجب أن يزيد عن 50 حرفًا" })),
 
     license_degree: yup
       .string()
       .nullable()
+      .transform((value, originalValue) => {
+        return originalValue === "" ? null : originalValue;
+      })
       .max(50, t("", { defaultValue: "درجة الرخصة لا يجب أن تزيد عن 50 حرفًا" })),
 
     national_id: yup
       .string()
       .nullable()
+      .transform((value, originalValue) => {
+        return originalValue === "" ? null : originalValue;
+      })
       .max(20, t("", { defaultValue: "الرقم القومي لا يجب أن يزيد عن 20 رقمًا" })),
    
     city: yup
@@ -127,6 +151,9 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
     license_number: yup
       .string()
       .nullable()
+      .transform((value, originalValue) => {
+        return originalValue === "" ? null : originalValue;
+      })
       .max(50, t("license_number_max", { defaultValue: "License number must be less than 50 characters" })),
     license_class: yup
       .string()
@@ -139,11 +166,17 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
     license_issue_date: yup
       .string()
       .nullable()
-      .matches(/^\d{4}-\d{2}-\d{2}$/, t("date_invalid", { defaultValue: "Invalid date format (YYYY-MM-DD)" })),
+      .transform((value, originalValue) => {
+        return originalValue === "" ? null : originalValue;
+      })
+      .matches(/^\d{4}-\d{2}-\d{2}$|^$/, t("date_invalid", { defaultValue: "Invalid date format (YYYY-MM-DD)" })),
     license_expiry_date: yup
       .string()
       .nullable()
-      .matches(/^\d{4}-\d{2}-\d{2}$/, t("date_invalid", { defaultValue: "Invalid date format (YYYY-MM-DD)" })),
+      .transform((value, originalValue) => {
+        return originalValue === "" ? null : originalValue;
+      })
+      .matches(/^\d{4}-\d{2}-\d{2}$|^$/, t("date_invalid", { defaultValue: "Invalid date format (YYYY-MM-DD)" })),
     license_issuing_state: yup
       .string()
       .nullable()
@@ -151,7 +184,10 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
     license_issuing_country: yup
       .string()
       .nullable()
-      .max(3, t("license_issuing_country_max", { defaultValue: "License issuing country must be less than 3 characters" })),
+      .transform((value, originalValue) => {
+        return originalValue === "" ? null : originalValue;
+      })
+      .max(50, t("license_issuing_country_max", { defaultValue: "License issuing country must be less than 50 characters" })),
     status: yup
       .string()
       .nullable()
@@ -173,22 +209,22 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
         photo_url: selectedDriver.photo_url || null,
         date_of_birth: selectedDriver.date_of_birth || null,
         gender: selectedDriver.gender || null,
-        address: selectedDriver?.address || "",
-        governorate_id: selectedDriver?.governorate_id ?? "",
-        driver_type: selectedDriver?.driver_type || "",
-        license_degree: selectedDriver?.license_degree || "",
-        national_id: selectedDriver?.national_id || "",
+        address: selectedDriver?.address || null,
+        governorate_id: selectedDriver?.governorate_id ?? null,
+        driver_type: selectedDriver?.driver_type || null,
+        license_degree: selectedDriver?.license_degree || null,
+        national_id: selectedDriver?.national_id || null,
         city: selectedDriver.city || null,
         state: selectedDriver.state || null,
         postal_code: selectedDriver.postal_code || null,
         country: selectedDriver.country || null,
         emergency_contact_name: selectedDriver.emergency_contact_name || null,
         emergency_contact_phone: selectedDriver.emergency_contact_phone || null,
-        license_number: selectedDriver.license_number || "",
+        license_number: selectedDriver.license_number || null,
         license_class: selectedDriver.license_class || null,
         license_type: selectedDriver.license_type || null,
         license_issue_date: selectedDriver.license_issue_date || null,
-        license_expiry_date: selectedDriver.license_expiry_date || "",
+        license_expiry_date: selectedDriver.license_expiry_date || null,
         license_issuing_state: selectedDriver.license_issuing_state || selectedDriver.license_state || null,
         license_issuing_country: selectedDriver.license_issuing_country || null,
         status: selectedDriver.status || "pending",
@@ -205,7 +241,7 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
         date_of_birth: null as string | null,
         gender: null as "male" | "female" | "other" | null,
         address: null as string | null,
-        governorate_id: "",
+        governorate_id: null as number | null,
         driver_type: null as string | null,
         license_degree: null as string | null,
         national_id: null as string | null,
@@ -215,11 +251,11 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
         country: null as string | null,
         emergency_contact_name: null as string | null,
         emergency_contact_phone: null as string | null,
-        license_number: "",
+        license_number: null as string | null,
         license_class: null as string | null,
         license_type: null as string | null,
         license_issue_date: null as string | null,
-        license_expiry_date: "",
+        license_expiry_date: null as string | null,
         license_issuing_state: null as string | null,
         license_issuing_country: null as string | null,
         status: "pending" as DriverStatus,

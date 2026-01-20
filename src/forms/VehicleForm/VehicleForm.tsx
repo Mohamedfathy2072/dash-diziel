@@ -19,7 +19,7 @@ import { useState } from "react";
 import {toast} from "react-hot-toast"
 
 // const createAxios=axios.create({
-//     baseURL: 'https://newapi.diziel.com/api/v1',
+//     baseURL: 'http://localhost:8000/api/v1',
 //     withCredentials: true,
 //     headers: {
 //       'Content-Type': 'application/json',

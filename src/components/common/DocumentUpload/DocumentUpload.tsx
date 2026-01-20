@@ -72,6 +72,8 @@ const DocumentUpload = ({
       
       <Box
         onClick={handleClick}
+        component="label"
+        htmlFor={`document-upload-${type}`}
         className="cursor-pointer border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center gap-3 bg-gray-50 hover:border-[#003366] hover:bg-gray-100 transition-all group"
       >
         {file ? (

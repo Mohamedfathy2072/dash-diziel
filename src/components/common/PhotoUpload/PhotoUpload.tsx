@@ -140,6 +140,8 @@ const PhotoUpload = ({
       </Typography>
       <Box className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
         <Box
+          component="label"
+          htmlFor={`photo-upload-${name}`}
           onClick={handlePhotoClick}
           className="cursor-pointer relative rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 hover:border-[#003366] hover:border-solid transition-all hover:shadow-lg group"
           sx={{ width: size, height: size }}

@@ -1,15 +1,21 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
-import { handleNetworkError, handleValidationError } from "../utils/errorHandler";
+import { handleNetworkError, handleValidationError, handleError } from "../utils/errorHandler";
 import logger from "../utils/logger";
 
 const useAxios = (
   onLoading?: (loading: boolean) => void,
   onBackDrop?: (value: boolean) => void,
 ) => {
+  // Use direct URL in production/build, proxy in development
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+  const isDev = import.meta.env.DEV;
+  const baseURL = isDev ? '/api/v1' : `${backendUrl}/api/v1`;
+  
   const server = axios.create({
-    baseURL: `/api/v1`,
+    baseURL: baseURL,
     withCredentials: true, // Enable cookies for session-based auth
+    maxRedirects: 0, // Prevent automatic redirects
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -24,10 +30,27 @@ const useAxios = (
     },
   });
 
+  // Add request interceptor to log URLs
+  server.interceptors.request.use(
+    (config) => {
+      // Debug: Log the full URL being requested
+      if (import.meta.env.DEV) {
+        console.log('useAxios Request URL:', config.baseURL + (config.url || ''));
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
 
   server.interceptors.response.use(
     (response) => {
       // Laravel success responses
+      // Debug: Log response URL if redirected
+      if (import.meta.env.DEV && response.request?.responseURL) {
+        console.log('useAxios Response URL:', response.request.responseURL);
+      }
       return response;
     },
     (error) => {
@@ -55,7 +78,6 @@ const useAxios = (
       
       // Handle other HTTP errors (401, 403, 500, etc.)
       if (error.response) {
-        const { handleError } = require("../utils/errorHandler");
         handleError(error, {
           showToast: true,
           logError: true,
