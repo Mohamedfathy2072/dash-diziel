@@ -65,7 +65,7 @@ const ImageBox = ({
                     )}
                     <LazyLoadImage
                         src={src}
-                        alt={alt || "Jeeteak"}
+                        alt={alt || "Diziel"}
                         className="w-full h-full object-cover"
                         beforeLoad={() => setLoading(true)}
                         afterLoad={() => setLoading(false)}

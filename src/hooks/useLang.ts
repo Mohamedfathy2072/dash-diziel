@@ -18,15 +18,15 @@ const useLang = () => {
     if (favicon) {
       favicon.href =
         lang === "ar"
-          ? "/images/logo_arabic_4.svg"
-          : "/images/logo_english_5.svg";
+          ? "/images/logo_arabic-5.jpeg"
+          : "/images/logo_arabic-5.jpeg";
     } else {
       const newFavicon = document.createElement("link");
       newFavicon.rel = "icon";
       newFavicon.href =
         lang === "ar"
-          ? "/images/logo_arabic_4.svg"
-          : "/images/logo_english_5.svg";
+          ? "/images/logo_arabic-5.jpeg"
+          : "/images/logo_english_5.jpeg";
       document.head.appendChild(newFavicon);
     }
   };

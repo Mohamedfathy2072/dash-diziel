@@ -1,4 +1,4 @@
-const JeeteakIcon = ({
+const DizielIcon = ({
   lang,
   className,
 }: {
@@ -42,4 +42,4 @@ const JeeteakIcon = ({
   );
 };
 
-export default JeeteakIcon;
+export default DizielIcon;

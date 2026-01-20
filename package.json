@@ -1,11 +1,11 @@
 {
-  "name": "jeeteak-dashboard",
+  "name": "Diziel-dashboard",
   "private": true,
   "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
     "dev": "vite --port 4002 --strictPort --mode development",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "preview": "vite preview --port 4002 --mode development",
     "serve": "ts-node server.ts",
     "lint": "eslint .",

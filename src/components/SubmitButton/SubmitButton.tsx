@@ -26,7 +26,7 @@ const SubmitButton = ({
         loading: loading,
         loadingIndicator: loadingIcon,
         type: type || ("submit" as const),
-        onClick: handling,
+        ...(handling && type !== "submit" ? { onClick: handling } : {}),
         className: className,
         disabled: disabled,
         id: id

@@ -2,7 +2,7 @@
 # Script to check driver endpoint in backend
 
 echo "=== Checking Driver Routes ==="
-cd /home/jeeteak-api/htdocs/api.jeeteak.com
+cd /home/Diziel-api/htdocs/api.Diziel.com
 
 echo ""
 echo "1. Searching for driver routes..."
@@ -48,5 +48,5 @@ fi
 echo ""
 echo "=== Test API Endpoint ==="
 echo "To test the endpoint manually, run:"
-echo "curl -X GET 'https://api.jeeteak.com/api/v1/drivers/1' -H 'Authorization: Bearer YOUR_TOKEN' -v"
+echo "curl -X GET 'https://api.Diziel.com/api/v1/drivers/1' -H 'Authorization: Bearer YOUR_TOKEN' -v"
 

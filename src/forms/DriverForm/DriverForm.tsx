@@ -1,9 +1,9 @@
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import Input from "../../components/Input/Input";
 import PhoneNumberInput from "../../components/PhoneNumberInput/PhoneNumberInput";
 import SubmitButton from "../../components/SubmitButton/SubmitButton";
@@ -17,6 +17,7 @@ import {
   DRIVER_STATUSES,
   DRIVER_AVAILABILITY_STATUSES,
 } from "../../types/enums";
+import { governoratesService } from "../../services/api";
 
 const DriverForm = ({
   formik,
@@ -32,9 +33,38 @@ const DriverForm = ({
   const isLoading = useFormsStore((state) => state.isLoading);
   const navigate = useNavigate();
   const isEdit = type === "editDriver";
-  
+
   // State to track document files
   const [documents, setDocuments] = useState<{ [key: string]: File | null }>({});
+  
+  // State for governorates
+  const [governorates, setGovernorates] = useState<Array<{ id: number; name_ar: string; name_en: string }>>([]);
+  const [loadingGovernorates, setLoadingGovernorates] = useState(false);
+
+  // Fetch governorates on component mount
+  useEffect(() => {
+    setLoadingGovernorates(true);
+    governoratesService.getAll()
+      .then((response) => {
+        const data = response.data?.data || response.data || [];
+        setGovernorates(Array.isArray(data) ? data : []);
+      })
+      .catch((error) => {
+        console.error("Error fetching governorates:", error);
+        setGovernorates([]);
+      })
+      .finally(() => {
+        setLoadingGovernorates(false);
+      });
+  }, []);
+
+  // Driver type options
+  const driverTypeOptions = ["محلي", "دولي", "الاتنين معا"];
+  const driverTypeValues = ["محلي", "دولي", "الاتنين معا"];
+
+  // License degree options
+  const licenseDegreeOptions = ["أولى", "ثانية", "ثالثة"];
+  const licenseDegreeValues = ["أولى", "ثانية", "ثالثة"];
 
   const handleDocumentChange = (file: File | null, docType: string) => {
     const updated = {
@@ -47,8 +77,6 @@ const DriverForm = ({
       documentsRef.current = updated;
     }
   };
-
-
 
   return (
     <Box className="grid justify-stretch items-start gap-6">
@@ -123,9 +151,10 @@ const DriverForm = ({
             placeholder={t("genderPlaceholder", { defaultValue: "Select gender" })}
             optional
           />
+          
         </Box>
       </FormSection>
-
+      
       {/* Driver Information Section */}
       <FormSection title={t("driverInformation", { defaultValue: "Driver Information" })}>
         <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
@@ -179,6 +208,68 @@ const DriverForm = ({
             optional
           />
         </Box>
+      </FormSection>
+
+      <FormSection title={t("", { defaultValue: "بيانات إضافية" })}>
+  <Box className="grid grid-cols-2 md:grid-cols-1 gap-5">
+
+    {/* العنوان */}
+    {/* <Input
+      formik={formik}
+      name="address"
+      label={t("", { defaultValue: "العنوان" })}
+      placeholder={t("", { defaultValue: "أدخل العنوان" })}
+    /> */}
+
+    {/* المحافظة */}
+    <Input
+      formik={formik}
+      name="governorate_id"
+      label={t("", { defaultValue: "المحافظة" })}
+      select
+      options={governorates.map(g => g.name_ar || g.name_en)}
+      values={governorates.map(g => g.id.toString())}
+      loading={loadingGovernorates}
+      placeholder={t("", { defaultValue: "اختر المحافظة" })}
+      optional
+      change={(value) => {
+        formik.setFieldValue("governorate_id", value ? Number(value) : null);
+      }}
+    />
+
+    {/* نوع السائق */}
+    <Input
+      formik={formik}
+      name="driver_type"
+      label={t("", { defaultValue: "نوع السائق" })}
+      select
+      options={driverTypeOptions}
+      values={driverTypeValues}
+      placeholder={t("", { defaultValue: "اختر نوع السائق" })}
+      optional
+    />
+
+    {/* درجة الرخصة */}
+    <Input
+      formik={formik}
+      name="license_degree"
+      label={t("", { defaultValue: "درجة الرخصة" })}
+      select
+      options={licenseDegreeOptions}
+      values={licenseDegreeValues}
+      placeholder={t("", { defaultValue: "اختر درجة الرخصة" })}
+      optional
+    />
+
+    {/* الرقم القومي */}
+    <Input
+      formik={formik}
+      name="national_id"
+      label={t("", { defaultValue: "الرقم القومي" })}
+      placeholder={t("", { defaultValue: "أدخل الرقم القومي" })}
+    />
+
+  </Box>
       </FormSection>
 
       {/* Emergency Contact Section */}
@@ -267,65 +358,65 @@ const DriverForm = ({
           />
           
           {/* Power of Attorney Front (Optional) */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="power_of_attorney_front"
             label={t("documents.powerOfAttorneyFront", { defaultValue: "الوكالة (أمام) – اختياري" })}
             onChange={handleDocumentChange}
             value={documents['power_of_attorney_front'] || null}
-          />
+          /> */}
           
           {/* Power of Attorney Back (Optional) */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="power_of_attorney_back"
             label={t("documents.powerOfAttorneyBack", { defaultValue: "الوكالة (خلف) – اختياري" })}
             onChange={handleDocumentChange}
             value={documents['power_of_attorney_back'] || null}
-          />
+          /> */}
           
           {/* Vehicle License Front */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="vehicle_license_front"
             label={t("documents.vehicleLicenseFront", { defaultValue: "رخصة المركبة (وجه)" })}
             onChange={handleDocumentChange}
             value={documents['vehicle_license_front'] || null}
-          />
+          /> */}
           
           {/* Vehicle License Back */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="vehicle_license_back"
             label={t("documents.vehicleLicenseBack", { defaultValue: "رخصة المركبة (خلف)" })}
             onChange={handleDocumentChange}
             value={documents['vehicle_license_back'] || null}
-          />
+          /> */}
           
           {/* Insurance Certificate */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="insurance_certificate"
             label={t("documents.insuranceCertificate", { defaultValue: "شهادة التأمين" })}
             onChange={handleDocumentChange}
             value={documents['insurance_certificate'] || null}
-          />
+          /> */}
           
           {/* Vehicle Photos */}
-          <DocumentUpload
+          {/* <DocumentUpload
             type="vehicle_photo"
             label={t("documents.vehiclePhotos", { defaultValue: "صور المركبة" })}
             onChange={handleDocumentChange}
             value={documents['vehicle_photo'] || null}
           />
-          
-          {/* Residence Card Front */}
+           */}
+          {/**/}
           <DocumentUpload
             type="residence_card_front"
-            label={t("documents.residenceCardFront", { defaultValue: "بطاقة السكن (وجه)" })}
+            label={"الصحيفة الجنائية"}
             onChange={handleDocumentChange}
             value={documents['residence_card_front'] || null}
           />
           
-          {/* Residence Card Back */}
+          {/**/}
           <DocumentUpload
             type="residence_card_back"
-            label={t("documents.residenceCardBack", { defaultValue: "بطاقة السكن (ضهر)" })}
+            label={"تحليل المخدرات"}
             onChange={handleDocumentChange}
             value={documents['residence_card_back'] || null}
           />
@@ -346,9 +437,11 @@ const DriverForm = ({
             variant="gradient"
             loading={isLoading}
             className="!min-w-[120px] !px-6 !py-2.5 hover:!shadow-lg transition-all"
+            type="submit"
           >
-            {t("save", { defaultValue: "Save Changes" })}
+            {isEdit ? t("save", { defaultValue: "Save Changes" }) : t("", { defaultValue: "اضافة سائق" })}
           </SubmitButton>
+
         </Box>
       </Paper>
     </Box>

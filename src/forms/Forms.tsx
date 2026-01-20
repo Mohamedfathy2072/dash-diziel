@@ -59,8 +59,12 @@ const Forms = ({ type }: FormsTypes) => {
   // Handle form submission for user/driver/ad forms with photo, documents, and image
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("handleFormSubmit called for type:", type);
     // Validate form first
     formik.validateForm().then((errors) => {
+      console.log("Form validation errors:", errors);
+      console.log("Form values:", formik.values);
+      
       if (Object.keys(errors).length === 0) {
         // Ensure photoFile is properly set from ref
         const photoFile = photoFileRef.current;
@@ -69,6 +73,7 @@ const Forms = ({ type }: FormsTypes) => {
         let documents: { [key: string]: File | null } | undefined;
         if (type === "addDriver" || type === "editDriver") {
           documents = documentsRef.current;
+          console.log("Documents from ref:", documents);
         }
 
         // Get imageFile from ref if it's an ad form
@@ -89,9 +94,11 @@ const Forms = ({ type }: FormsTypes) => {
           imageFile?: File | null;
         };
 
+        console.log("Submitting form with values:", valuesWithFiles);
         // Call submit handler directly with values including photoFile, documents, and imageFile
         handleSubmit(valuesWithFiles);
       } else {
+        console.log("Form has validation errors, not submitting");
         formik.setTouched(
           Object.keys(errors).reduce((acc, key) => {
             acc[key] = true;

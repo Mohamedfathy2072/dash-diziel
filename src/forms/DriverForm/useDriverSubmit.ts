@@ -36,13 +36,19 @@ const useDriverSubmit = () => {
     photoFile?: File | null;
     documents?: { [key: string]: File | null };
   }) => {
+    console.log("addDriver called with values:", values);
     try {
       const formData = new FormData();
       
       // Add all form fields to FormData
       Object.entries(values).forEach(([key, value]) => {
         if (key !== 'photoFile' && key !== 'documents' && value !== null && value !== undefined && value !== '') {
-          formData.append(key, value as string);
+          // Convert governorate_id to string if it's a number
+          if (key === 'governorate_id' && typeof value === 'number') {
+            formData.append(key, value.toString());
+          } else {
+            formData.append(key, value as string);
+          }
         }
       });
 
@@ -96,7 +102,12 @@ const useDriverSubmit = () => {
       // Add all form fields to FormData
       Object.entries(values).forEach(([key, value]) => {
         if (key !== 'photoFile' && key !== 'documents' && value !== null && value !== undefined && value !== '') {
-          formData.append(key, value as string);
+          // Convert governorate_id to string if it's a number
+          if (key === 'governorate_id' && typeof value === 'number') {
+            formData.append(key, value.toString());
+          } else {
+            formData.append(key, value as string);
+          }
         }
       });
 

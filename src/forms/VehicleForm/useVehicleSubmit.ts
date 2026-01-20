@@ -6,12 +6,13 @@ import type { AppDispatch } from "../../store/store";
 import { createVehicle, updateVehicle, fetchVehicles } from "../../store/vehiclesSlice";
 import type { VehicleFormTypes } from "../../types/forms";
 
+
 const useVehicleSubmit = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { id } = useParams();
   const { t } = useTranslation("forms/vehicle_form");
-
+  
   const addVehicle = async (values: VehicleFormTypes) => {
     try {
       // Prepare data, removing null values

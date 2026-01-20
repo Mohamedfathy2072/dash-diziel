@@ -64,7 +64,7 @@ const TextLabel = ({
             ${tel ? "ltr" : ""}
             ${rows ? `h-[${rows * 50}px]` : ""}
             ${["employee", "package", "network", "member", "reject_reason", "user", "highlight", "admin", "complaint"].includes(variant || "")
-              ? "!text-Jeeteak_gray !font-[600]"
+              ? "!text-Diziel_gray !font-[600]"
               : "!text-neutral_700"}
             ${onClick ? "group-hover:!text-black" : ""}
           `}
