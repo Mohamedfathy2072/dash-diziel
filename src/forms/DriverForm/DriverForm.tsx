@@ -107,7 +107,7 @@ const DriverForm = ({
             name="email"
             type="email"
             placeholder={t("emailPlaceholder", { defaultValue: "Enter email" })}
-            optional={!!formik.values.user_id}
+            optional={true}
           />
           <PhoneNumberInput
             value={formik.values.phone || ""}
@@ -204,8 +204,9 @@ const DriverForm = ({
             formik={formik}
             label={t("licenseIssuingCountry", { defaultValue: "License Issuing Country" })}
             name="license_issuing_country"
-            placeholder={t("licenseIssuingCountryPlaceholder", { defaultValue: "Enter issuing country" })}
+            placeholder={t("licenseIssuingCountryPlaceholder", { defaultValue: "Enter issuing country (3 letters max)" })}
             optional
+            maxLength={3}
           />
         </Box>
       </FormSection>

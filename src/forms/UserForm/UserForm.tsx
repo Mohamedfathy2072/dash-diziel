@@ -72,8 +72,8 @@ const UserForm = ({
             label={t("type", { defaultValue: "User Type" })}
             name="type"
             select
-            options={["user", "driver", "superAdmin"]}
-            values={["user", "driver", "superAdmin"]}
+            options={["user", "driver", "admin", "superAdmin"]}
+            values={["user", "driver", "admin", "superAdmin"]}
             placeholder={t("typePlaceholder", {
               defaultValue: "Select user type",
             })}

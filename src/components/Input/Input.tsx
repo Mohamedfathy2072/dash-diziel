@@ -40,6 +40,7 @@ const Input = <T extends AllFormsTypes>({
   autoFocus,
   value,
   max,
+  maxLength,
   autocomplete
 }: InputTypes<T>) => {
   const {
@@ -117,7 +118,14 @@ const Input = <T extends AllFormsTypes>({
           }
           value={(formik?.values?.[name as keyof T] ?? "") || value}
           onChange={(e) => {
-            const val = e.target.value;
+            let val = e.target.value;
+            
+            // Limit maxLength if specified
+            if (maxLength && val.length > maxLength) {
+              val = val.slice(0, maxLength);
+              e.target.value = val;
+            }
+            
             if (change) {
               change(val);
             }
@@ -128,6 +136,9 @@ const Input = <T extends AllFormsTypes>({
               e.target.value = val.toLocaleString();
             }
             formik?.handleChange?.(e);
+          }}
+          inputProps={{
+            maxLength: maxLength,
           }}
           onBlur={formik?.handleBlur}
           error={error}

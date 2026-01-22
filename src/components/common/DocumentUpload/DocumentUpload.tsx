@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useState, useRef, type ChangeEvent } from "react";
+import { useState, useRef, useEffect, type ChangeEvent } from "react";
 import { BasicButton } from "../../../mui/buttons/BasicButton";
 import DeleteIcon from "../../../icons/DeleteIcon";
 import UploadIcon from "../../../icons/UploadIcon";
@@ -18,26 +18,67 @@ const DocumentUpload = ({
   const [file, setFile] = useState<File | null>(value || null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isUpdatingRef = useRef(false);
+
+  // Sync value prop with internal state
+  useEffect(() => {
+    if (!isUpdatingRef.current) {
+      setFile(value || null);
+    }
+    // Reset isUpdatingRef when value changes from outside (e.g., form reset)
+    if (value === null || value === undefined) {
+      isUpdatingRef.current = false;
+    }
+  }, [value]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      
-      // Validate file size
-      if (selectedFile.size > maxSize) {
-        setError(`File size must be less than ${(maxSize / (1024 * 1024)).toFixed(0)}MB`);
-        return;
-      }
-      
-      setError(null);
-      setFile(selectedFile);
-      if (onChange) {
-        onChange(selectedFile, type);
-      }
+    const files = e.target.files;
+    if (!files || !files[0]) {
+      return;
     }
+    
+    const selectedFile = files[0];
+    
+    // Validate file size
+    if (selectedFile.size > maxSize) {
+      setError(`File size must be less than ${(maxSize / (1024 * 1024)).toFixed(0)}MB`);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      return;
+    }
+    
+    // Prevent double upload - check if we're already processing
+    if (isUpdatingRef.current) {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      return;
+    }
+    
+    setError(null);
+    isUpdatingRef.current = true;
+    
+    // Update state and call onChange immediately
+    setFile(selectedFile);
+    if (onChange) {
+      onChange(selectedFile, type);
+    }
+    
+    // Reset input value AFTER a delay to prevent immediate re-trigger
+    setTimeout(() => {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      // Reset isUpdatingRef after everything is done
+      setTimeout(() => {
+        isUpdatingRef.current = false;
+      }, 100);
+    }, 300);
   };
 
   const handleRemove = () => {
+    isUpdatingRef.current = true;
     setFile(null);
     setError(null);
     if (fileInputRef.current) {
@@ -46,10 +87,24 @@ const DocumentUpload = ({
     if (onChange) {
       onChange(null, type);
     }
+    // Reset isUpdatingRef after removal
+    setTimeout(() => {
+      isUpdatingRef.current = false;
+    }, 100);
   };
 
-  const handleClick = () => {
-    fileInputRef.current?.click();
+  const handleClick = (e: React.MouseEvent) => {
+    // Don't open if we're already processing
+    if (isUpdatingRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    
+    // Trigger file input click programmatically
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   return (
@@ -72,8 +127,6 @@ const DocumentUpload = ({
       
       <Box
         onClick={handleClick}
-        component="label"
-        htmlFor={`document-upload-${type}`}
         className="cursor-pointer border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center gap-3 bg-gray-50 hover:border-[#003366] hover:bg-gray-100 transition-all group"
       >
         {file ? (

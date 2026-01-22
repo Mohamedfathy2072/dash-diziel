@@ -41,7 +41,7 @@ const useUserSchema = (isEdit = false, selectedUser?: User | null) => {
       }),
     type: yup
       .string()
-      .oneOf(["user", "driver", "superAdmin"], t("type_invalid", { defaultValue: "Invalid user type" }))
+      .oneOf(["user", "driver", "admin", "superAdmin"], t("type_invalid", { defaultValue: "Invalid user type" }))
       .required(t("type_required", { defaultValue: "User type is required" })),
     phone: yup
       .string()
@@ -104,8 +104,8 @@ const useUserSchema = (isEdit = false, selectedUser?: User | null) => {
         email: "",
         password: "",
         password_confirmation: "",
-        type: "user" as "user" | "driver" | "superAdmin",
-        phone: null as string | null,
+        type: "user" as "user" | "driver" | "admin" | "superAdmin",
+        phone: "+20-" as string | null,
         photo_url: null as string | null,
         date_of_birth: null as string | null,
         gender: null as "male" | "female" | "other" | null,

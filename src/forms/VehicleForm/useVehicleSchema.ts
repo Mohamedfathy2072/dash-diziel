@@ -155,10 +155,10 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
 
   year: yup
       .number()
-      .min(1900, t("year_min", { defaultValue: "Year must be at least 1900" }))
-      .max(2100, t("year_max", { defaultValue: "Year must be at most 2100" }))
-      .typeError("Year must be a number")
-      .required("Year is required"),
+      .typeError("سنة الصنع يجب أن تكون رقماً")
+      .min(1900, "سنة الصنع يجب أن تكون على الأقل 1900")
+      .max(2100, "سنة الصنع يجب أن تكون على الأكثر 2100")
+      .required("سنة الصنع مطلوبة"),
 
     license_plate: yup
       .string()
@@ -174,18 +174,21 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
 
     number_of_axles: yup
       .number()
-      .min(1)
-      .required("pppppppp"),
+      .typeError("عدد المحاور يجب أن يكون رقماً")
+      .min(1, "عدد المحاور يجب أن يكون على الأقل 1")
+      .required("عدد المحاور مطلوب"),
 
     max_load: yup
       .number()
-      .min(0)
-      .required("jjjjjjjjjjjjj"),
+      .typeError("الحمولة القصوى يجب أن تكون رقماً")
+      .min(0, "الحمولة القصوى يجب أن تكون على الأقل 0")
+      .required("الحمولة القصوى مطلوبة"),
 
     length: yup
       .number()
-      .min(0)
-      .required("lllllllllllll"),
+      .typeError("الطول يجب أن يكون رقماً")
+      .min(0, "الطول يجب أن يكون على الأقل 0")
+      .required("الطول مطلوب"),
   }),
 
   trailer: yup.object({
@@ -195,8 +198,10 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
 
     year: yup
       .number()
-      .typeError("Year must be a number")
-      .required(),
+      .typeError("سنة الصنع يجب أن تكون رقماً")
+      .min(1900, "سنة الصنع يجب أن تكون على الأقل 1900")
+      .max(2100, "سنة الصنع يجب أن تكون على الأكثر 2100")
+      .required("سنة الصنع مطلوبة"),
 
     license_plate: yup
       .string()
@@ -208,18 +213,21 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
 
     number_of_axles: yup
       .number()
-      .min(1)
-      .required(),
+      .typeError("عدد المحاور يجب أن يكون رقماً")
+      .min(1, "عدد المحاور يجب أن يكون على الأقل 1")
+      .required("عدد المحاور مطلوب"),
 
     max_load: yup
       .number()
-      .min(0)
-      .required(),
+      .typeError("الحمولة القصوى يجب أن تكون رقماً")
+      .min(0, "الحمولة القصوى يجب أن تكون على الأقل 0")
+      .required("الحمولة القصوى مطلوبة"),
 
     length: yup
       .number()
-      .min(0)
-      .required(),
+      .typeError("الطول يجب أن يكون رقماً")
+      .min(0, "الطول يجب أن يكون على الأقل 0")
+      .required("الطول مطلوب"),
   }),
 });
 
@@ -280,7 +288,7 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
       }
     : {
         driver_id: null as number|null,
-        make: null ,
+        make: "",
         // model: "",
         // year: new Date().getFullYear(),
         color: null as string | null,
@@ -288,10 +296,10 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
         // vin: null as string | null,
         vehicle_type_id: 1, // Default to first vehicle type (will be set properly when vehicle types are loaded)
         head: {
-        model: null as string | null,
+        model: "",
         year: null as number|null,
-        license_plate: null as string | null,
-        chassis_number: null as string | null,
+        license_plate: "",
+        chassis_number: "",
          engine_number: null as string | null,
          number_of_axles: 0,
         max_load: 0,
@@ -300,7 +308,7 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
 
   trailer: {
     model: "",
-    year: "",
+    year: null as number|null,
     license_plate: "",
     chassis_number: "",
     number_of_axles: 0,

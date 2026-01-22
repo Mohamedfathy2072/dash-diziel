@@ -43,7 +43,7 @@ export const handleGetFileFromServer = (file: string | null | undefined): string
   }
 
   // Get backend URL from env and prepend it
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.MODE === 'production' ? 'https://newapi.diziel.com' : 'http://localhost:8000');
   const fullBackendUrl = `${backendUrl}/api/v1`;
   
   // Remove trailing slash from backend URL if present

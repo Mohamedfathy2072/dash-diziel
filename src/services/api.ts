@@ -6,7 +6,7 @@ import i18n from '../i18n';
 // Create base axios instance
 const createApiClient = (): AxiosInstance => {
   // Use direct URL in production/build, proxy in development
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.MODE === 'production' ? 'https://newapi.diziel.com' : 'http://localhost:8000');
   const isDev = import.meta.env.DEV;
   const baseURL = isDev ? '/api/v1' : `${backendUrl}/api/v1`;
   
@@ -27,6 +27,11 @@ const createApiClient = (): AxiosInstance => {
       // Update locale header with current language
       if (config.headers) {
         config.headers['Accept-Language'] = i18n.language || 'en';
+        
+        // If data is FormData, remove Content-Type to let browser set it with boundary
+        if (config.data instanceof FormData) {
+          delete config.headers['Content-Type'];
+        }
       }
       // Debug: Log the full URL being requested
       if (import.meta.env.DEV) {
@@ -49,6 +54,19 @@ const createApiClient = (): AxiosInstance => {
       return response;
     },
     (error: AxiosError) => {
+      // Log full error details for debugging
+      console.error('🔴 API Error Details:', {
+        url: error.config?.url,
+        method: error.config?.method?.toUpperCase(),
+        baseURL: error.config?.baseURL,
+        fullURL: `${error.config?.baseURL}${error.config?.url}`,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message,
+        request: error.request ? 'Request sent but no response' : 'No request sent',
+      });
+      
       // Handle 401 Unauthorized - redirect to login
       if (error.response?.status === 401) {
         // Don't redirect if this is a login request itself (to avoid redirect loops)
@@ -397,6 +415,7 @@ export const vehicleService = {
   
   create: (data: any) => {
     const client = createApiClient();
+    // Axios will automatically set Content-Type for FormData
     return client.post('/vehicles', data);
   },
   
@@ -1074,7 +1093,7 @@ export const userRolesService = {
 export const governoratesService = {
   getAll: () => {
     // Use direct URL instead of proxy
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.MODE === 'production' ? 'https://newapi.diziel.com' : 'http://localhost:8000');
     const client = axios.create({
       baseURL: `${backendUrl}/api/v1`,
       withCredentials: true,

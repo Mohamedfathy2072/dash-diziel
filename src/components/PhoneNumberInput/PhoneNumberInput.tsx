@@ -254,7 +254,7 @@ const PhoneNumberInput = <T extends AllFormsTypes>({
         </Box>
       )}
       <PhoneInput
-        country={country || "sa"}
+        country={country || "eg"}
         value={value}
         onChange={handlePhoneChange}
         // onlyCountries={["sa"]}

@@ -99,10 +99,10 @@ const FilterDriversForm = ({
               label={t("labels.status", { defaultValue: "Status" })}
               name="status"
               select
-              options={DRIVER_STATUSES}
-              values={DRIVER_STATUSES}
+              options={["", ...DRIVER_STATUSES]}
+              values={["", ...DRIVER_STATUSES]}
               optional
-              value={formik.values.status}
+              value={formik.values.status || ""}
             />
           </Box>
 

@@ -34,8 +34,8 @@ export const getAvatarUrl = (url: string | null | undefined): string => {
   // BUT only if it's from our domain or a trusted domain
   if (trimmedUrl.startsWith('https://')) {
     // Allow HTTPS URLs from our backend domain
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
-    const serverUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.MODE === 'production' ? 'https://newapi.diziel.com' : 'http://localhost:8000');
+    const serverUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.MODE === 'production' ? 'https://newapi.diziel.com' : 'http://localhost:8000');
     const ourDomains = ['api.Diziel.com', 'Diziel.com', backendUrl, serverUrl].filter(Boolean);
     
     // Check if URL is from our domain

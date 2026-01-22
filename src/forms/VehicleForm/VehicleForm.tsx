@@ -12,11 +12,14 @@ import type { FormiksTypes, VehicleFormTypes } from "../../types/forms";
 import { VEHICLE_STATUSES, VEHICLE_VERIFICATION_STATUSES } from "../../types/enums";
 import DocumentUpload from "../../components/common/DocumentUpload/DocumentUpload";
 import useVehicleTypes from "../../hooks/useVehicleTypes";
-import {vehicleService} from "../../services/api" 
+import {vehicleService, driverService} from "../../services/api" 
 import axios from "axios";
 import i18n from "../../i18n"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {toast} from "react-hot-toast"
+import AutocompleteSelect from "../../components/Input/AutocompleteSelect";
+import type { Driver } from "../../types/domain";
+import { handleApiError } from "../../utils/errorHandler";
 
 // const createAxios=axios.create({
 //     baseURL: 'http://localhost:8000/api/v1',
@@ -42,14 +45,37 @@ const VehicleForm = ({
   const isEdit = type === "editVehicle";
   const { activeVehicleTypes } = useVehicleTypes();
   const [photos, setPhotos] = useState<{
-  license_front: File | null;
-  license_back: File | null;
-  four_sides: (File | null)[];
-   }>({
-  license_front: null,
-  license_back: null,
-  four_sides: [null, null, null, null], // placeholder for four sides
+    head_license_front: File | null;
+    head_license_back: File | null;
+    trailer_license_front: File | null;
+    trailer_license_back: File | null;
+    four_sides: (File | null)[];
+  }>({
+    head_license_front: null,
+    head_license_back: null,
+    trailer_license_front: null,
+    trailer_license_back: null,
+    four_sides: [null, null, null, null], // Four sides for the whole vehicle
   });
+  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const [loadingDrivers, setLoadingDrivers] = useState(false);
+
+  // Fetch drivers on component mount
+  useEffect(() => {
+    setLoadingDrivers(true);
+    driverService.getAll(1, 1000)
+      .then((response) => {
+        const driversData = response.data.data?.data || [];
+        setDrivers(Array.isArray(driversData) ? driversData : []);
+      })
+      .catch((error) => {
+        console.error("Error fetching drivers:", error);
+        setDrivers([]);
+      })
+      .finally(() => {
+        setLoadingDrivers(false);
+      });
+  }, []);
 
   interface VehiclePayload {
   driver_id: number;
@@ -68,7 +94,6 @@ const VehicleForm = ({
     photos: {
       license_front?: File | null;
       license_back?: File | null;
-      four_sides?: (File | null)[];
     };
   };
   trailer: {
@@ -79,37 +104,63 @@ const VehicleForm = ({
     number_of_axles: number;
     max_load: number;
     length: number;
+    photos: {
+      license_front?: File | null;
+      license_back?: File | null;
+    };
   };
+  four_sides: (File | null)[];
 }
 
   const handlePhotoChange = (
     file: File | null,
-    key: "license_front" | "license_back"
+    key: "head_license_front" | "head_license_back" | "trailer_license_front" | "trailer_license_back"
   ) => {
-    setPhotos(prev => ({
-      ...prev,
-      [key]: file,
-    }));
-    console.log("2photo",photos)
+    console.log(`Setting photo for ${key}:`, file ? file.name : 'null');
+    setPhotos(prev => {
+      const updated = {
+        ...prev,
+        [key]: file,
+      };
+      console.log('Updated photos state:', updated);
+      return updated;
+    });
   };
 
-  const payload: VehiclePayload = {
-  driver_id: formik.values.driver_id,
-  make: formik.values.make,
-  color: formik.values.color,
-  vehicle_type_id: formik.values.vehicle_type_id,
-  head: {
-    ...formik.values.head, // all head fields from the form
-    photos: {
-      license_front: photos.license_front,
-      license_back: photos.license_back,
-      four_sides: photos.four_sides.filter(f => f !== null)
-    }
-  },
-  trailer: {
-    ...formik.values.trailer // all trailer fields from the form
-  }
-};
+  // Build payload function to get fresh photos state
+  const buildPayload = (): VehiclePayload => {
+    const payload = {
+      driver_id: formik.values.driver_id,
+      make: formik.values.make,
+      color: formik.values.color,
+      vehicle_type_id: formik.values.vehicle_type_id,
+      head: {
+        ...formik.values.head, // all head fields from the form
+        photos: {
+          license_front: photos.head_license_front,
+          license_back: photos.head_license_back,
+        }
+      },
+      trailer: {
+        ...formik.values.trailer, // all trailer fields from the form
+        photos: {
+          license_front: photos.trailer_license_front,
+          license_back: photos.trailer_license_back,
+        }
+      },
+      four_sides: photos.four_sides.filter(f => f !== null) as File[]
+    };
+    
+    // Debug: Log photos to verify they're being captured
+    console.log("🔵 Photos state:", photos);
+    console.log("🔵 Payload photos:", {
+      head: payload.head.photos,
+      trailer: payload.trailer.photos,
+      four_sides: payload.four_sides
+    });
+    
+    return payload;
+  };
   
 
  const formData = new FormData();
@@ -128,12 +179,13 @@ const VehicleForm = ({
 const handleSubmit =() => {
   const formData = new FormData();
 
-  if (photos.license_front) formData.append("photos[license_front]", photos.license_front);
-  if (photos.license_back) formData.append("photos[license_back]", photos.license_back);
+  if (photos.head_license_front) formData.append("head[photos][license_front]", photos.head_license_front);
+  if (photos.head_license_back) formData.append("head[photos][license_back]", photos.head_license_back);
+  if (photos.trailer_license_front) formData.append("trailer[photos][license_front]", photos.trailer_license_front);
+  if (photos.trailer_license_back) formData.append("trailer[photos][license_back]", photos.trailer_license_back);
 
   photos.four_sides.forEach((file, idx) => {
     if (file) formData.append(`photos[four_sides][${idx}]`, file);
-    console.log("formdata",formData)
   });
 };
 
@@ -141,6 +193,11 @@ const handleSubmit =() => {
    
 const handleCreateVehicle = async (payload: VehiclePayload) => {
   try {
+    // Use a closure to capture the current photos state
+    const currentPhotos = photos;
+    
+    console.log("🔵 Current photos state:", currentPhotos);
+    
     const formData = new FormData();
 
     // 1️⃣ Top-level fields
@@ -149,48 +206,122 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
     formData.append("color", payload.color || "");
     formData.append("vehicle_type_id", String(payload.vehicle_type_id));
 
-    // 2️⃣ Head fields
+    // 2️⃣ Head fields (excluding photos)
     Object.entries(payload.head).forEach(([key, value]) => {
-      if (key === "photos" && value) {
-        // Tell TS this is the photos object
-        const photos = value as {
-          license_front?: File | null;
-          license_back?: File | null;
-          four_sides?: (File | null)[];
-        };
-
-        if (photos.license_front) {
-          formData.append("head[photos][license_front]", photos.license_front);
+      if (key !== "photos") {
+        // Skip null values or convert to empty string
+        if (value === null || value === undefined || value === "null") {
+          return;
         }
-
-        if (photos.license_back) {
-          formData.append("head[photos][license_back]", photos.license_back);
-        }
-
-        photos.four_sides?.forEach((file, idx) => {
-          if (file) {
-            formData.append(`head[photos][four_sides][${idx}]`, file);
-          }
-        });
-      } else {
-        // Cast value to string for FormData
         formData.append(`head[${key}]`, String(value));
       }
     });
 
-    // 3️⃣ Trailer fields
+    // 2️⃣ Head photos - use captured photos state
+    if (currentPhotos.head_license_front && currentPhotos.head_license_front instanceof File) {
+      formData.append("head[photos][license_front]", currentPhotos.head_license_front);
+      console.log("✅ Head license front:", currentPhotos.head_license_front.name, currentPhotos.head_license_front.size, "bytes");
+    } else {
+      console.log("❌ Head license front is missing or not a File:", currentPhotos.head_license_front);
+    }
+
+    if (currentPhotos.head_license_back && currentPhotos.head_license_back instanceof File) {
+      formData.append("head[photos][license_back]", currentPhotos.head_license_back);
+      console.log("✅ Head license back:", currentPhotos.head_license_back.name, currentPhotos.head_license_back.size, "bytes");
+    } else {
+      console.log("❌ Head license back is missing or not a File:", currentPhotos.head_license_back);
+    }
+
+    // 3️⃣ Trailer fields (excluding photos)
     Object.entries(payload.trailer).forEach(([key, value]) => {
-      formData.append(`trailer[${key}]`, String(value));
+      if (key !== "photos") {
+        // Skip null values or convert to empty string
+        if (value === null || value === undefined || value === "null") {
+          return;
+        }
+        formData.append(`trailer[${key}]`, String(value));
+      }
     });
 
-    // 4️⃣ Call the API
-    const response = await vehicleService.create(formData);
-    console.log("Vehicle created:", response);
+    // 3️⃣ Trailer photos - use captured photos state
+    if (currentPhotos.trailer_license_front && currentPhotos.trailer_license_front instanceof File) {
+      formData.append("trailer[photos][license_front]", currentPhotos.trailer_license_front);
+      console.log("✅ Trailer license front:", currentPhotos.trailer_license_front.name, currentPhotos.trailer_license_front.size, "bytes");
+    } else {
+      console.log("❌ Trailer license front is missing or not a File:", currentPhotos.trailer_license_front);
+    }
 
-    toast.success("Vehicle created successfully!");
+    if (currentPhotos.trailer_license_back && currentPhotos.trailer_license_back instanceof File) {
+      formData.append("trailer[photos][license_back]", currentPhotos.trailer_license_back);
+      console.log("✅ Trailer license back:", currentPhotos.trailer_license_back.name, currentPhotos.trailer_license_back.size, "bytes");
+    } else {
+      console.log("❌ Trailer license back is missing or not a File:", currentPhotos.trailer_license_back);
+    }
+
+    // 4️⃣ Four sides photos - use captured photos state
+    currentPhotos.four_sides.forEach((file, idx) => {
+      if (file && file instanceof File) {
+        formData.append(`photos[four_sides][${idx}]`, file);
+        console.log(`✅ Four sides ${idx}:`, file.name, file.size, "bytes");
+      } else {
+        console.log(`❌ Four sides ${idx} is missing or not a File:`, file);
+      }
+    });
+
+    // Debug: Log FormData contents
+    console.log("🔵 FormData entries:");
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`  ${key}: File(${value.name}, ${value.size} bytes)`);
+      } else {
+        console.log(`  ${key}: ${value}`);
+      }
+    }
+
+    // 5️⃣ Call the API with proper headers for FormData
+    const client = vehicleService.create;
+    const response = await client(formData);
+    console.log("✅ Vehicle created:", response);
+
+    toast.success("تم إنشاء المركبة بنجاح!");
+    navigate(`${import.meta.env.VITE_VEHICLES_ROUTE}`);
   } catch (error: any) {
-    console.error("Error creating vehicle:", error);
-    toast.error(error?.message || "Failed to create vehicle");
+    console.error("❌ Error creating vehicle:", error);
+    
+    // Handle validation errors
+    if (error?.response?.status === 422) {
+      const errorData = error.response.data;
+      const errors = errorData?.errors || {};
+      
+      // Build error message from validation errors
+      const errorMessages: string[] = [];
+      Object.entries(errors).forEach(([field, messages]) => {
+        if (Array.isArray(messages)) {
+          messages.forEach((msg: string) => errorMessages.push(msg));
+        } else if (typeof messages === 'string') {
+          errorMessages.push(messages);
+        }
+      });
+      
+      if (errorMessages.length > 0) {
+        // Show first few errors
+        const displayMessage = errorMessages.slice(0, 5).join('\n');
+        toast.error(displayMessage, { duration: 5000 });
+        
+        // Also log all errors
+        console.error("Validation errors:", errors);
+      } else {
+        toast.error(errorData?.message || "فشل التحقق من البيانات");
+      }
+    } else {
+      // Use handleApiError for other errors
+      handleApiError(error, {
+        action: "create",
+        entity: "vehicle",
+        namespace: "forms/vehicle_form",
+        showToast: true,
+      });
+    }
   }
 };
 
@@ -202,13 +333,26 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
       <FormSection title={t("", { defaultValue: "المعلومات الأساسية" })}>
     <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
 
-    <Input
-      formik={formik}
-      label={t("", { defaultValue: "رقم السائق" })}
-      name="driver_id"
-      type="number"
-      placeholder={t("", { defaultValue: "أدخل رقم السائق" })}
-    />
+    <Box className="grid justify-stretch w-full items-center gap-1">
+      <AutocompleteSelect
+        formik={formik}
+        name="driver_id"
+        label={t("", { defaultValue: "السائق" })}
+        placeholder={t("", { defaultValue: "اختر السائق" })}
+        options={drivers.map((driver) => {
+          const name = driver.name || "Unknown";
+          return `${name}${driver.phone ? ` - ${driver.phone}` : ""}`;
+        })}
+        values={drivers.map((driver) => driver.id.toString())}
+        loading={loadingDrivers}
+        value={formik.values.driver_id?.toString() || ""}
+        change={(value) => {
+          formik.setFieldValue("driver_id", value ? Number(value) : null);
+        }}
+        error={formik.touched.driver_id && Boolean(formik.errors.driver_id)}
+        helperText={formik.touched.driver_id && formik.errors.driver_id ? String(formik.errors.driver_id) : undefined}
+      />
+    </Box>
 
     <Input
       formik={formik}
@@ -265,9 +409,9 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
 
     <Input
       formik={formik}
-      label={t("", { defaultValue: "رقم الشاصي" })}
+      label={t("", { defaultValue: "رقم الشاسيه" })}
       name="head.chassis_number"
-      placeholder={t("", { defaultValue: "أدخل رقم الشاصي" })}
+      placeholder={t("", { defaultValue: "أدخل رقم الشاسيه" })}
     />
 
     <Input
@@ -303,6 +447,22 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
     />
 
   </Box>
+  
+  {/* Head License Photos */}
+  <Box className="grid grid-cols-2 md:grid-cols-1 gap-5 mt-5">
+    <DocumentUpload
+      type="head_license_front"
+      label="رخصة المركبة - الرأس (أمام)"
+      value={photos.head_license_front}
+      onChange={(file) => handlePhotoChange(file, "head_license_front")}
+    />
+    <DocumentUpload
+      type="head_license_back"
+      label="رخصة المركبة - الرأس (خلف)"
+      value={photos.head_license_back}
+      onChange={(file) => handlePhotoChange(file, "head_license_back")}
+    />
+  </Box>
       </FormSection>
 
         <FormSection title={t("", { defaultValue: "المقطورة" })}>
@@ -332,9 +492,9 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
 
     <Input
       formik={formik}
-      label={t("", { defaultValue: "رقم الشاصي" })}
+      label={t("", { defaultValue: "رقم الشاسيه" })}
       name="trailer.chassis_number"
-      placeholder={t("", { defaultValue: "أدخل رقم الشاصي" })}
+      placeholder={t("", { defaultValue: "أدخل رقم الشاسيه" })}
     />
 
     <Input
@@ -362,36 +522,37 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
     />
 
   </Box>
+  
+  {/* Trailer License Photos */}
+  <Box className="grid grid-cols-2 md:grid-cols-1 gap-5 mt-5">
+    <DocumentUpload
+      type="trailer_license_front"
+      label="رخصة المركبة - المقطورة (أمام)"
+      value={photos.trailer_license_front}
+      onChange={(file) => handlePhotoChange(file, "trailer_license_front")}
+    />
+    <DocumentUpload
+      type="trailer_license_back"
+      label="رخصة المركبة - المقطورة (خلف)"
+      value={photos.trailer_license_back}
+      onChange={(file) => handlePhotoChange(file, "trailer_license_back")}
+    />
+  </Box>
         </FormSection>
 
     
-      <FormSection title={t("documents", { defaultValue: "Documents" })}>
+      <FormSection title={t("", { defaultValue: "الأربع جوانب للعربة" })}>
          <Box className="grid justify-stretch items-start grid-cols-2 md:grid-cols-1 gap-5">
-          <DocumentUpload
-            type="license_front"
-                  label="رخصة القيادة (أمام)"
-                 value={photos.license_front}
-           onChange={(file) => handlePhotoChange(file, "license_front")}  />
-          
-          <DocumentUpload
-               type="license_back"
-               label="رخصة القيادة (خلف)"
-               value={photos.license_back}
-             onChange={(file) => handlePhotoChange(file, "license_back")}
-             />
-          
                   {photos.four_sides.map((file, idx) => (
                       <DocumentUpload
                            key={idx}
                            type={`four_sides_${idx}`}
-                           label={`Side ${idx + 1}`}
+                           label={`الجانب ${idx + 1}`}
                           value={file}
                         onChange={(f) => handleFourSidesChange(f, idx)}
                         />
               ))
                }
-
-
           </Box>
       </FormSection>
 
@@ -410,7 +571,7 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
         </SubmitButton> */}
          <BasicButton
           // onClick={()=>handleCreateVehicle(formik.values)}
-            onClick={()=>{handleCreateVehicle(payload)}}
+            onClick={()=>{handleCreateVehicle(buildPayload())}}
           >
           {t("", { defaultValue: "انشاء مركبة" })}
         </BasicButton>

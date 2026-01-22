@@ -79,6 +79,10 @@ const PhotoUpload = ({
       if (photoFileRef && photoFileRef.current !== undefined) {
         photoFileRef.current = file;
       }
+      // Reset input value after file is selected to allow selecting the same file again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;

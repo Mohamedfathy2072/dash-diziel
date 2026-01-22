@@ -74,6 +74,7 @@ interface InputTypes<T> {
   precentage?: boolean;
   note?: string;
   max?: number;
+  maxLength?: number;
   change?: (value: string) => void;
   reasonName?: string;
   choose?: boolean;

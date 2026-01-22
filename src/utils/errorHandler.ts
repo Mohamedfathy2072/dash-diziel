@@ -200,9 +200,32 @@ export const handleError = (
   const ns = namespace || "errors";
   const defaultMsg = defaultMessage || getLocalizedMessage("unknown_error", "An error occurred", ns);
 
-  // Log error
+  // Log error with full details
   if (logError) {
     logger.error("Error occurred", error);
+    
+    // Log detailed error information to console
+    if (error instanceof AxiosError) {
+      console.error('🔴 Backend Error Details:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        url: error.config?.url,
+        method: error.config?.method?.toUpperCase(),
+        baseURL: error.config?.baseURL,
+        fullURL: `${error.config?.baseURL}${error.config?.url}`,
+        responseData: error.response?.data,
+        requestData: error.config?.data,
+        headers: error.config?.headers,
+        message: error.message,
+      });
+      
+      // Log response data if available
+      if (error.response?.data) {
+        console.error('🔴 Backend Response Data:', JSON.stringify(error.response.data, null, 2));
+      }
+    } else {
+      console.error('🔴 Error Details:', error);
+    }
   }
 
   // Handle Axios errors

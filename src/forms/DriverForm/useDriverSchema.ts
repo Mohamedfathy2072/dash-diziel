@@ -28,13 +28,19 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
     email: yup
       .string()
       .trim()
-      .email(t("email_invalid", { defaultValue: "Invalid email address" }))
-      .max(255, t("email_max", { defaultValue: "Email must be less than 255 characters" }))
-      .when("user_id", {
-        is: (val: number | null) => !val,
-        then: (schema) => schema.required(t("email_required", { defaultValue: "Email is required" })),
-        otherwise: (schema) => schema.nullable(),
-      }),
+      .nullable()
+      .transform((value, originalValue) => {
+        return originalValue === "" ? null : originalValue;
+      })
+      .test("email-format", t("email_invalid", { defaultValue: "Invalid email address" }), function(value) {
+        if (!value || value.length === 0) {
+          return true; // Allow empty/null values
+        }
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(value);
+      })
+      .max(255, t("email_max", { defaultValue: "Email must be less than 255 characters" })),
     password: yup
       .string()
       .trim()
@@ -187,7 +193,7 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
       .transform((value, originalValue) => {
         return originalValue === "" ? null : originalValue;
       })
-      .max(50, t("license_issuing_country_max", { defaultValue: "License issuing country must be less than 50 characters" })),
+      .max(3, t("license_issuing_country_max", { defaultValue: "License issuing country must be 3 characters or less" })),
     status: yup
       .string()
       .nullable()
@@ -236,7 +242,7 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
         email: "",
         password: "",
         password_confirmation: "",
-        phone: null as string | null,
+        phone: "+20-" as string | null,
         photo_url: null as string | null,
         date_of_birth: null as string | null,
         gender: null as "male" | "female" | "other" | null,
