@@ -71,7 +71,23 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
     photo_url: yup
       .string()
       .nullable()
-      .url(t("photo_url_invalid", { defaultValue: "Invalid photo URL" }))
+      .transform((value, originalValue) => {
+        // Convert empty string to null
+        return originalValue === "" ? null : originalValue;
+      })
+      .test("photo-url", t("photo_url_invalid", { defaultValue: "Invalid photo URL" }), function(value) {
+        // Allow null/undefined values
+        if (!value || value === null || value === undefined || value.trim() === "") {
+          return true;
+        }
+        // Validate URL format if value is provided
+        try {
+          new URL(value);
+          return true;
+        } catch {
+          return false;
+        }
+      })
       .max(255, t("photo_url_max", { defaultValue: "Photo URL must be less than 255 characters" })),
     date_of_birth: yup
       .string()

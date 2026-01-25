@@ -27,7 +27,7 @@ const FilterUsersForm = ({
 }: FormiksTypes<FilterUsersFormTypes>) => {
   const setUsersLimit = useFormsStore((state) => state.setUsersLimit)
   const usersLimit = useFormsStore((state) => state.usersLimit)
-  const limit = usersLimit
+  const limit = usersLimit || 10
   const { handleResetFilter, handleFilter, handleFilterLimits } = useFilters();
   const { handleGetQueries } = useQueries();
   const queries = handleGetQueries();
@@ -35,8 +35,15 @@ const FilterUsersForm = ({
   const { t } = useTranslation("forms/filter_users_form");
 
   const handleReset = () => {
-    formik.resetForm();
-    handleResetFilter("users")
+    console.log("FilterUsersForm: Reset filter clicked");
+    // Reset formik first
+    formik.resetForm({ values: { name1: "" } });
+    // Then reset filter and queries
+    handleResetFilter("users");
+    // Force update formik values after reset
+    setTimeout(() => {
+      formik.setFieldValue("name1", "");
+    }, 100);
   };
 
   const handleCloseChip = (key: string) => {
@@ -52,6 +59,14 @@ const FilterUsersForm = ({
       setUsersLimit(newLimit);
     }
   }, [queries.limit, usersLimit, setUsersLimit]);
+
+  // Update formik values when queries change (e.g., after reset)
+  useEffect(() => {
+    const name1Value = queries["name1"] || "";
+    if (formik.values.name1 !== name1Value) {
+      formik.setFieldValue("name1", name1Value);
+    }
+  }, [queries.name1, formik]);
 
   return (
     <Box className={`flex justify-start items-center flex-wrap gap-2`}>
@@ -100,7 +115,13 @@ const FilterUsersForm = ({
             <SubmitButton
               loading={false}
               type={"button"}
-              handling={() => handleFilter("users", formik.values)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log("FilterUsersForm: Apply filter clicked");
+                console.log("FilterUsersForm: Form values:", formik.values);
+                handleFilter("users", formik.values);
+              }}
               variant="gradient"
             >
               {t("buttons.applyFilter")}

@@ -73,7 +73,98 @@ export const fetchVehicleById = createAsyncThunk(
   "vehicles/fetchById",
   async (id: number) => {
     const response = await vehicleService.getById(id);
-    return response.data.data as Vehicle;
+    const vehicleData = response.data.data;
+    
+    // Store in window for debugging
+    if (typeof window !== 'undefined') {
+      window.lastFetchedVehicle = vehicleData;
+    }
+    
+    // Handle composite vehicle response structure (same as updateVehicle)
+    if (vehicleData && typeof vehicleData === 'object' && 'head' in vehicleData && 'trailer' in vehicleData) {
+      const head = vehicleData.head;
+      const trailer = vehicleData.trailer;
+      
+      // For composite vehicles, the top-level data contains the main vehicle info
+      // while head and trailer contain the specific parts
+      return {
+        id: vehicleData.id || head.id,
+        driver_id: vehicleData.driver_id || head.driver_id,
+        make: vehicleData.make || head.make || "",
+        model: vehicleData.model || head.model || "",
+        year: vehicleData.year || head.year || new Date().getFullYear(),
+        color: vehicleData.color || head.color || null,
+        license_plate: head.license_plate || vehicleData.license_plate || "",
+        vehicle_type: (vehicleData.vehicle_type || 'composite') as const,
+        vehicle_type_id: vehicleData.vehicle_type_id || head.vehicle_type?.id || vehicleData.vehicle_type?.id || null,
+        part_type: (vehicleData.part_type || 'composite') as const,
+        display_name: vehicleData.display_name || `${vehicleData.make || head.make} ${vehicleData.model || head.model} (رأس + مقطورة)`,
+        driver: vehicleData.driver || null,
+        head: {
+          id: head.id,
+          license_plate: head.license_plate,
+          chassis_number: head.chassis_number,
+          engine_number: head.engine_number,
+          number_of_axles: head.number_of_axles,
+          max_load: head.max_load,
+          length: head.length,
+          photos: head.photos,
+          // For composite vehicles, model and year come from top-level, not from head
+          model: vehicleData.model || head.model || "",
+          year: vehicleData.year || head.year || new Date().getFullYear(),
+        },
+        trailer: trailer ? {
+          id: trailer.id,
+          license_plate: trailer.license_plate,
+          chassis_number: trailer.chassis_number,
+          engine_number: trailer.engine_number,
+          number_of_axles: trailer.number_of_axles,
+          max_load: trailer.max_load,
+          length: trailer.length,
+          photos: trailer.photos,
+          model: trailer.model,
+          year: trailer.year,
+        } : undefined,
+        total_axles: vehicleData.total_axles || ((Number(head.number_of_axles) || 0) + (Number(trailer?.number_of_axles) || 0)),
+        total_max_load: vehicleData.total_max_load || ((Number(head.max_load) || 0) + (Number(trailer?.max_load) || 0)),
+        total_length: vehicleData.total_length || ((Number(head.length) || 0) + (Number(trailer?.length) || 0)),
+        status: vehicleData.status || head.status || "active",
+        verification_status: vehicleData.verification_status || head.verification_status || "pending",
+        created_at: vehicleData.created_at || head.created_at,
+        updated_at: vehicleData.updated_at || head.updated_at,
+        // Include other fields from vehicleData
+        fuel_type: vehicleData.fuel_type || null,
+        transmission: vehicleData.transmission || null,
+        doors: vehicleData.doors || null,
+        seats: vehicleData.seats || null,
+        is_primary: vehicleData.is_primary || false,
+        verification_date: vehicleData.verification_date || null,
+        verified_by: vehicleData.verified_by || null,
+        verifier: vehicleData.verifier || null,
+        verification_notes: vehicleData.verification_notes || null,
+        registration_number: vehicleData.registration_number || null,
+        registration_expiry: vehicleData.registration_expiry || null,
+        registration_state: vehicleData.registration_state || null,
+        insurance_provider: vehicleData.insurance_provider || null,
+        insurance_policy_number: vehicleData.insurance_policy_number || null,
+        insurance_expiry: vehicleData.insurance_expiry || null,
+        inspection_date: vehicleData.inspection_date || null,
+        inspection_expiry: vehicleData.inspection_expiry || null,
+        inspection_certificate: vehicleData.inspection_certificate || null,
+        mileage: vehicleData.mileage || null,
+        condition_rating: vehicleData.condition_rating || null,
+        last_maintenance_date: vehicleData.last_maintenance_date || null,
+        next_maintenance_due: vehicleData.next_maintenance_due || null,
+        features: vehicleData.features || null,
+        notes: vehicleData.notes || null,
+        created_by: vehicleData.created_by || null,
+        creator: vehicleData.creator || null,
+        updated_by: vehicleData.updated_by || null,
+        updater: vehicleData.updater || null,
+      } as Vehicle;
+    }
+    
+    return vehicleData as Vehicle;
   }
 );
 
@@ -97,7 +188,96 @@ export const updateVehicle = createAsyncThunk(
   "vehicles/update",
   async ({ id, data }: { id: number; data: Partial<Vehicle> }) => {
     const response = await vehicleService.update(id, data);
-    return response.data.data as Vehicle;
+    const responseData = response.data.data;
+    
+    // Handle composite vehicle response structure
+    // Response can be: { head: {...}, trailer: {...} } or a single Vehicle object
+    if (responseData && typeof responseData === 'object' && 'head' in responseData && 'trailer' in responseData) {
+      // Composite vehicle response - construct Vehicle object from head and trailer
+      const head = responseData.head;
+      const trailer = responseData.trailer;
+      
+      // For composite vehicles, the top-level data contains the main vehicle info
+      // while head and trailer contain the specific parts
+      return {
+        id: responseData.id || head.id,
+        driver_id: responseData.driver_id || head.driver_id,
+        make: responseData.make || head.make || "",
+        model: responseData.model || head.model || "",
+        year: responseData.year || head.year || new Date().getFullYear(),
+        color: responseData.color || head.color || null,
+        license_plate: head.license_plate || responseData.license_plate || "",
+        vehicle_type: (responseData.vehicle_type || 'composite') as const,
+        vehicle_type_id: responseData.vehicle_type_id || head.vehicle_type?.id || responseData.vehicle_type?.id || null,
+        part_type: (responseData.part_type || 'composite') as const,
+        display_name: responseData.display_name || `${responseData.make || head.make} ${responseData.model || head.model} (رأس + مقطورة)`,
+        driver: responseData.driver || null,
+        head: {
+          id: head.id,
+          license_plate: head.license_plate,
+          chassis_number: head.chassis_number,
+          engine_number: head.engine_number,
+          number_of_axles: head.number_of_axles,
+          max_load: head.max_load,
+          length: head.length,
+          photos: head.photos,
+          // For composite vehicles, model and year come from top-level, not from head
+          model: responseData.model || head.model || "",
+          year: responseData.year || head.year || new Date().getFullYear(),
+        },
+        trailer: trailer ? {
+          id: trailer.id,
+          license_plate: trailer.license_plate,
+          chassis_number: trailer.chassis_number,
+          engine_number: trailer.engine_number,
+          number_of_axles: trailer.number_of_axles,
+          max_load: trailer.max_load,
+          length: trailer.length,
+          photos: trailer.photos,
+          model: trailer.model,
+          year: trailer.year,
+        } : undefined,
+        total_axles: responseData.total_axles || ((Number(head.number_of_axles) || 0) + (Number(trailer?.number_of_axles) || 0)),
+        total_max_load: responseData.total_max_load || ((Number(head.max_load) || 0) + (Number(trailer?.max_load) || 0)),
+        total_length: responseData.total_length || ((Number(head.length) || 0) + (Number(trailer?.length) || 0)),
+        status: responseData.status || head.status || "active",
+        verification_status: responseData.verification_status || head.verification_status || "pending",
+        created_at: responseData.created_at || head.created_at,
+        updated_at: responseData.updated_at || head.updated_at,
+        // Include other fields from responseData
+        fuel_type: responseData.fuel_type || null,
+        transmission: responseData.transmission || null,
+        doors: responseData.doors || null,
+        seats: responseData.seats || null,
+        is_primary: responseData.is_primary || false,
+        verification_date: responseData.verification_date || null,
+        verified_by: responseData.verified_by || null,
+        verifier: responseData.verifier || null,
+        verification_notes: responseData.verification_notes || null,
+        registration_number: responseData.registration_number || null,
+        registration_expiry: responseData.registration_expiry || null,
+        registration_state: responseData.registration_state || null,
+        insurance_provider: responseData.insurance_provider || null,
+        insurance_policy_number: responseData.insurance_policy_number || null,
+        insurance_expiry: responseData.insurance_expiry || null,
+        inspection_date: responseData.inspection_date || null,
+        inspection_expiry: responseData.inspection_expiry || null,
+        inspection_certificate: responseData.inspection_certificate || null,
+        mileage: responseData.mileage || null,
+        condition_rating: responseData.condition_rating || null,
+        last_maintenance_date: responseData.last_maintenance_date || null,
+        next_maintenance_due: responseData.next_maintenance_due || null,
+        features: responseData.features || null,
+        notes: responseData.notes || null,
+        created_by: responseData.created_by || null,
+        creator: responseData.creator || null,
+        updated_by: responseData.updated_by || null,
+        updater: responseData.updater || null,
+      } as Vehicle;
+    }
+    
+    // Regular vehicle response
+    return responseData as Vehicle;
   }
 );
 

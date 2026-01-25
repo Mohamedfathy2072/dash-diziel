@@ -5,6 +5,7 @@ import { handleToaster } from "../../functions/handleToaster";
 import type { AppDispatch } from "../../store/store";
 import { createVehicle, updateVehicle, fetchVehicles } from "../../store/vehiclesSlice";
 import type { VehicleFormTypes } from "../../types/forms";
+import useQueries from "../../hooks/useQueries";
 
 
 const useVehicleSubmit = () => {
@@ -12,6 +13,14 @@ const useVehicleSubmit = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { t } = useTranslation("forms/vehicle_form");
+  const { handleGetQueries } = useQueries();
+  const queries = handleGetQueries();
+
+  // Get current pagination settings
+  const getCurrentPagination = () => ({
+    page: parseInt(queries.page || "1"),
+    limit: parseInt(queries.limit || "10")
+  });
   
   const addVehicle = async (values: VehicleFormTypes) => {
     try {
@@ -25,8 +34,9 @@ const useVehicleSubmit = () => {
 
       await dispatch(createVehicle(data)).unwrap();
       handleToaster({ msg: t("add_submit_success", { defaultValue: "Vehicle created successfully" }), status: "success" });
-      // Refresh vehicles list
-      dispatch(fetchVehicles({ page: 1, limit: 10 }));
+      // Refresh vehicles list with current pagination
+      const pagination = getCurrentPagination();
+      dispatch(fetchVehicles(pagination));
       navigate(`${import.meta.env.VITE_VEHICLES_ROUTE}`);
     } catch (error: any) {
       handleToaster({ 
@@ -53,8 +63,9 @@ const useVehicleSubmit = () => {
 
       await dispatch(updateVehicle({ id: +id, data })).unwrap();
       handleToaster({ msg: t("edit_submit_success", { defaultValue: "Vehicle updated successfully" }), status: "success" });
-      // Refresh vehicles list
-      dispatch(fetchVehicles({ page: 1, limit: 10 }));
+      // Refresh vehicles list with current pagination  
+      const pagination = getCurrentPagination();
+      dispatch(fetchVehicles(pagination));
       navigate(`${import.meta.env.VITE_VEHICLES_ROUTE}`);
     } catch (error: any) {
       handleToaster({ 

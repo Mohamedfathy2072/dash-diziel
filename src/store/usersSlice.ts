@@ -63,7 +63,13 @@ export const getUsers = createAsyncThunk(
     const page = +(queries.page || 1);
     const limit = +(queries.limit || 10);
     
-    const response = await userService.getAll(page, limit);
+    // Extract filter parameters (exclude page and limit)
+    const { page: _, limit: __, ...filterParams } = queries;
+    
+    console.log("getUsers: queries:", queries);
+    console.log("getUsers: filterParams:", filterParams);
+    
+    const response = await userService.getAll(page, limit, filterParams);
     // Backend returns: { success, message, data: { data: [...], current_page, limit, total, last_page, ... } }
     const responseData = response.data.data;
     

@@ -1,10 +1,19 @@
 import { useTranslation } from "react-i18next";
+import { useMemo } from "react";
 import * as yup from "yup";
 import type { Vehicle } from "../../types/domain";
 import { VEHICLE_STATUSES, VEHICLE_VERIFICATION_STATUSES } from "../../types/enums";
 
 const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
   const { t } = useTranslation("forms/vehicle_form");
+  
+  // Clean up any existing debug elements
+  if (typeof window !== 'undefined') {
+    ['debug-info', 'submit-form-debug', 'redux-debug', 'formik-debug'].forEach(id => {
+      const elem = document.getElementById(id);
+      if (elem) elem.remove();
+    });
+  }
 
   // const VehicleSchema = yup.object({
   //   driver_id: yup
@@ -233,36 +242,32 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
 
 
 
-  const VehicleInitialValues = isEdit && selectedVehicle
-    ? {
+  // Create initial values with proper fallbacks - use useMemo to recalculate when selectedVehicle changes
+  const VehicleInitialValues = useMemo(() => {
+    if (isEdit && selectedVehicle) {
+      return {
         driver_id: selectedVehicle.driver_id || 0,
         make: selectedVehicle.make || "",
-        // model: selectedVehicle.model || "",
-        // year: selectedVehicle.year || new Date().getFullYear(),
-        color: selectedVehicle.color || null,
-        // license_plate: selectedVehicle.license_plate || "",
-        // vin: selectedVehicle.vin || null,
-        vehicle_type_id: typeof selectedVehicle.vehicle_type === 'object' && selectedVehicle.vehicle_type?.id
-          ? selectedVehicle.vehicle_type.id
-          : (selectedVehicle.vehicle_type_id || (typeof selectedVehicle.vehicle_type === 'number' ? selectedVehicle.vehicle_type : 1)),
-      head: {
-      model: selectedVehicle?.head?.model || "",
-      year: selectedVehicle?.head?.year || "",
-      license_plate: selectedVehicle?.head?.license_plate || "",
-      chassis_number: selectedVehicle?.head?.chassis_number || "",
-      engine_number: selectedVehicle?.head?.engine_number || "",
-      number_of_axles: selectedVehicle?.head?.number_of_axles || 0,
-      max_load: selectedVehicle?.head?.max_load || 0,
-      length: selectedVehicle?.head?.length || 0,
+        color: selectedVehicle.color || "",
+        vehicle_type_id: selectedVehicle.vehicle_type_id || 1,
+        head: {
+          model: selectedVehicle.head?.model || selectedVehicle.model || "",
+          year: selectedVehicle.head?.year || selectedVehicle.year || new Date().getFullYear(),
+          license_plate: selectedVehicle.head?.license_plate || selectedVehicle.license_plate || "",
+          chassis_number: selectedVehicle.head?.chassis_number || selectedVehicle.chassis_number || "",
+          engine_number: selectedVehicle.head?.engine_number || selectedVehicle.engine_number || "",
+          number_of_axles: Number(selectedVehicle.head?.number_of_axles || selectedVehicle.number_of_axles || 0),
+          max_load: Number(selectedVehicle.head?.max_load || selectedVehicle.max_load || 0),
+          length: Number(selectedVehicle.head?.length || selectedVehicle.length || 0),
         },
-      trailer: {
-      model: selectedVehicle?.head?.model || "",
-      year: selectedVehicle?.head?.year || "",
-      license_plate: selectedVehicle?.head?.license_plate || "",
-      chassis_number: selectedVehicle?.head?.chassis_number || "",
-      number_of_axles: selectedVehicle?.head?.number_of_axles || 0,
-      max_load: selectedVehicle?.head?.max_load || 0,
-      length: selectedVehicle?.head?.length || 0,
+        trailer: {
+          model: selectedVehicle.trailer?.model || "",
+          year: Number(selectedVehicle.trailer?.year || new Date().getFullYear()),
+          license_plate: selectedVehicle.trailer?.license_plate || "",
+          chassis_number: selectedVehicle.trailer?.chassis_number || "",
+          number_of_axles: Number(selectedVehicle.trailer?.number_of_axles || 0),
+          max_load: Number(selectedVehicle.trailer?.max_load || 0),
+          length: Number(selectedVehicle.trailer?.length || 0),
         },
         // fuel_type: selectedVehicle.fuel_type || null,
         // transmission: selectedVehicle.transmission || null,
@@ -285,8 +290,9 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
         // last_maintenance_date: selectedVehicle.last_maintenance_date || null,
         // next_maintenance_due: selectedVehicle.next_maintenance_due || null,
         // notes: selectedVehicle.notes || null,
-      }
-    : {
+      };
+    } else {
+      return {
         driver_id: null as number|null,
         make: "",
         // model: "",
@@ -337,7 +343,8 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
         next_maintenance_due: null as string | null,
         notes: null as string | null,
       };
-      
+    }
+  }, [isEdit, selectedVehicle]);
 
   return { VehicleSchema, VehicleInitialValues };
 };

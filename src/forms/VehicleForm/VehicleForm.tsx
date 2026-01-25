@@ -2,7 +2,10 @@ import Box from "@mui/material/Box";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../store/store";
+import { updateVehicle, fetchVehicleById } from "../../store/vehiclesSlice";
 import Input from "../../components/Input/Input";
 import SubmitButton from "../../components/SubmitButton/SubmitButton";
 import { useFormsStore } from "../../globals/formsStore";
@@ -42,6 +45,8 @@ const VehicleForm = ({
   const { t } = useTranslation("forms/vehicle_form");
   const isLoading = useFormsStore((state) => state.isLoading);
   const navigate = useNavigate();
+  const { id } = useParams();
+  const dispatch = useDispatch<AppDispatch>();
   const isEdit = type === "editVehicle";
   const { activeVehicleTypes } = useVehicleTypes();
   const [photos, setPhotos] = useState<{
@@ -191,13 +196,9 @@ const handleSubmit =() => {
 
 
    
-const handleCreateVehicle = async (payload: VehiclePayload) => {
-  try {
-    // Use a closure to capture the current photos state
+  // Helper function to build FormData from payload
+  const buildFormData = (payload: VehiclePayload): FormData => {
     const currentPhotos = photos;
-    
-    console.log("🔵 Current photos state:", currentPhotos);
-    
     const formData = new FormData();
 
     // 1️⃣ Top-level fields
@@ -209,7 +210,6 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
     // 2️⃣ Head fields (excluding photos)
     Object.entries(payload.head).forEach(([key, value]) => {
       if (key !== "photos") {
-        // Skip null values or convert to empty string
         if (value === null || value === undefined || value === "null") {
           return;
         }
@@ -217,25 +217,17 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
       }
     });
 
-    // 2️⃣ Head photos - use captured photos state
+    // 2️⃣ Head photos
     if (currentPhotos.head_license_front && currentPhotos.head_license_front instanceof File) {
       formData.append("head[photos][license_front]", currentPhotos.head_license_front);
-      console.log("✅ Head license front:", currentPhotos.head_license_front.name, currentPhotos.head_license_front.size, "bytes");
-    } else {
-      console.log("❌ Head license front is missing or not a File:", currentPhotos.head_license_front);
     }
-
     if (currentPhotos.head_license_back && currentPhotos.head_license_back instanceof File) {
       formData.append("head[photos][license_back]", currentPhotos.head_license_back);
-      console.log("✅ Head license back:", currentPhotos.head_license_back.name, currentPhotos.head_license_back.size, "bytes");
-    } else {
-      console.log("❌ Head license back is missing or not a File:", currentPhotos.head_license_back);
     }
 
     // 3️⃣ Trailer fields (excluding photos)
     Object.entries(payload.trailer).forEach(([key, value]) => {
       if (key !== "photos") {
-        // Skip null values or convert to empty string
         if (value === null || value === undefined || value === "null") {
           return;
         }
@@ -243,78 +235,31 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
       }
     });
 
-    // 3️⃣ Trailer photos - use captured photos state
+    // 3️⃣ Trailer photos
     if (currentPhotos.trailer_license_front && currentPhotos.trailer_license_front instanceof File) {
       formData.append("trailer[photos][license_front]", currentPhotos.trailer_license_front);
-      console.log("✅ Trailer license front:", currentPhotos.trailer_license_front.name, currentPhotos.trailer_license_front.size, "bytes");
-    } else {
-      console.log("❌ Trailer license front is missing or not a File:", currentPhotos.trailer_license_front);
     }
-
     if (currentPhotos.trailer_license_back && currentPhotos.trailer_license_back instanceof File) {
       formData.append("trailer[photos][license_back]", currentPhotos.trailer_license_back);
-      console.log("✅ Trailer license back:", currentPhotos.trailer_license_back.name, currentPhotos.trailer_license_back.size, "bytes");
-    } else {
-      console.log("❌ Trailer license back is missing or not a File:", currentPhotos.trailer_license_back);
     }
 
-    // 4️⃣ Four sides photos - use captured photos state
+    // 4️⃣ Four sides photos
     currentPhotos.four_sides.forEach((file, idx) => {
       if (file && file instanceof File) {
         formData.append(`photos[four_sides][${idx}]`, file);
-        console.log(`✅ Four sides ${idx}:`, file.name, file.size, "bytes");
-      } else {
-        console.log(`❌ Four sides ${idx} is missing or not a File:`, file);
       }
     });
 
-    // Debug: Log FormData contents
-    console.log("🔵 FormData entries:");
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        console.log(`  ${key}: File(${value.name}, ${value.size} bytes)`);
-      } else {
-        console.log(`  ${key}: ${value}`);
-      }
-    }
+    return formData;
+  };
 
-    // 5️⃣ Call the API with proper headers for FormData
-    const client = vehicleService.create;
-    const response = await client(formData);
-    console.log("✅ Vehicle created:", response);
-
-    toast.success("تم إنشاء المركبة بنجاح!");
-    navigate(`${import.meta.env.VITE_VEHICLES_ROUTE}`);
-  } catch (error: any) {
-    console.error("❌ Error creating vehicle:", error);
-    
-    // Handle validation errors
-    if (error?.response?.status === 422) {
-      const errorData = error.response.data;
-      const errors = errorData?.errors || {};
-      
-      // Build error message from validation errors
-      const errorMessages: string[] = [];
-      Object.entries(errors).forEach(([field, messages]) => {
-        if (Array.isArray(messages)) {
-          messages.forEach((msg: string) => errorMessages.push(msg));
-        } else if (typeof messages === 'string') {
-          errorMessages.push(messages);
-        }
-      });
-      
-      if (errorMessages.length > 0) {
-        // Show first few errors
-        const displayMessage = errorMessages.slice(0, 5).join('\n');
-        toast.error(displayMessage, { duration: 5000 });
-        
-        // Also log all errors
-        console.error("Validation errors:", errors);
-      } else {
-        toast.error(errorData?.message || "فشل التحقق من البيانات");
-      }
-    } else {
-      // Use handleApiError for other errors
+  const handleCreateVehicle = async (payload: VehiclePayload) => {
+    try {
+      const formData = buildFormData(payload);
+      const response = await vehicleService.create(formData);
+      toast.success("تم إنشاء المركبة بنجاح!");
+      navigate(`${import.meta.env.VITE_VEHICLES_ROUTE}`);
+    } catch (error: any) {
       handleApiError(error, {
         action: "create",
         entity: "vehicle",
@@ -322,8 +267,31 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
         showToast: true,
       });
     }
-  }
-};
+  };
+
+  const handleUpdateVehicle = async (payload: VehiclePayload) => {
+    if (!isEdit || !id) {
+      toast.error("معرف المركبة مطلوب");
+      return;
+    }
+
+    try {
+      const formData = buildFormData(payload);
+      // Update vehicle using Redux action to update store
+      await dispatch(updateVehicle({ id: +id, data: formData })).unwrap();
+      // Refetch vehicle to get updated data with proper structure
+      await dispatch(fetchVehicleById(+id)).unwrap();
+      toast.success("تم تحديث المركبة بنجاح!");
+      navigate(`${import.meta.env.VITE_VEHICLES_ROUTE}`);
+    } catch (error: any) {
+      handleApiError(error, {
+        action: "update",
+        entity: "vehicle",
+        namespace: "forms/vehicle_form",
+        showToast: true,
+      });
+    }
+  };
 
 
 
@@ -564,16 +532,19 @@ const handleCreateVehicle = async (payload: VehiclePayload) => {
         <BasicButton onClick={() => navigate(`${import.meta.env.VITE_VEHICLES_ROUTE}`)}>
           {t("cancel", { defaultValue: "Cancel" })}
         </BasicButton>
-        {/* <SubmitButton loading={isLoading}>
+        <BasicButton
+          onClick={() => {
+            if (isEdit) {
+              handleUpdateVehicle(buildPayload());
+            } else {
+              handleCreateVehicle(buildPayload());
+            }
+          }}
+          disabled={isLoading}
+        >
           {isEdit
-            ? t("update", { defaultValue: "Update Vehicle" })
-            : t("create", { defaultValue: "Create Vehicle" })}
-        </SubmitButton> */}
-         <BasicButton
-          // onClick={()=>handleCreateVehicle(formik.values)}
-            onClick={()=>{handleCreateVehicle(buildPayload())}}
-          >
-          {t("", { defaultValue: "انشاء مركبة" })}
+            ? t("update", { defaultValue: "تحديث المركبة" })
+            : t("create", { defaultValue: "إنشاء مركبة" })}
         </BasicButton>
       </Box>
     </Box>

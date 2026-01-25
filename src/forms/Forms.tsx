@@ -59,11 +59,15 @@ const Forms = ({ type }: FormsTypes) => {
   // Handle form submission for user/driver/ad forms with photo, documents, and image
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     console.log("handleFormSubmit called for type:", type);
+    console.log("Form is valid:", formik.isValid);
+    console.log("Form touched:", formik.touched);
     // Validate form first
     formik.validateForm().then((errors) => {
       console.log("Form validation errors:", errors);
       console.log("Form values:", formik.values);
+      console.log("Number of errors:", Object.keys(errors).length);
       
       if (Object.keys(errors).length === 0) {
         // Ensure photoFile is properly set from ref
@@ -99,12 +103,22 @@ const Forms = ({ type }: FormsTypes) => {
         handleSubmit(valuesWithFiles);
       } else {
         console.log("Form has validation errors, not submitting");
+        console.log("Validation errors:", errors);
+        // Mark all error fields as touched to show validation messages
         formik.setTouched(
           Object.keys(errors).reduce((acc, key) => {
             acc[key] = true;
             return acc;
           }, {} as Record<string, boolean>)
         );
+        // Scroll to first error field
+        const firstErrorField = Object.keys(errors)[0];
+        if (firstErrorField) {
+          const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
+          if (errorElement) {
+            errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
       }
     });
   };
@@ -137,35 +151,39 @@ const Forms = ({ type }: FormsTypes) => {
     });
   };
 
+  const formOnSubmit = 
+    type === "addUser" ||
+    type === "editUser" ||
+    type === "addDriver" ||
+    type === "editDriver" ||
+    type === "addVehicle" ||
+    type === "editVehicle" ||
+    type === "editTrip" ||
+    type === "addVehicleType" ||
+    type === "editVehicleType" ||
+    type === "addCoupon" ||
+    type === "editCoupon" ||
+    type === "addAd" ||
+    type === "editAd" ||
+    type === "addComplaint" ||
+    type === "editComplaint" ||
+    type === "addRole" ||
+    type === "editRole" ||
+    type === "addPermission" ||
+    type === "editPermission" ||
+    type === "addDeposit"
+      ? handleFormSubmit
+      : type === "updateDocument"
+      ? handleDocumentFormSubmit
+      : formik.handleSubmit;
+
+  console.log("Forms component - type:", type, "onSubmit handler:", formOnSubmit?.name || "unknown");
+
   return (
     <Box
       component={"form"}
-      onSubmit={
-        type === "addUser" ||
-        type === "editUser" ||
-        type === "addDriver" ||
-        type === "editDriver" ||
-        type === "addVehicle" ||
-        type === "editVehicle" ||
-        type === "editTrip" ||
-        type === "addVehicleType" ||
-        type === "editVehicleType" ||
-        type === "addCoupon" ||
-        type === "editCoupon" ||
-        type === "addAd" ||
-        type === "editAd" ||
-        type === "addComplaint" ||
-        type === "editComplaint" ||
-        type === "addRole" ||
-        type === "editRole" ||
-        type === "addPermission" ||
-        type === "editPermission" ||
-        type === "addDeposit"
-          ? handleFormSubmit
-          : type === "updateDocument"
-          ? handleDocumentFormSubmit
-          : formik.handleSubmit
-      }
+      onSubmit={formOnSubmit}
+      noValidate
     >
       {/* Authentication */}
       {type === "login" && (

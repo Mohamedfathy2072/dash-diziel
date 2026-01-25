@@ -14,19 +14,23 @@ const SubmitButton = ({
     variant,
     type,
     disabled,
-    id
-}: SubmitButtonTypes) => {
+    id,
+    onClick
+}: SubmitButtonTypes & { onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void }) => {
     const loadingIcon = (
         <CircularProgress sx={{ color: (theme) => variant === "error" ? theme.palette.error.main : (variant === "secondary" || variant === "basic") ? theme.palette.primary.main : theme.palette.common.white }} />
     );
 
+    // Determine onClick handler - prioritize onClick prop, then handling prop
+    const onClickHandler = onClick || (handling && type !== "submit" ? handling : undefined);
+    
     const props = {
         title: "Submit Form",
         loadingPosition: "center" as const,
         loading: loading,
         loadingIndicator: loadingIcon,
         type: type || ("submit" as const),
-        ...(handling && type !== "submit" ? { onClick: handling } : {}),
+        ...(onClickHandler ? { onClick: onClickHandler } : {}),
         className: className,
         disabled: disabled,
         id: id

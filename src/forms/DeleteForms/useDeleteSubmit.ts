@@ -11,6 +11,7 @@ import { deleteTrip, fetchTrips } from "../../store/tripsSlice";
 import { deleteVehicleType, fetchVehicleTypes } from "../../store/vehicleTypesSlice";
 import { deleteCoupon, fetchCoupons } from "../../store/couponsSlice";
 import { deleteComplaint, fetchComplaints } from "../../store/complaintsSlice";
+import useQueries from "../../hooks/useQueries";
 
 const useDeleteSubmit = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,6 +19,14 @@ const useDeleteSubmit = () => {
   const setDeleteModal = useModalsStore((state) => state.setDeleteModal);
   const { t } = useTranslation("forms/delete_form");
   const navigate = useNavigate();
+  const { handleGetQueries } = useQueries();
+  const queries = handleGetQueries();
+
+  // Get current pagination settings
+  const getCurrentPagination = () => ({
+    page: parseInt(queries.page || "1"),
+    limit: parseInt(queries.limit || "10")
+  });
 
   const deleteUser = async () => {
     const deleteType = useAppStore.getState().deleteType;
@@ -46,8 +55,9 @@ const useDeleteSubmit = () => {
           msg: t("trip_deleted", { defaultValue: "Trip deleted successfully" }),
           status: "success"
         });
-        // Refresh trips list
-        dispatch(fetchTrips({ page: 1, limit: 10 }));
+        // Refresh trips list with current pagination
+        const pagination = getCurrentPagination();
+        dispatch(fetchTrips(pagination));
         navigate(`${import.meta.env.VITE_TRIPS_ROUTE}`);
         setDeleteModal(false);
       } catch (error: any) {
@@ -83,8 +93,9 @@ const useDeleteSubmit = () => {
           msg: t("vehicle_type_deleted", { defaultValue: "Vehicle type deleted successfully" }),
           status: "success"
         });
-        // Refresh vehicle types list
-        dispatch(fetchVehicleTypes({ page: 1, limit: 10 }));
+        // Refresh vehicle types list with current pagination
+        const pagination = getCurrentPagination();
+        dispatch(fetchVehicleTypes(pagination));
         navigate(`${import.meta.env.VITE_VEHICLE_TYPES_ROUTE || "/vehicle-types"}`);
         setDeleteModal(false);
       } catch (error: any) {
@@ -120,8 +131,9 @@ const useDeleteSubmit = () => {
           msg: t("coupon_deleted", { defaultValue: "Coupon deleted successfully" }),
           status: "success"
         });
-        // Refresh coupons list
-        dispatch(fetchCoupons({ page: 1, limit: 10 }));
+        // Refresh coupons list with current pagination
+        const pagination = getCurrentPagination();
+        dispatch(fetchCoupons(pagination));
         navigate(`${import.meta.env.VITE_COUPONS_ROUTE || "/coupons"}`);
         setDeleteModal(false);
       } catch (error: any) {
@@ -157,8 +169,9 @@ const useDeleteSubmit = () => {
           msg: t("complaint_deleted", { defaultValue: "Complaint deleted successfully" }),
           status: "success"
         });
-        // Refresh complaints list
-        dispatch(fetchComplaints({ page: 1, limit: 10 }));
+        // Refresh complaints list with current pagination
+        const pagination = getCurrentPagination();
+        dispatch(fetchComplaints(pagination));
         navigate(`${import.meta.env.VITE_COMPLAINTS_ROUTE || "/complaints"}`);
         setDeleteModal(false);
       } catch (error: any) {
@@ -194,8 +207,9 @@ const useDeleteSubmit = () => {
           msg: t("vehicle_deleted", { defaultValue: "Vehicle deleted successfully" }),
           status: "success"
         });
-        // Refresh vehicles list
-        dispatch(fetchVehicles({ page: 1, limit: 10 }));
+        // Refresh vehicles list with current pagination
+        const pagination = getCurrentPagination();
+        dispatch(fetchVehicles(pagination));
         navigate(`${import.meta.env.VITE_VEHICLES_ROUTE}`);
         setDeleteModal(false);
       } catch (error: any) {
@@ -230,8 +244,9 @@ const useDeleteSubmit = () => {
         msg: t("user_deleted", { defaultValue: "User deleted successfully" }),
         status: "success"
       });
-      // Refresh users list - use limit instead of per_page
-      dispatch(getUsers({ page: 1, limit: 10 }));
+      // Refresh users list with current pagination
+      const pagination = getCurrentPagination();
+      dispatch(getUsers(pagination));
       navigate(`${import.meta.env.VITE_USERS_ROUTE}`);
       setDeleteModal(false);
     } catch (error: any) {

@@ -31,13 +31,26 @@ const PhotoUpload = ({
     if (value && !photoFile) {
       // Use unified function to handle both relative paths and full URLs
       const photoUrl = handleGetFileFromServer(value);
-      setPhotoPreview(photoUrl);
-      setPreviewError(false);
+      console.log("PhotoUpload: value prop:", value);
+      console.log("PhotoUpload: processed URL:", photoUrl);
+      if (photoUrl) {
+        setPhotoPreview(photoUrl);
+        setPreviewError(false);
+      } else {
+        console.warn("PhotoUpload: Failed to process photo URL:", value);
+        setPhotoPreview(null);
+        setPreviewError(false);
+      }
     } else if (preview && !photoFile) {
       // Use unified function for preview prop as well
       const previewUrl = handleGetFileFromServer(preview);
-      setPhotoPreview(previewUrl);
-      setPreviewError(false);
+      if (previewUrl) {
+        setPhotoPreview(previewUrl);
+        setPreviewError(false);
+      } else {
+        setPhotoPreview(null);
+        setPreviewError(false);
+      }
     } else if (!value && !preview && !photoFile) {
       setPhotoPreview(null);
       setPreviewError(false);
@@ -160,15 +173,23 @@ const PhotoUpload = ({
                 imgProps={{
                   onError: (e) => {
                     const target = e.target as HTMLImageElement;
-                    setPreviewError(true);
-                    // Don't hide the avatar, show fallback instead
-                    target.style.display = "none";
-                    handleToaster({
-                      msg: t("imageLoadError", { defaultValue: "Failed to load image. Please try uploading again." }),
-                      status: "error",
-                    });
+                    console.error("PhotoUpload: Image failed to load", photoPreview);
+                    // Only show error if we haven't already shown it for this image
+                    if (!previewError) {
+                      setPreviewError(true);
+                      // Don't hide the avatar, show fallback instead
+                      target.style.display = "none";
+                      // Only show error message if it's a new upload, not an existing image from server
+                      if (photoFile) {
+                        handleToaster({
+                          msg: t("imageLoadError", { defaultValue: "Failed to load image. Please try uploading again." }),
+                          status: "error",
+                        });
+                      }
+                    }
                   },
                   onLoad: () => {
+                    console.log("PhotoUpload: Image loaded successfully");
                     setPreviewError(false);
                   },
                 }}

@@ -138,14 +138,20 @@ export const authService = {
 
 // User Service
 export const userService = {
-  getAll: (page = 1, limit = 10): Promise<AxiosResponse<PaginatedApiResponse<User>>> => {
+  getAll: (page = 1, limit = 10, additionalParams?: Record<string, any>): Promise<AxiosResponse<PaginatedApiResponse<User>>> => {
     const client = createApiClient();
-    return client.get('/users', { 
-      params: { 
-        page, 
-        limit
-      } 
-    });
+    const params: Record<string, any> = { page, limit };
+    
+    // Merge any additional query parameters (like filters)
+    if (additionalParams) {
+      Object.keys(additionalParams).forEach(key => {
+        if (additionalParams[key] !== undefined && additionalParams[key] !== null && additionalParams[key] !== '') {
+          params[key] = additionalParams[key];
+        }
+      });
+    }
+    
+    return client.get('/users', { params });
   },
   
   getById: (id: number) => {
@@ -400,12 +406,12 @@ export const vehicleService = {
     if (params?.model) queryParams.model = params.model;
     if (params?.license_plate) queryParams.license_plate = params.license_plate;
     
-    return client.get('/vehicles', { params: queryParams });
+    return client.get('/vehicles/composite', { params: queryParams });
   },
   
   getById: (id: number) => {
     const client = createApiClient();
-    return client.get(`/vehicles/${id}`);
+    return client.get(`/vehicles/composite/${id}`);
   },
   
   getByDriver: (driverId: number) => {
@@ -414,14 +420,27 @@ export const vehicleService = {
   },
   
   create: (data: any) => {
+    // If data is FormData, handle it properly
+    if (data instanceof FormData) {
+      const formDataClient = createApiClient();
+      // Remove Content-Type header for FormData - browser will set it with boundary
+      delete formDataClient.defaults.headers['Content-Type'];
+      return formDataClient.post('/vehicles', data);
+    }
     const client = createApiClient();
-    // Axios will automatically set Content-Type for FormData
     return client.post('/vehicles', data);
   },
   
   update: (id: number, data: any) => {
+    // If data is FormData, handle it properly
+    if (data instanceof FormData) {
+      const formDataClient = createApiClient();
+      // Remove Content-Type header for FormData - browser will set it with boundary
+      delete formDataClient.defaults.headers['Content-Type'];
+      return formDataClient.put(`/vehicles/composite/${id}`, data);
+    }
     const client = createApiClient();
-    return client.put(`/vehicles/${id}`, data);
+    return client.put(`/vehicles/composite/${id}`, data);
   },
   
   delete: (id: number) => {

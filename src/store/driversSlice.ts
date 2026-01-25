@@ -43,6 +43,9 @@ export const getDrivers = createAsyncThunk(
     // Extract filter parameters (exclude page and limit)
     const { page: _, limit: __, ...filterParams } = queries;
     
+    console.log("getDrivers: queries:", queries);
+    console.log("getDrivers: filterParams:", filterParams);
+    
     const response = await driverService.getAll(page, limit as number, filterParams);
     const responseData = response.data.data;
     

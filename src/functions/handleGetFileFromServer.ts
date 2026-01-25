@@ -31,8 +31,18 @@ export const handleGetFileFromServer = (file: string | null | undefined): string
     return null;
   }
 
-  // If it's already a full URL (http/https), use it as is
+  // If it's already a full URL (http/https), check if it needs domain replacement
   if (trimmedFile.startsWith('http://') || trimmedFile.startsWith('https://')) {
+    // Replace localhost URLs with production URLs
+    if (trimmedFile.includes('localhost:3000') || trimmedFile.includes('localhost:8000') || trimmedFile.includes('localhost')) {
+      // Extract the path after localhost:port
+      const pathMatch = trimmedFile.match(/https?:\/\/localhost(?::\d+)?(.+)/);
+      if (pathMatch) {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.MODE === 'production' ? 'https://newapi.diziel.com' : 'http://localhost:8000');
+        return `${backendUrl}${pathMatch[1]}`;
+      }
+    }
+    // For other full URLs, use as is
     return trimmedFile;
   }
 
@@ -42,16 +52,16 @@ export const handleGetFileFromServer = (file: string | null | undefined): string
     return null;
   }
 
-  // Get backend URL from env and prepend it
+  // Get backend URL from env
   const backendUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.MODE === 'production' ? 'https://newapi.diziel.com' : 'http://localhost:8000');
-  const fullBackendUrl = `${backendUrl}/api/v1`;
   
   // Remove trailing slash from backend URL if present
-  const cleanBackendUrl = fullBackendUrl.endsWith('/') ? fullBackendUrl.slice(0, -1) : fullBackendUrl;
+  const cleanBackendUrl = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
   
   // Ensure path starts with / if it doesn't already
   const path = trimmedFile.startsWith('/') ? trimmedFile : `/${trimmedFile}`;
   
-  // Construct full URL
+  // For storage paths, don't add /api/v1 - storage files are served directly from backend root
+  // Construct full URL (storage files are at root level, not under /api/v1)
   return `${cleanBackendUrl}${path}`;
 };

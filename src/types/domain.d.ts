@@ -201,89 +201,137 @@ export interface VehicleType {
   updated_at: string;
 }
 
+export interface VehicleHead {
+  id: number;
+  license_plate: string;
+  chassis_number: string;
+  engine_number?: string | null;
+  number_of_axles: number;
+  max_load: string;
+  length: string;
+  photos?: {
+    license_front?: string;
+    license_back?: string;
+    four_sides?: string[];
+  } | null;
+}
+
+export interface VehicleTrailer {
+  id: number;
+  license_plate: string;
+  chassis_number: string;
+  engine_number?: string | null;
+  number_of_axles: number;
+  max_load: string;
+  length: string;
+  model: string;
+  year: number;
+  photos?: {
+    license_front?: string;
+    license_back?: string;
+  } | null;
+}
+
 export interface Vehicle {
-  id: number;                                   
-  color:string,
-  make: string,
-  vehicle_type_id: 2,
+  id: number;
   driver_id: number;
   driver?: {
     id: number;
     name: string | null;
     email: string | null;
   };
-  // make: string;
-  // model: string;
-  // year: number;
-  // color: string | null;
-  // license_plate: string;
-  // vin: string | null;
-  // vehicle_type_id: number;
-  vehicle_type?: VehicleType; // Optional relationship object (when loaded)
-  head?: {
-    model: string,
-    year: number,
-    license_plate: string,
-    chassis_number: string,
-    engine_number: string,
-    number_of_axles: number,
-    max_load: number,
-    length: number,
-  };
-  trailer?: {
-    model: string,
-    year: number,
-    license_plate: string,
-    chassis_number: string,
-    number_of_axles: number,
-    max_load: number,
-    length: number,
-  }
-  //   fuel_type: string | null;
-  //   transmission: string | null;
-  //   doors: number | null;
-  // seats: number | null;
-  // is_primary: boolean;
-  // status: VehicleStatus;
-  // verification_status: VehicleVerificationStatus;
-  // verification_date: string | null;
-  // verified_by: number | null;
-  // verifier?: {
-  //   id: number;
-  //   name: string;
-  //   email: string;
-  // } | null;
-  // verification_notes: string | null;
-  // registration_number: string | null;
-  // registration_expiry: string | null;
-  // registration_state: string | null;
-  // insurance_provider: string | null;
-  // insurance_policy_number: string | null;
-  // insurance_expiry: string | null;
-  // inspection_date: string | null;
-  // inspection_expiry: string | null;
-  // inspection_certificate: string | null;
-  // mileage: number | null;
-  // condition_rating: number | null;
-  // last_maintenance_date: string | null;
-  // next_maintenance_due: string | null;
-  // photos: string[] | null;
-  // features: string[] | null;
-  // notes: string | null;
-  // created_by: number | null;
-  // creator?: {
-  //   id: number;
-  //   name: string;
-  //   email: string;
-  // } | null;
-  // updated_by: number | null;
-  // updater?: {
-  //   id: number;
-  //   name: string;
-  //   email: string;
-  // } | null;
-  // created_at: string;
-  // updated_at: string;
+  make: string;
+  model: string;
+  year: number;
+  color: string;
+  vehicle_type: "composite" | "regular";
+  part_type: "composite" | "regular";
+  display_name: string;
+  
+  // للمركبات المركبة
+  head?: VehicleHead;
+  trailer?: VehicleTrailer;
+  total_axles?: number;
+  total_max_load?: number;
+  total_length?: number;
+  
+  // للمركبات العادية
+  license_plate?: string;
+  vin?: string;
+  chassis_number?: string;
+  engine_number?: string;
+  number_of_axles?: number;
+  max_load?: string;
+  length?: string;
+  
+  // للتوافق مع المقطورات القديمة
+  trailers?: VehicleTrailer[];
+  
+  // معلومات عامة
+  fuel_type?: string | null;
+  transmission?: string | null;
+  doors?: number | null;
+  seats?: number | null;
+  status: VehicleStatus;
+  verification_status: VehicleVerificationStatus;
+  is_primary: boolean;
+  
+  // معلومات إضافية
+  verification_date?: string | null;
+  verified_by?: number | null;
+  verifier?: {
+    id: number;
+    name: string;
+    email: string;
+  } | null;
+  verification_notes?: string | null;
+  
+  // التسجيل والتأمين
+  registration_number?: string | null;
+  registration_expiry?: string | null;
+  registration_state?: string | null;
+  insurance_provider?: string | null;
+  insurance_policy_number?: string | null;
+  insurance_expiry?: string | null;
+  
+  // الفحص والصيانة
+  inspection_date?: string | null;
+  inspection_expiry?: string | null;
+  inspection_certificate?: string | null;
+  mileage?: number | null;
+  condition_rating?: number | null;
+  last_maintenance_date?: string | null;
+  next_maintenance_due?: string | null;
+  
+  // صور المركبة (للمركبات العادية)
+  photos?: {
+    license_front?: string;
+    license_back?: string;
+    four_sides?: string[];
+  } | null;
+  
+  features?: string[] | null;
+  notes?: string | null;
+  
+  // معلومات النظام
+  created_by?: number | null;
+  creator?: {
+    id: number;
+    name: string;
+    email: string;
+  } | null;
+  updated_by?: number | null;
+  updater?: {
+    id: number;
+    name: string;
+    email: string;
+  } | null;
+  
+  vehicle_type_id?: number;
+  vehicle_type_obj?: VehicleType;
+  
+  created_at: string;
+  updated_at: string;
 }
 
 export type TripStatus = 

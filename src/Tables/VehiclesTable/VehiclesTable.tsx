@@ -40,10 +40,13 @@ const VehiclesTable = ({
             {t("labels.driver", { defaultValue: "Driver" })}
           </StyledTableCell>
           <StyledTableCell align="center">
-            {t("labels.licensePlate", { defaultValue: "License Plate" })}
+            {t("labels.licensePlates", { defaultValue: "License Plates" })}
           </StyledTableCell>
           <StyledTableCell align="center">
             {t("labels.vehicleType", { defaultValue: "Vehicle Type" })}
+          </StyledTableCell>
+          <StyledTableCell align="center">
+            {t("labels.specifications", { defaultValue: "Specifications" })}
           </StyledTableCell>
           <StyledTableCell align="center">
             {t("labels.status", { defaultValue: "Status" })}
@@ -77,10 +80,15 @@ const VehiclesTable = ({
                     variant="body1"
                     className="!font-[600] !text-primary hover:underline"
                   >
-                    {vehicle.make} {vehicle.model}
+                    {vehicle.display_name}
                   </Typography>
                   <Typography variant="caption" className="!text-gray-500">
                     {vehicle.year}
+                    {vehicle.vehicle_type === "composite" && (
+                      <span className="ml-2 text-blue-600">
+                        ({t("labels.composite", { defaultValue: "Composite" })})
+                      </span>
+                    )}
                   </Typography>
                 </Box>
               </StyledTableCell>
@@ -95,14 +103,58 @@ const VehiclesTable = ({
                 </Box>
               </StyledTableCell>
               <StyledTableCell align="center">
-                <Typography variant="body2" className="!text-gray-600">
-                  {vehicle.license_plate}
-                </Typography>
+                {vehicle.vehicle_type === "composite" ? (
+                  <Box>
+                    <Typography variant="body2" className="!text-gray-600">
+                      <span className="text-blue-600 font-medium">{t("labels.head", { defaultValue: "Head" })}:</span> {vehicle.head?.license_plate || "-"}
+                    </Typography>
+                    <Typography variant="body2" className="!text-gray-600">
+                      <span className="text-green-600 font-medium">{t("labels.trailer", { defaultValue: "Trailer" })}:</span> {vehicle.trailer?.license_plate || "-"}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Typography variant="body2" className="!text-gray-600">
+                    {vehicle.license_plate || "-"}
+                  </Typography>
+                )}
               </StyledTableCell>
               <StyledTableCell align="center">
-                <Typography variant="body2" className="!capitalize">
-                  {getVehicleTypeName(vehicle.vehicle_type || vehicle.vehicle_type_id, activeVehicleTypes)}
-                </Typography>
+                <Box>
+                  <Typography variant="body2" className="!capitalize">
+                    {vehicle.vehicle_type === "composite" 
+                      ? t("labels.composite", { defaultValue: "Composite" })
+                      : getVehicleTypeName(vehicle.vehicle_type_id, activeVehicleTypes)
+                    }
+                  </Typography>
+                  {vehicle.vehicle_type === "composite" && (
+                    <Typography variant="caption" className="!text-gray-500">
+                      {t("labels.headAndTrailer", { defaultValue: "Head + Trailer" })}
+                    </Typography>
+                  )}
+                </Box>
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                <Box>
+                  {vehicle.vehicle_type === "composite" ? (
+                    <>
+                      <Typography variant="body2" className="!text-gray-600">
+                        {t("labels.totalLoad", { defaultValue: "Total Load" })}: {vehicle.total_max_load || "-"} {t("labels.ton", { defaultValue: "ton" })}
+                      </Typography>
+                      <Typography variant="caption" className="!text-gray-500">
+                        {t("labels.totalAxles", { defaultValue: "Total Axles" })}: {vehicle.total_axles || "-"} | {t("labels.totalLength", { defaultValue: "Length" })}: {vehicle.total_length || "-"} {t("labels.meter", { defaultValue: "m" })}
+                      </Typography>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant="body2" className="!text-gray-600">
+                        {t("labels.load", { defaultValue: "Load" })}: {vehicle.max_load || "-"} {t("labels.ton", { defaultValue: "ton" })}
+                      </Typography>
+                      <Typography variant="caption" className="!text-gray-500">
+                        {t("labels.axles", { defaultValue: "Axles" })}: {vehicle.number_of_axles || "-"} | {t("labels.length", { defaultValue: "Length" })}: {vehicle.length || "-"} {t("labels.meter", { defaultValue: "m" })}
+                      </Typography>
+                    </>
+                  )}
+                </Box>
               </StyledTableCell>
               <StyledTableCell align="center">
                 <Chip

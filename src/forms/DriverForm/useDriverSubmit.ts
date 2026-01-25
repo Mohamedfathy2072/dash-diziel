@@ -88,8 +88,11 @@ const useDriverSubmit = () => {
     photoFile?: File | null;
     documents?: { [key: string]: File | null };
   }) => {
+    console.log("editDriver called with values:", values);
+    console.log("Driver ID:", id);
     try {
       if (!id) {
+        console.error("editDriver: No driver ID provided");
         handleToaster({ 
           msg: t("edit_submit_error", { defaultValue: "Driver ID is required" }), 
           status: "error" 
@@ -97,6 +100,7 @@ const useDriverSubmit = () => {
         return;
       }
 
+      console.log("editDriver: Creating FormData");
       const formData = new FormData();
       
       // Add all form fields to FormData
@@ -132,10 +136,16 @@ const useDriverSubmit = () => {
         });
       }
 
+      console.log("editDriver: Dispatching updateDriver action");
+      console.log("editDriver: FormData entries:", Array.from(formData.entries()).map(([key, value]) => [key, value instanceof File ? `File: ${value.name}` : value]));
+      
       await dispatch(updateDriver({ id: +id, data: formData as any })).unwrap();
+      
+      console.log("editDriver: Driver updated successfully");
       handleToaster({ msg: t("edit_submit_success", { defaultValue: "Driver updated successfully" }), status: "success" });
       navigate(`${import.meta.env.VITE_DRIVERS_ROUTE}/${id}`);
     } catch (error: any) {
+      console.error("editDriver: Error updating driver:", error);
       handleApiError(error, {
         action: "update",
         entity: "driver",

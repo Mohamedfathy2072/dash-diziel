@@ -1,5 +1,6 @@
 import { useFormik } from "formik";
 import { useEffect, useMemo, useRef } from "react";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -76,8 +77,16 @@ const useSubmitForm = <T extends keyof FormikMap>(
   );
   const { VehicleInitialValues, VehicleSchema } = useVehicleSchema(
     type === "editVehicle",
-    type === "editVehicle" ? selectedVehicle : undefined
+    selectedVehicle // Always pass selectedVehicle, let useVehicleSchema handle the logic
   );
+  
+  // Remove debug elements
+  if (typeof window !== 'undefined') {
+    ['submit-form-debug', 'formik-debug'].forEach(id => {
+      const elem = document.getElementById(id);
+      if (elem) elem.remove();
+    });
+  }
   const { TripInitialValues, TripSchema } = useTripSchema(
     type === "editTrip",
     type === "editTrip" ? selectedTrip : undefined
@@ -464,6 +473,10 @@ const useSubmitForm = <T extends keyof FormikMap>(
     PermissionSchema,
     DepositInitialValues,
     DepositSchema,
+    // Add selectedVehicle to dependencies so initial values update when data arrives
+    selectedVehicle?.id,
+    selectedVehicle?.head?.license_plate,
+    selectedVehicle?.trailer?.license_plate,
   ]);
 
   const formik = useFormik({
@@ -474,6 +487,33 @@ const useSubmitForm = <T extends keyof FormikMap>(
     },
     enableReinitialize: true,
   });
+
+  // Force reinitialize when vehicle data becomes available
+  React.useEffect(() => {
+    if (type === "editVehicle" && selectedVehicle && VehicleInitialValues && formik.resetForm) {
+      // Use the fresh VehicleInitialValues that were just created
+      // Check if values actually changed before resetting
+      const currentHeadLicense = formik.values.head?.license_plate;
+      const newHeadLicense = VehicleInitialValues.head?.license_plate;
+      const currentTrailerLicense = formik.values.trailer?.license_plate;
+      const newTrailerLicense = VehicleInitialValues.trailer?.license_plate;
+      
+      if (currentHeadLicense !== newHeadLicense || currentTrailerLicense !== newTrailerLicense) {
+        formik.resetForm({ values: VehicleInitialValues });
+      }
+    }
+  }, [type, selectedVehicle?.id, VehicleInitialValues, formik.resetForm, formik.values.head?.license_plate, formik.values.trailer?.license_plate]);
+  
+  // Log values for debugging (this will work)
+  if (type === "editVehicle" && selectedVehicle) {
+    try {
+      window.vehicleDebugInfo = {
+        selectedVehicle,
+        initialValues: VehicleInitialValues,
+        formikValues: formik.values
+      };
+    } catch (e) {}
+  }
 
   return { formik } as { formik: FormikMap[T] };
 };

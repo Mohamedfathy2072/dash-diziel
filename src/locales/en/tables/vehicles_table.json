@@ -4,9 +4,24 @@
     "driver": "Driver",
     "licensePlate": "License Plate",
     "vehicleType": "Vehicle Type",
+    "specifications": "Specifications",
     "status": "Status",
     "verificationStatus": "Verification",
     "primary": "Primary",
-    "actions": "Actions"
+    "actions": "Actions",
+    "trailer": "trailer",
+    "trailers": "trailers",
+    "composite": "Composite",
+    "headAndTrailer": "Head + Trailer",
+    "totalLoad": "Total Load",
+    "totalLength": "Total Length",
+    "totalAxles": "Total Axles",
+    "load": "Load",
+    "length": "Length",
+    "axles": "Axles",
+    "ton": "ton",
+    "meter": "m",
+    "licensePlates": "License Plates",
+    "head": "Head"
   }
 }

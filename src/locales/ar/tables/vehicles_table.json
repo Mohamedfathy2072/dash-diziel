@@ -4,9 +4,24 @@
     "driver": "السائق",
     "licensePlate": "رقم اللوحة",
     "vehicleType": "نوع المركبة",
+    "specifications": "المواصفات",
     "status": "الحالة",
     "verificationStatus": "التحقق",
     "primary": "أساسي",
-    "actions": "الإجراءات"
+    "actions": "الإجراءات",
+    "trailer": "مقطورة",
+    "trailers": "مقطورات",
+    "composite": "مركبة",
+    "headAndTrailer": "رأس + مقطورة",
+    "totalLoad": "الحمولة الإجمالية",
+    "totalLength": "الطول الإجمالي",
+    "totalAxles": "إجمالي المحاور",
+    "load": "الحمولة",
+    "length": "الطول",
+    "axles": "المحاور",
+    "ton": "طن",
+    "meter": "م",
+    "licensePlates": "أرقام اللوحات",
+    "head": "رأس"
   }
 }

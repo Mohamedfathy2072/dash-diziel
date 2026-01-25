@@ -5,12 +5,21 @@ import { handleToaster } from "../../functions/handleToaster";
 import type { AppDispatch } from "../../store/store";
 import { createUser, updateUser, getUsers } from "../../store/usersSlice";
 import type { UserFormTypes } from "../../types/forms";
+import useQueries from "../../hooks/useQueries";
 
 const useUserSubmit = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { id } = useParams();
   const { t } = useTranslation("forms/user_form");
+  const { handleGetQueries } = useQueries();
+  const queries = handleGetQueries();
+
+  // Get current pagination settings
+  const getCurrentPagination = () => ({
+    page: parseInt(queries.page || "1"),
+    limit: parseInt(queries.limit || "10")
+  });
 
   const addUser = async (values: UserFormTypes & { photoFile?: File | null }) => {
     try {
@@ -81,8 +90,9 @@ const useUserSubmit = () => {
 
       await dispatch(updateUser({ id: +id, data: formData as any })).unwrap();
       handleToaster({ msg: t("edit_submit_success", { defaultValue: "User updated successfully" }), status: "success" });
-      // Refresh users list - use limit instead of per_page
-      dispatch(getUsers({ page: 1, limit: 10 }));
+      // Refresh users list with current pagination
+      const pagination = getCurrentPagination();
+      dispatch(getUsers(pagination));
       navigate(`${import.meta.env.VITE_USERS_ROUTE}`);
     } catch (error: any) {
       handleToaster({ 

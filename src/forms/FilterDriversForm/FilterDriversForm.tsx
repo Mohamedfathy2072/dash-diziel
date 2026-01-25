@@ -35,8 +35,16 @@ const FilterDriversForm = ({
   const { t } = useTranslation("forms/filter_drivers_form");
 
   const handleReset = () => {
-    formik.resetForm();
+    console.log("FilterDriversForm: Reset filter clicked");
+    // Reset formik first
+    formik.resetForm({ values: { name1: "", status: "" } });
+    // Then reset filter and queries
     handleResetFilter("drivers");
+    // Force update formik values after reset
+    setTimeout(() => {
+      formik.setFieldValue("name1", "");
+      formik.setFieldValue("status", "");
+    }, 100);
   };
 
   const handleCloseChip = (key: string) => {
@@ -52,6 +60,18 @@ const FilterDriversForm = ({
       setDriversLimit(newLimit);
     }
   }, [queries.limit, driversLimit, setDriversLimit]);
+
+  // Update formik values when queries change (e.g., after reset)
+  useEffect(() => {
+    const name1Value = queries["name1"] || "";
+    const statusValue = queries["status"] || "";
+    if (formik.values.name1 !== name1Value) {
+      formik.setFieldValue("name1", name1Value);
+    }
+    if (formik.values.status !== statusValue) {
+      formik.setFieldValue("status", statusValue);
+    }
+  }, [queries.name1, queries.status, formik]);
 
   return (
     <Box className={`flex justify-start items-center flex-wrap gap-2`}>
@@ -110,7 +130,13 @@ const FilterDriversForm = ({
             <SubmitButton
               loading={false}
               type={"button"}
-              handling={() => handleFilter("drivers", formik.values)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log("FilterDriversForm: Apply filter clicked");
+                console.log("FilterDriversForm: Form values:", formik.values);
+                handleFilter("drivers", formik.values);
+              }}
               variant="gradient"
             >
               {t("buttons.applyFilter", { defaultValue: "Apply Filter" })}

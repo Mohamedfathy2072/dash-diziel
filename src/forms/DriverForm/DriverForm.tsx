@@ -439,6 +439,21 @@ const DriverForm = ({
             loading={isLoading}
             className="!min-w-[120px] !px-6 !py-2.5 hover:!shadow-lg transition-all"
             type="submit"
+            onClick={(e) => {
+              console.log("SubmitButton clicked - type:", type);
+              console.log("Form values:", formik.values);
+              console.log("Form errors:", formik.errors);
+              console.log("Form touched:", formik.touched);
+              console.log("Form isValid:", formik.isValid);
+              // Trigger form submit manually if needed
+              const form = (e.target as HTMLElement).closest('form');
+              if (form) {
+                console.log("Form element found, triggering submit");
+                // Don't prevent default - let form handle it naturally
+              } else {
+                console.error("Form element not found!");
+              }
+            }}
           >
             {isEdit ? t("save", { defaultValue: "Save Changes" }) : t("", { defaultValue: "اضافة سائق" })}
           </SubmitButton>

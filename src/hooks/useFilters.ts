@@ -137,14 +137,18 @@ const useFilters = () => {
     };
 
     const handleResetFilter = (variant: EntityTypes) => {
+        console.log("handleResetFilter called for variant:", variant);
         const config = entityConfig[variant];
         if (config) {
             const setLimitFn = formsStore[config.setLimitKey as keyof typeof formsStore] as ((value: number) => void) | undefined;
             if (setLimitFn) {
                 setLimitFn(config.defaultLimit);
             }
+            // Reset all queries first
             handleResetQueries();
+            // Then set only page and limit
             handleSetQueries({ page: 1, limit: config.defaultLimit });
+            console.log("handleResetFilter: Reset complete, queries should be:", { page: 1, limit: config.defaultLimit });
         } else {
             handleResetQueries();
         }
@@ -152,19 +156,38 @@ const useFilters = () => {
 
     const handleFilter = async (variant: EntityTypes, values: FilterValuesTypes) => {
         try {
-            if (!hasAtLeastOneFilter(values) && (Object.keys(queries).length === 2 && queries["limit"] && queries["page"])) return;
+            console.log("handleFilter called for variant:", variant);
+            console.log("handleFilter values:", values);
+            console.log("handleFilter current queries:", queries);
+            console.log("handleFilter hasAtLeastOneFilter:", hasAtLeastOneFilter(values));
+            
+            // If no filter values and we only have page/limit, don't do anything
+            // But if we're clearing filters (empty values), we should reset
+            const hasFilters = hasAtLeastOneFilter(values);
+            const onlyPageLimit = Object.keys(queries).length === 2 && queries["limit"] && queries["page"];
+            
+            if (!hasFilters && onlyPageLimit) {
+                console.log("handleFilter: No filters and only page/limit, skipping");
+                return;
+            }
             
             const config = entityConfig[variant];
-            if (!config) return;
+            if (!config) {
+                console.error("handleFilter: No config for variant:", variant);
+                return;
+            }
             
             const limit = (formsStore[config.limitKey as keyof typeof formsStore] as number) || config.defaultLimit;
             const baseQuery = { page: 1, limit };
             const cleanedValues = cleanFilterValues(values);
             const allQueries = { ...baseQuery, limit, ...cleanedValues };
             
+            console.log("handleFilter: Setting queries:", allQueries);
+            
             // Update URL - Section will handle the API call via useEffect
             handleSetQueries({ ...allQueries });
         } catch (error) {
+            console.error("Error in handleFilter:", error);
             logger.error("Error in handleFilter", error);
         }
     };
