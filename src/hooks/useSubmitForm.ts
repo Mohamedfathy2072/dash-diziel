@@ -498,11 +498,15 @@ const useSubmitForm = <T extends keyof FormikMap>(
       const currentTrailerLicense = formik.values.trailer?.license_plate;
       const newTrailerLicense = VehicleInitialValues.trailer?.license_plate;
       
-      if (currentHeadLicense !== newHeadLicense || currentTrailerLicense !== newTrailerLicense) {
+      // Also check if head or trailer data exists
+      const hasHeadData = selectedVehicle.head && (selectedVehicle.head.license_plate || selectedVehicle.head.model);
+      const hasTrailerData = selectedVehicle.trailer && (selectedVehicle.trailer.license_plate || selectedVehicle.trailer.model);
+      
+      if ((hasHeadData || hasTrailerData) && (currentHeadLicense !== newHeadLicense || currentTrailerLicense !== newTrailerLicense || !currentHeadLicense || !currentTrailerLicense)) {
         formik.resetForm({ values: VehicleInitialValues });
       }
     }
-  }, [type, selectedVehicle?.id, VehicleInitialValues, formik.resetForm, formik.values.head?.license_plate, formik.values.trailer?.license_plate]);
+  }, [type, selectedVehicle?.id, selectedVehicle?.head?.license_plate, selectedVehicle?.trailer?.license_plate, VehicleInitialValues, formik.resetForm, formik.values.head?.license_plate, formik.values.trailer?.license_plate]);
   
   // Log values for debugging (this will work)
   if (type === "editVehicle" && selectedVehicle) {

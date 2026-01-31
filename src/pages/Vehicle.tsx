@@ -216,7 +216,7 @@ const Vehicle = () => {
             </Box>
 
             {/* Head & Trailer Details */}
-            {selectedVehicle.vehicle_type === "composite" && (
+            {(selectedVehicle.vehicle_type === "composite" || (selectedVehicle.head && selectedVehicle.trailer)) && (
               <Box className="mb-6">
                 <SectionHeader
                   title={t("head_trailer_details", { defaultValue: "Head & Trailer Details" })}

@@ -1,4 +1,5 @@
 import type { FormikProps } from "formik";
+import { getIn } from "formik";
 import { useState, type MouseEvent } from "react";
 import type { AllFormsTypes } from "../types/forms";
 
@@ -6,9 +7,9 @@ export const useInput = <T extends AllFormsTypes>(name: string, formik?: FormikP
     const [showPassword, setShowPassword] = useState(false);
 
     const error =
-        formik?.touched[name as keyof T] && Boolean(formik?.errors[name as keyof T]);
+        formik && getIn(formik.touched, name) && Boolean(getIn(formik.errors, name));
     const helperText = error
-        ? (formik?.errors[name as keyof T] as string)
+        ? (getIn(formik.errors, name) as string)
         : undefined;
 
     const togglePassword = () => setShowPassword((s) => !s);

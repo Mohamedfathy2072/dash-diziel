@@ -1,5 +1,6 @@
 import { Box, IconButton, InputAdornment } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { getIn } from "formik";
 import { useInput } from "../../hooks/useInput";
 import EyeIcon from "../../icons/EyeIcon";
 import EyeOffIcon from "../../icons/EyeOffIcon";
@@ -116,7 +117,7 @@ const Input = <T extends AllFormsTypes>({
                   : t(label ?? "", { defaultValue: label ?? "" })
                 : ""
           }
-          value={(formik?.values?.[name as keyof T] ?? "") || value}
+          value={formik ? (getIn(formik.values, name) ?? "") : (value ?? "")}
           onChange={(e) => {
             let val = e.target.value;
             

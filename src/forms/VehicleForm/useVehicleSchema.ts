@@ -245,7 +245,7 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
   // Create initial values with proper fallbacks - use useMemo to recalculate when selectedVehicle changes
   const VehicleInitialValues = useMemo(() => {
     if (isEdit && selectedVehicle) {
-      return {
+      const initialValues = {
         driver_id: selectedVehicle.driver_id || 0,
         make: selectedVehicle.make || "",
         color: selectedVehicle.color || "",
@@ -262,7 +262,7 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
         },
         trailer: {
           model: selectedVehicle.trailer?.model || "",
-          year: Number(selectedVehicle.trailer?.year || new Date().getFullYear()),
+          year: selectedVehicle.trailer?.year ? Number(selectedVehicle.trailer.year) : new Date().getFullYear(),
           license_plate: selectedVehicle.trailer?.license_plate || "",
           chassis_number: selectedVehicle.trailer?.chassis_number || "",
           number_of_axles: Number(selectedVehicle.trailer?.number_of_axles || 0),
@@ -291,6 +291,8 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
         // next_maintenance_due: selectedVehicle.next_maintenance_due || null,
         // notes: selectedVehicle.notes || null,
       };
+      
+      return initialValues;
     } else {
       return {
         driver_id: null as number|null,
@@ -344,7 +346,19 @@ const useVehicleSchema = (isEdit = false, selectedVehicle?: Vehicle | null) => {
         notes: null as string | null,
       };
     }
-  }, [isEdit, selectedVehicle]);
+  }, [
+    isEdit, 
+    selectedVehicle?.id,
+    selectedVehicle?.head?.license_plate,
+    selectedVehicle?.head?.model,
+    selectedVehicle?.head?.year,
+    selectedVehicle?.trailer?.license_plate,
+    selectedVehicle?.trailer?.model,
+    selectedVehicle?.trailer?.year,
+    selectedVehicle?.make,
+    selectedVehicle?.color,
+    selectedVehicle?.vehicle_type_id
+  ]);
 
   return { VehicleSchema, VehicleInitialValues };
 };

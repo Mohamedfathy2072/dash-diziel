@@ -81,9 +81,16 @@ export const fetchVehicleById = createAsyncThunk(
     }
     
     // Handle composite vehicle response structure (same as updateVehicle)
-    if (vehicleData && typeof vehicleData === 'object' && 'head' in vehicleData && 'trailer' in vehicleData) {
+    // Check if we have head and trailer (either in top level or in head.trailers array)
+    if (vehicleData && typeof vehicleData === 'object' && 'head' in vehicleData) {
       const head = vehicleData.head;
-      const trailer = vehicleData.trailer;
+      // Try to get trailer from top level first, then from head.trailers array
+      const trailer = vehicleData.trailer || (head.trailers && head.trailers.length > 0 ? head.trailers[0] : null);
+      
+      // Only proceed if we have both head and trailer
+      if (!trailer) {
+        return vehicleData as Vehicle;
+      }
       
       // For composite vehicles, the top-level data contains the main vehicle info
       // while head and trailer contain the specific parts
@@ -95,11 +102,11 @@ export const fetchVehicleById = createAsyncThunk(
         year: vehicleData.year || head.year || new Date().getFullYear(),
         color: vehicleData.color || head.color || null,
         license_plate: head.license_plate || vehicleData.license_plate || "",
-        vehicle_type: (vehicleData.vehicle_type || 'composite') as const,
+        vehicle_type: 'composite' as const, // Always composite when head and trailer exist
         vehicle_type_id: vehicleData.vehicle_type_id || head.vehicle_type?.id || vehicleData.vehicle_type?.id || null,
         part_type: (vehicleData.part_type || 'composite') as const,
         display_name: vehicleData.display_name || `${vehicleData.make || head.make} ${vehicleData.model || head.model} (رأس + مقطورة)`,
-        driver: vehicleData.driver || null,
+        driver: vehicleData.driver || head.driver || null,
         head: {
           id: head.id,
           license_plate: head.license_plate,
@@ -132,35 +139,35 @@ export const fetchVehicleById = createAsyncThunk(
         verification_status: vehicleData.verification_status || head.verification_status || "pending",
         created_at: vehicleData.created_at || head.created_at,
         updated_at: vehicleData.updated_at || head.updated_at,
-        // Include other fields from vehicleData
-        fuel_type: vehicleData.fuel_type || null,
-        transmission: vehicleData.transmission || null,
-        doors: vehicleData.doors || null,
-        seats: vehicleData.seats || null,
-        is_primary: vehicleData.is_primary || false,
-        verification_date: vehicleData.verification_date || null,
-        verified_by: vehicleData.verified_by || null,
-        verifier: vehicleData.verifier || null,
-        verification_notes: vehicleData.verification_notes || null,
-        registration_number: vehicleData.registration_number || null,
-        registration_expiry: vehicleData.registration_expiry || null,
-        registration_state: vehicleData.registration_state || null,
-        insurance_provider: vehicleData.insurance_provider || null,
-        insurance_policy_number: vehicleData.insurance_policy_number || null,
-        insurance_expiry: vehicleData.insurance_expiry || null,
-        inspection_date: vehicleData.inspection_date || null,
-        inspection_expiry: vehicleData.inspection_expiry || null,
-        inspection_certificate: vehicleData.inspection_certificate || null,
-        mileage: vehicleData.mileage || null,
-        condition_rating: vehicleData.condition_rating || null,
-        last_maintenance_date: vehicleData.last_maintenance_date || null,
-        next_maintenance_due: vehicleData.next_maintenance_due || null,
-        features: vehicleData.features || null,
-        notes: vehicleData.notes || null,
-        created_by: vehicleData.created_by || null,
-        creator: vehicleData.creator || null,
-        updated_by: vehicleData.updated_by || null,
-        updater: vehicleData.updater || null,
+        // Include other fields from vehicleData, fallback to head if not available
+        fuel_type: vehicleData.fuel_type || head.fuel_type || null,
+        transmission: vehicleData.transmission || head.transmission || null,
+        doors: vehicleData.doors || head.doors || null,
+        seats: vehicleData.seats || head.seats || null,
+        is_primary: vehicleData.is_primary !== undefined ? vehicleData.is_primary : (head.is_primary || false),
+        verification_date: vehicleData.verification_date || head.verification_date || null,
+        verified_by: vehicleData.verified_by || head.verified_by || null,
+        verifier: vehicleData.verifier || head.verifier || null,
+        verification_notes: vehicleData.verification_notes || head.verification_notes || null,
+        registration_number: vehicleData.registration_number || head.registration_number || null,
+        registration_expiry: vehicleData.registration_expiry || head.registration_expiry || null,
+        registration_state: vehicleData.registration_state || head.registration_state || null,
+        insurance_provider: vehicleData.insurance_provider || head.insurance_provider || null,
+        insurance_policy_number: vehicleData.insurance_policy_number || head.insurance_policy_number || null,
+        insurance_expiry: vehicleData.insurance_expiry || head.insurance_expiry || null,
+        inspection_date: vehicleData.inspection_date || head.inspection_date || null,
+        inspection_expiry: vehicleData.inspection_expiry || head.inspection_expiry || null,
+        inspection_certificate: vehicleData.inspection_certificate || head.inspection_certificate || null,
+        mileage: vehicleData.mileage || head.mileage || null,
+        condition_rating: vehicleData.condition_rating || head.condition_rating || null,
+        last_maintenance_date: vehicleData.last_maintenance_date || head.last_maintenance_date || null,
+        next_maintenance_due: vehicleData.next_maintenance_due || head.next_maintenance_due || null,
+        features: vehicleData.features || head.features || null,
+        notes: vehicleData.notes || head.notes || null,
+        created_by: vehicleData.created_by || head.created_by || null,
+        creator: vehicleData.creator || head.creator || null,
+        updated_by: vehicleData.updated_by || head.updated_by || null,
+        updater: vehicleData.updater || head.updater || null,
       } as Vehicle;
     }
     
