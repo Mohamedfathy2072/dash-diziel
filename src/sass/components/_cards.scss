@@ -1,0 +1,40 @@
+.stat-card {
+  background-color: #fff;
+  box-shadow: 0 0.125rem 0 rgba(10, 10, 10, 0.04);
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-radius: 12px;
+  .details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .title {
+      color: #8c9097;
+      font-size: 13px;
+      margin: 0;
+    }
+    .sub-title {
+      font-weight: 500;
+      color: #6b7280;
+      font-size: 11px;
+      margin: 0;
+    }
+    .count {
+      color: #333335;
+      font-size: 24px;
+      margin: 0;
+      font-weight: 500;
+    }
+  }
+  .icon {
+    background-color: #f1f5f9;
+    color: #64748b;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+  }
+}

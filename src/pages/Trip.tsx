@@ -126,6 +126,12 @@ const Trip = () => {
       showDelete={isSuperAdmin()}
     />
   );
+const acceptedOffer = selectedTrip?.offers?.find(
+  (offer) => offer.status === "accepted"
+);
+
+const displayedPrice =
+  acceptedOffer?.offered_price || selectedTrip?.base_price;
 
   return (
     <DetailPageWrapper
@@ -158,7 +164,7 @@ const Trip = () => {
                       className={`${getTripStatusColor(selectedTrip.status)} !font-semibold !px-4 !py-2 !text-sm shadow-sm hover:shadow-md transition-shadow`}
                       size="medium"
                     />
-                    {selectedTrip.base_price && (
+                    {/* {selectedTrip.base_price && (
                       <Box className="px-5 py-3 bg-white/90 backdrop-blur-sm rounded-xl border border-white/50 shadow-md hover:shadow-lg transition-all duration-200">
                         <Typography variant="caption" className="!text-gray-600 !block !mb-1 !font-medium">
                           {t("base_price")}
@@ -167,7 +173,26 @@ const Trip = () => {
                           {formatPrice(selectedTrip.base_price)}
                         </Typography>
                       </Box>
-                    )}
+                    )} */}
+
+                 {displayedPrice && (
+                    <Box className="px-5 py-3 bg-white/90 backdrop-blur-sm rounded-xl border border-white/50 shadow-md hover:shadow-lg transition-all duration-200">
+                      <Typography
+                        variant="caption"
+                        className="!text-gray-600 !block !mb-1 !font-medium"
+                      >
+                        {t("final_price")}
+                      </Typography>
+
+                      <Typography
+                        variant="h6"
+                        className="!font-bold !text-green-600 !text-lg"
+                      >
+                        {formatPrice(displayedPrice)}
+                      </Typography>
+                    </Box>
+                  )}
+
                   </Box>
                 </Box>
               </Box>

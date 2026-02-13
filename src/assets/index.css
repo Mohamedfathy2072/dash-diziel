@@ -9,32 +9,32 @@
 }
 
 @font-face {
-  font-family: 'Cairo';
-  src: url('/fonts/Cairo-Regular.woff2') format('woff2');
+  font-family: "Cairo";
+  src: url("/fonts/Cairo-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Cairo';
-  src: url('/fonts/Cairo-Medium.woff2') format('woff2');
+  font-family: "Cairo";
+  src: url("/fonts/Cairo-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Cairo';
-  src: url('/fonts/Cairo-SemiBold.woff2') format('woff2');
+  font-family: "Cairo";
+  src: url("/fonts/Cairo-SemiBold.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Cairo';
-  src: url('/fonts/Cairo-Bold.woff2') format('woff2');
+  font-family: "Cairo";
+  src: url("/fonts/Cairo-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -42,49 +42,49 @@
 
 :root {
   /* Primary Color: #003366 (Dark Blue) */
-  --primary_100: #E6ECF2;
-  --primary_200: #CCD9E5;
-  --primary_300: #B3C6D8;
-  --primary_400: #99B3CB;
-  --primary_500: #80A0BE;
-  --primary_600: #668DB1;
-  --primary_700: #4D7AA4;
+  --primary_100: #e6ecf2;
+  --primary_200: #ccd9e5;
+  --primary_300: #b3c6d8;
+  --primary_400: #99b3cb;
+  --primary_500: #80a0be;
+  --primary_600: #668db1;
+  --primary_700: #4d7aa4;
   --primary_800: #336797;
   --primary_900: #003366;
 
   /* Secondary/Button Color: #FFA500 (Orange) */
-  --secondary_100: #FFF4E6;
-  --secondary_200: #FFE9CC;
-  --secondary_300: #FFDEB3;
-  --secondary_400: #FFD399;
-  --secondary_500: #FFC880;
-  --secondary_600: #FFBD66;
-  --secondary_700: #FFB24D;
-  --secondary_800: #FFA733;
-  --secondary_900: #FFA500;
+  --secondary_100: #fff4e6;
+  --secondary_200: #ffe9cc;
+  --secondary_300: #ffdeb3;
+  --secondary_400: #ffd399;
+  --secondary_500: #ffc880;
+  --secondary_600: #ffbd66;
+  --secondary_700: #ffb24d;
+  --secondary_800: #ffa733;
+  --secondary_900: #ffa500;
 
-  --neutral_white: #FFFFFF;
-  --neutral_100: #E6E6E6;
-  --neutral_200: #CCCCCC;
-  --neutral_300: #B3B3B3;
+  --neutral_white: #ffffff;
+  --neutral_100: #e6e6e6;
+  --neutral_200: #cccccc;
+  --neutral_300: #b3b3b3;
   --neutral_400: #999999;
   --neutral_500: #838383;
   --neutral_600: #666666;
-  --neutral_700: #4D4D4D;
+  --neutral_700: #4d4d4d;
   --neutral_800: #333333;
-  --neutral_900: #1A1A1A;
+  --neutral_900: #1a1a1a;
   --neutral_dark: #000000;
 
-  --success_100: #DADADA;
-  --success_200: #1EC940;
+  --success_100: #dadada;
+  --success_200: #1ec940;
 
-  --warning_100: #FCFEE8;
-  --warning_dark: #EFDE03;
+  --warning_100: #fcfee8;
+  --warning_dark: #efde03;
 
-  --error_100: #FFF0F0;
-  --error_dark: #FF2828;
+  --error_100: #fff0f0;
+  --error_dark: #ff2828;
 
-  --other: #FAFAFA;
+  --other: #fafafa;
 
   --primary_bg: #f3f5f9;
 }
@@ -98,19 +98,20 @@ body {
   padding: 0;
   background-color: var(--primary_bg);
   font-family: "Cairo", sans-serif;
-  min-height: 100vh;
-  min-width: 100vw;
-  width: 100vw;
-  overflow-x: hidden;
+  /* min-height: 100vh; */
+  /* min-width: 100vw; */
+  /* width: 100vw; */
+  /* overflow-x: hidden; */
 }
 
 main {
   min-height: 100vh;
-  min-width: 100vw;
-  width: 100vw;
-  display: grid;
-  align-items: center;
-  justify-content: stretch;
+  /* min-height: 100vh; */
+  /* min-width: 100vw; */
+  /* width: 100vw; */
+  /* display: grid; */
+  /* align-items: center; */
+  /* justify-content: stretch; */
 }
 
 .ltr {
@@ -144,7 +145,6 @@ main {
   display: none !important;
 }
 
-
 /* Tour Guide */
 .reactour__popover {
   background-color: transparent !important;
@@ -153,7 +153,6 @@ main {
 }
 
 /* Tour Guide */
-
 
 .MuiStepper-root .MuiStepLabel-root {
   gap: 10px;
@@ -171,10 +170,10 @@ main {
   width: fit-content;
   font-weight: 700 !important;
   color: #000;
-  font-size: 17px
+  font-size: 17px;
 }
 
-@media (max-width:1200px) {
+@media (max-width: 1200px) {
   .MuiStepper-root .MuiStepLabel-root .MuiStepLabel-iconContainer svg {
     width: 30px;
     height: 30px;
@@ -182,11 +181,11 @@ main {
 
   .MuiStepper-root .MuiStepLabel-root .MuiStepLabel-labelContainer,
   .MuiStepper-root .MuiStepLabel-root .MuiStepLabel-labelContainer h6 {
-    font-size: 16px
+    font-size: 16px;
   }
 }
 
-@media (max-width:992px) {
+@media (max-width: 992px) {
   .MuiStepper-root .MuiStepLabel-root .MuiStepLabel-iconContainer svg {
     width: 28px;
     height: 28px;
@@ -194,11 +193,11 @@ main {
 
   .MuiStepper-root .MuiStepLabel-root .MuiStepLabel-labelContainer,
   .MuiStepper-root .MuiStepLabel-root .MuiStepLabel-labelContainer h6 {
-    font-size: 15px
+    font-size: 15px;
   }
 }
 
-@media (max-width:768px) {
+@media (max-width: 768px) {
   .MuiStepper-root .MuiStepLabel-root .MuiStepLabel-iconContainer svg {
     width: 26px;
     height: 26px;
@@ -216,7 +215,6 @@ main {
 }
 
 /* Custom Style */
-
 
 /* Date Picker */
 
@@ -270,7 +268,6 @@ body.en .MuiStepContent-root {
 
 /* Stepper */
 
-
 /* Phone Number */
 
 .react-tel-input .form-control {
@@ -288,7 +285,7 @@ body.ar .react-tel-input .selected-flag .flag {
 }
 
 body.ar .react-tel-input .selected-flag .arrow {
-  left: -20px
+  left: -20px;
 }
 
 .react-tel-input .form-control {
@@ -409,7 +406,6 @@ body.ar .MuiAlert-icon {
   margin-right: 0px !important;
 }
 
-
 /* Charts */
 /* body.ar canvas.doughnut_chart_1 {
   transform: rotateY(180deg);
@@ -434,11 +430,11 @@ body.en canvas.doughnut_chart_2 {
   }
 
   .paper_head {
-    @apply text-[18px] font-[700] md:text-[17px] xs:text-[16px]
+    @apply text-[18px] font-[700] md:text-[17px] xs:text-[16px];
   }
 
   .modal {
-    @apply bg-white rounded-xl p-6 md:p-4 xs:p-2 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] absolute grid justify-stretch items-center max-w-[90vw] max-h-[90vh] w-fit min-w-[40vw] md:min-w-[60vw] xs:min-w-[80vw] overflow-auto gap-8 md:gap-6 xs:gap-4 !outline-none
+    @apply bg-white rounded-xl p-6 md:p-4 xs:p-2 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] absolute grid justify-stretch items-center max-w-[90vw] max-h-[90vh] w-fit min-w-[40vw] md:min-w-[60vw] xs:min-w-[80vw] overflow-auto gap-8 md:gap-6 xs:gap-4 !outline-none;
   }
 
   .profile_employees_paper {
@@ -446,14 +442,14 @@ body.en canvas.doughnut_chart_2 {
   }
 
   .counter_card {
-    @apply bg-white relative rounded-xl md:rounded-md p-4 md:p-3 xs:p-2 !shadow-none grid justify-stretch items-center gap-5 md:gap-4 xs:gap-3 overflow-hidden
+    @apply bg-white relative rounded-xl md:rounded-md p-4 md:p-3 xs:p-2 !shadow-none grid justify-stretch items-center gap-5 md:gap-4 xs:gap-3 overflow-hidden;
   }
 
   .balance_card {
-    @apply rounded-xl md:rounded-md p-4 md:p-3 xs:p-2 !shadow-none grid justify-stretch items-center gap-5 md:gap-4 xs:gap-3
+    @apply rounded-xl md:rounded-md p-4 md:p-3 xs:p-2 !shadow-none grid justify-stretch items-center gap-5 md:gap-4 xs:gap-3;
   }
 
   .tour_step {
-    @apply bg-white px-4 py-5 md:px-3 xs:px-2 md:py-4 xs:py-3 grid justify-stretch items-center gap-4 md:gap-3 xs:gap-2 relative rounded-2xl md:rounded-xl xs:rounded-lg min-w-[200px]
+    @apply bg-white px-4 py-5 md:px-3 xs:px-2 md:py-4 xs:py-3 grid justify-stretch items-center gap-4 md:gap-3 xs:gap-2 relative rounded-2xl md:rounded-xl xs:rounded-lg min-w-[200px];
   }
 }

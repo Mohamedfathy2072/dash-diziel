@@ -102,14 +102,14 @@ const EntityActionMenu = memo(<T extends { id: number }>({
           <EditIcon className={`w-[20px] h-[20px] md:w-[18px] md:h-[18px] xs:w-[15px] xs:h-[15px]`} />
         </TableIconButton>
       )}
-      {showDelete && (
+      {/* {showDelete && (
         <TableIconButton
           onClick={handleDelete}
           className={`!bg-red-100 !text-red-600`}
         >
           <DeleteIcon className={`w-[20px] h-[20px] md:w-[18px] md:h-[18px] xs:w-[15px] xs:h-[15px]`} />
         </TableIconButton>
-      )}
+      )} */}
       {additionalActions}
     </Box>
   );

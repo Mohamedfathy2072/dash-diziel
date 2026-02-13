@@ -18,7 +18,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const BarChart = ({
@@ -28,8 +28,8 @@ const BarChart = ({
   dataSets: number[];
   labels: string[];
 }) => {
-  const { i18n } = useTranslation()
-  const isRTL = i18n.language === "ar"
+  const { i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
   const data = {
     labels: labels,
@@ -57,8 +57,10 @@ const BarChart = ({
     ],
   };
 
-  const options: ChartOptions<'bar'> = {
+  const options: ChartOptions<"bar"> = {
     responsive: true,
+    maintainAspectRatio: false,
+
     plugins: {
       legend: {
         display: false,
@@ -69,7 +71,9 @@ const BarChart = ({
     },
     scales: {
       y: {
-        position: isRTL ? 'right' : 'left',
+        position: isRTL ? "right" : "left",
+        grace: 0,
+        beginAtZero: true,
       },
       x: {
         reverse: isRTL,

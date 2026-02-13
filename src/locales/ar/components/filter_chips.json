@@ -68,7 +68,7 @@
     "vehicle_type": "نوع المركبة",
     "user_id": "معرف المستخدم",
     "driver_id": "معرف السائق",
-    "pickup_address": "عنوان الاستلام",
+    "pickup_address": "عنوان الاستلام (التحميل)",
     "destination_address": "عنوان الوجهة",
     "pending": "قيد الانتظار",
     "accepted": "مقبول",

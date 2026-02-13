@@ -15,6 +15,14 @@
   "reject": "رفض",
   "vehicleAlreadyVerified": "تم التحقق من هذه المركبة بالفعل.",
   "vehicleAlreadyRejected": "تم رفض هذه المركبة.",
-  "vehicleVerificationQuestion": "ما الإجراء الذي تريد تنفيذه على هذه المركبة؟"
+  "vehicleVerificationQuestion": "ما الإجراء الذي تريد تنفيذه على هذه المركبة؟",
+  "downloedExcelTemplate": "تحميل ملف Excel",
+  "selectedFileExcel": "اختر ملف Excel",
+  "failImportDriver": "فشل استيراد السائقين",
+  "failImportVehicles": "فشل استيراد المركبات",
+  "importUnexpectedError": "حدث خطأ غير متوقع أثناء الاستيراد",
+  "uploadDrivers": "رفع السائقين",
+  "uploadVehicles": "رفع المركبات",
+  "successImportDriver": "تم الاستيراد بنجاح ✅ (تم: {{imported}} - فشل: {{failed}})",
+  "onlyExcelCSVAllowed": "مسموح فقط برفع ملفات Excel أو CSV"
 }
-

@@ -4,7 +4,10 @@
     "verbatimModuleSyntax": false,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "module": "CommonJS"
+    "module": "CommonJS",
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "node"
   },
   "files": [],
   "references": [

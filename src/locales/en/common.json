@@ -15,6 +15,14 @@
   "reject": "Reject",
   "vehicleAlreadyVerified": "This vehicle is already verified.",
   "vehicleAlreadyRejected": "This vehicle has been rejected.",
-  "vehicleVerificationQuestion": "What action would you like to perform on this vehicle?"
+  "vehicleVerificationQuestion": "What action would you like to perform on this vehicle?",
+  "downloedExcelTemplate": "Download Excel template",
+  "selectedFileExcel": "Select Excel file",
+  "failImportDriver": "Failure to import drivers",
+  "failImportVehicles": "Failure to import vehicles",
+  "importUnexpectedError": "An unexpected error occurred during import",
+  "uploadDrivers": "Upload Drivers",
+  "uploadVehicles": "Upload Vehicles",
+  "successImportDriver": "Import completed successfully ✅ (Imported: {{imported}} - Failed: {{failed}})",
+  "onlyExcelCSVAllowed": "Only Excel or CSV files are allowed"
 }
-

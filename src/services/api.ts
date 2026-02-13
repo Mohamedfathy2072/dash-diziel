@@ -1,47 +1,55 @@
-import axios, { type AxiosInstance, type AxiosResponse, type AxiosError } from 'axios';
-import type { PaginatedApiResponse } from '../types/pagination';
-import type { User } from '../types/domain';
-import i18n from '../i18n';
+import axios, {
+  type AxiosInstance,
+  type AxiosResponse,
+  type AxiosError,
+} from "axios";
+import type { PaginatedApiResponse } from "../types/pagination";
+import type { User } from "../types/domain";
+import i18n from "../i18n";
 
 // Create base axios instance
 const createApiClient = (): AxiosInstance => {
   // Use direct URL in production/build, proxy in development
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.MODE === 'production' ? 'https://newapi.diziel.com' : 'http://localhost:8000');
+  const backendUrl =
+    import.meta.env.VITE_BACKEND_URL ||
+    (import.meta.env.MODE === "production"
+      ? "https://newapi.diziel.com"
+      : "http://localhost:8000");
   const isDev = import.meta.env.DEV;
-  const baseURL = isDev ? '/api/v1' : `${backendUrl}/api/v1`;
-  
+  const baseURL = isDev ? "/api/v1" : `${backendUrl}/api/v1`;
+
   const client = axios.create({
     baseURL: baseURL,
     withCredentials: true,
     maxRedirects: 0, // Prevent automatic redirects
     headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Accept-Language': i18n.language || 'en',
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "Accept-Language": i18n.language || "en",
     },
   });
-  
+
   // Add request interceptor to update locale header on each request
   client.interceptors.request.use(
     (config) => {
       // Update locale header with current language
       if (config.headers) {
-        config.headers['Accept-Language'] = i18n.language || 'en';
-        
+        config.headers["Accept-Language"] = i18n.language || "en";
+
         // If data is FormData, remove Content-Type to let browser set it with boundary
         if (config.data instanceof FormData) {
-          delete config.headers['Content-Type'];
+          delete config.headers["Content-Type"];
         }
       }
       // Debug: Log the full URL being requested
       if (import.meta.env.DEV) {
-        console.log('API Request URL:', config.baseURL + (config.url || ''));
+        console.log("API Request URL:", config.baseURL + (config.url || ""));
       }
       return config;
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   // Add response interceptor to handle 401 Unauthorized
@@ -49,13 +57,13 @@ const createApiClient = (): AxiosInstance => {
     (response: AxiosResponse) => {
       // Debug: Log response URL if redirected
       if (import.meta.env.DEV && response.request?.responseURL) {
-        console.log('API Response URL:', response.request.responseURL);
+        console.log("API Response URL:", response.request.responseURL);
       }
       return response;
     },
     (error: AxiosError) => {
       // Log full error details for debugging
-      console.error('🔴 API Error Details:', {
+      console.error("🔴 API Error Details:", {
         url: error.config?.url,
         method: error.config?.method?.toUpperCase(),
         baseURL: error.config?.baseURL,
@@ -64,20 +72,22 @@ const createApiClient = (): AxiosInstance => {
         statusText: error.response?.statusText,
         data: error.response?.data,
         message: error.message,
-        request: error.request ? 'Request sent but no response' : 'No request sent',
+        request: error.request
+          ? "Request sent but no response"
+          : "No request sent",
       });
-      
+
       // Handle 401 Unauthorized - redirect to login
       if (error.response?.status === 401) {
         // Don't redirect if this is a login request itself (to avoid redirect loops)
-        const requestUrl = error.config?.url || '';
-        const isLoginRequest = requestUrl.includes('/auth/login');
-        
+        const requestUrl = error.config?.url || "";
+        const isLoginRequest = requestUrl.includes("/auth/login");
+
         if (!isLoginRequest) {
           // Only redirect if not already on login page to avoid infinite loops
           const currentPath = window.location.pathname;
-          const loginRoute = import.meta.env.VITE_LOGIN_ROUTE || '/login';
-          
+          const loginRoute = import.meta.env.VITE_LOGIN_ROUTE || "/login";
+
           if (!currentPath.includes(loginRoute)) {
             // Clear stored auth data from localStorage
             // This matches what the logout action does in authSlice
@@ -85,19 +95,19 @@ const createApiClient = (): AxiosInstance => {
             if (userDataStorageKey) {
               localStorage.removeItem(userDataStorageKey);
             }
-            
+
             // Clear any other auth-related data if needed
             // Note: Redux state will be cleared on page reload/redirect
-            
+
             // Redirect to login page
             window.location.href = loginRoute;
           }
         }
       }
-      
+
       // Return the error so it can be handled by the calling code
       return Promise.reject(error);
-    }
+    },
   );
 
   return client;
@@ -107,132 +117,147 @@ const createApiClient = (): AxiosInstance => {
 export const authService = {
   login: (email: string, password: string) => {
     const client = createApiClient();
-    return client.post('/auth/login', { email, password });
+    return client.post("/auth/login", { email, password });
   },
-  
+
   logout: () => {
     const client = createApiClient();
-    return client.post('/auth/logout');
+    return client.post("/auth/logout");
   },
-  
+
   me: () => {
     const client = createApiClient();
-    return client.get('/auth/me');
+    return client.get("/auth/me");
   },
-  
+
   register: (data: any) => {
     const client = createApiClient();
-    return client.post('/auth/register', data);
+    return client.post("/auth/register", data);
   },
 
   forgotPassword: (email: string) => {
     const client = createApiClient();
-    return client.post('/auth/forgot-password', { email });
+    return client.post("/auth/forgot-password", { email });
   },
 
   resetPassword: (data: any) => {
     const client = createApiClient();
-    return client.post('/auth/reset-password', data);
+    return client.post("/auth/reset-password", data);
   },
 };
 
 // User Service
 export const userService = {
-  getAll: (page = 1, limit = 10, additionalParams?: Record<string, any>): Promise<AxiosResponse<PaginatedApiResponse<User>>> => {
+  getAll: (
+    page = 1,
+    limit = 10,
+    additionalParams?: Record<string, any>,
+  ): Promise<AxiosResponse<PaginatedApiResponse<User>>> => {
     const client = createApiClient();
     const params: Record<string, any> = { page, limit };
-    
+
     // Merge any additional query parameters (like filters)
     if (additionalParams) {
-      Object.keys(additionalParams).forEach(key => {
-        if (additionalParams[key] !== undefined && additionalParams[key] !== null && additionalParams[key] !== '') {
+      Object.keys(additionalParams).forEach((key) => {
+        if (
+          additionalParams[key] !== undefined &&
+          additionalParams[key] !== null &&
+          additionalParams[key] !== ""
+        ) {
           params[key] = additionalParams[key];
         }
       });
     }
-    
-    return client.get('/users', { params });
+
+    return client.get("/users", { params });
   },
-  
+
   getById: (id: number) => {
     const client = createApiClient();
     return client.get(`/users/${id}`);
   },
-  
+
   create: (data: any) => {
     const client = createApiClient();
     // If data is FormData, don't set Content-Type - browser will set it with boundary
     if (data instanceof FormData) {
-      return client.post('/users', data, {
+      return client.post("/users", data, {
         headers: {
-          'Content-Type': undefined, // Let browser set Content-Type with boundary
+          "Content-Type": undefined, // Let browser set Content-Type with boundary
         },
       });
     }
-    return client.post('/users', data);
+    return client.post("/users", data);
   },
-  
+
   update: (id: number, data: any) => {
     // If data is FormData, use POST for file uploads
     // Laravel API routes don't support method spoofing, so we use POST directly
     if (data instanceof FormData) {
       const formDataClient = createApiClient();
       // Remove Content-Type header for FormData - browser will set it with boundary
-      delete formDataClient.defaults.headers['Content-Type'];
+      delete formDataClient.defaults.headers["Content-Type"];
       return formDataClient.post(`/users/${id}`, data);
     }
     const client = createApiClient();
     return client.put(`/users/${id}`, data);
   },
-  
+
   delete: (id: number) => {
     const client = createApiClient();
     return client.delete(`/users/${id}`);
   },
-  
+
   // User Roles Management (Admin only)
   getRoles: (userId: number | string) => {
     const client = createApiClient();
     return client.get(`/admin/users/${userId}/roles`);
   },
-  
+
   assignRole: (userId: number | string, roleId: number) => {
     const client = createApiClient();
     return client.post(`/admin/users/${userId}/roles`, {
       role_id: roleId,
     });
   },
-  
+
   syncRoles: (userId: number | string, roleIds: number[]) => {
     const client = createApiClient();
     return client.put(`/admin/users/${userId}/roles`, {
       role_ids: roleIds,
     });
   },
-  
+
   removeRole: (userId: number | string, roleId: number | string) => {
     const client = createApiClient();
     return client.delete(`/admin/users/${userId}/roles/${roleId}`);
   },
-  
-  getPermissions: (userId: number | string, params?: {
-    group?: string;
-    group_by?: boolean | string;
-  }) => {
+
+  getPermissions: (
+    userId: number | string,
+    params?: {
+      group?: string;
+      group_by?: boolean | string;
+    },
+  ) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.group) queryParams.group = params.group;
     if (params?.group_by !== undefined) queryParams.group_by = params.group_by;
-    
-    return client.get(`/admin/users/${userId}/roles/permissions`, { params: queryParams });
+
+    return client.get(`/admin/users/${userId}/roles/permissions`, {
+      params: queryParams,
+    });
   },
-  
+
   checkPermission: (userId: number | string, permissionSlug: string) => {
     const client = createApiClient();
-    return client.get(`/admin/users/${userId}/permissions/check/${permissionSlug}`);
+    return client.get(
+      `/admin/users/${userId}/permissions/check/${permissionSlug}`,
+    );
   },
-  
+
   checkRole: (userId: number | string, roleSlug: string) => {
     const client = createApiClient();
     return client.get(`/admin/users/${userId}/roles/check-role/${roleSlug}`);
@@ -244,49 +269,53 @@ export const driverService = {
   getAll: (page = 1, limit = 10, additionalParams?: Record<string, any>) => {
     const client = createApiClient();
     const params: Record<string, any> = { page, limit };
-    
+
     // Merge any additional query parameters (like filters)
     if (additionalParams) {
-      Object.keys(additionalParams).forEach(key => {
-        if (additionalParams[key] !== undefined && additionalParams[key] !== null && additionalParams[key] !== '') {
+      Object.keys(additionalParams).forEach((key) => {
+        if (
+          additionalParams[key] !== undefined &&
+          additionalParams[key] !== null &&
+          additionalParams[key] !== ""
+        ) {
           params[key] = additionalParams[key];
         }
       });
     }
-    
-    return client.get('/drivers', { params });
+
+    return client.get("/drivers", { params });
   },
-  
+
   getById: (id: number) => {
     const client = createApiClient();
     return client.get(`/drivers/${id}`);
   },
-  
+
   create: (data: any) => {
     const client = createApiClient();
     // If data is FormData, don't set Content-Type - browser will set it with boundary
     if (data instanceof FormData) {
-      return client.post('/drivers', data, {
+      return client.post("/drivers", data, {
         headers: {
-          'Content-Type': undefined, // Let browser set Content-Type with boundary
+          "Content-Type": undefined, // Let browser set Content-Type with boundary
         },
       });
     }
-    return client.post('/drivers', data);
+    return client.post("/drivers", data);
   },
-  
+
   update: (id: number, data: any) => {
     // If data is FormData, use POST for file uploads
     if (data instanceof FormData) {
       const formDataClient = createApiClient();
       // Remove Content-Type header for FormData - browser will set it with boundary
-      delete formDataClient.defaults.headers['Content-Type'];
+      delete formDataClient.defaults.headers["Content-Type"];
       return formDataClient.post(`/drivers/${id}`, data);
     }
     const client = createApiClient();
     return client.post(`/drivers/${id}`, data);
   },
-  
+
   delete: (id: number) => {
     const client = createApiClient();
     return client.delete(`/drivers/${id}`);
@@ -302,19 +331,27 @@ export const driverService = {
     const client = createApiClient();
     return client.post(`/drivers/${driverId}/documents`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
   },
 
-  verifyDocument: (driverId: number, documentId: number, rejectionReason?: string) => {
+  verifyDocument: (
+    driverId: number,
+    documentId: number,
+    rejectionReason?: string,
+  ) => {
     const client = createApiClient();
     return client.post(`/drivers/${driverId}/documents/${documentId}/verify`, {
       rejection_reason: rejectionReason || null,
     });
   },
 
-  rejectDocument: (driverId: number, documentId: number, rejectionReason: string) => {
+  rejectDocument: (
+    driverId: number,
+    documentId: number,
+    rejectionReason: string,
+  ) => {
     const client = createApiClient();
     return client.post(`/drivers/${driverId}/documents/${documentId}/verify`, {
       rejection_reason: rejectionReason,
@@ -324,14 +361,18 @@ export const driverService = {
   downloadDocument: (driverId: number, documentId: number) => {
     const client = createApiClient();
     return client.get(`/drivers/${driverId}/documents/${documentId}/download`, {
-      responseType: 'blob',
+      responseType: "blob",
     });
   },
 
-  updateDocument: (driverId: number, documentId: number, formData: FormData) => {
+  updateDocument: (
+    driverId: number,
+    documentId: number,
+    formData: FormData,
+  ) => {
     const client = createApiClient();
     // Remove Content-Type header for FormData - browser will set it with boundary
-    delete client.defaults.headers['Content-Type'];
+    delete client.defaults.headers["Content-Type"];
     return client.put(`/drivers/${driverId}/documents/${documentId}`, formData);
   },
 
@@ -343,7 +384,7 @@ export const driverService = {
   expireDocument: (driverId: number, documentId: number) => {
     const client = createApiClient();
     return client.put(`/drivers/${driverId}/documents/${documentId}`, {
-      verification_status: 'expired',
+      verification_status: "expired",
     });
   },
 
@@ -352,31 +393,46 @@ export const driverService = {
     const client = createApiClient();
     return client.get(`/admin/drivers/${driverId}/wallet`);
   },
-  
-  addDeposit: (driverId: number | string, data: {
-    amount: number;
-    type?: string; // "manual" for manual deposits by admin
-    description?: string;
-    reference_number?: string;
-    metadata?: Record<string, any>;
-  }) => {
+
+  addDeposit: (
+    driverId: number | string,
+    data: {
+      amount: number;
+      type?: string; // "manual" for manual deposits by admin
+      description?: string;
+      reference_number?: string;
+      metadata?: Record<string, any>;
+    },
+  ) => {
     const client = createApiClient();
     return client.post(`/admin/drivers/${driverId}/wallet/deposit`, data);
   },
-  
-  getTransactions: (driverId: number | string, params?: {
-    page?: number;
-    per_page?: number;
-    type?: string;
-  }) => {
+
+  getTransactions: (
+    driverId: number | string,
+    params?: {
+      page?: number;
+      per_page?: number;
+      type?: string;
+    },
+  ) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.page) queryParams.page = params.page;
     if (params?.per_page) queryParams.per_page = params.per_page;
     if (params?.type) queryParams.type = params.type;
-    
-    return client.get(`/admin/drivers/${driverId}/wallet/transactions`, { params: queryParams });
+
+    return client.get(`/admin/drivers/${driverId}/wallet/transactions`, {
+      params: queryParams,
+    });
+  },
+  importDrivers: (file: File) => {
+    const client = createApiClient();
+    const formData = new FormData();
+    formData.append("file", file);
+    delete client.defaults.headers["Content-Type"];
+    return client.post("/drivers/import", formData);
   },
 };
 
@@ -395,60 +451,62 @@ export const vehicleService = {
   }) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.page) queryParams.page = params.page;
     if (params?.limit) queryParams.limit = params.limit;
     if (params?.status) queryParams.status = params.status;
-    if (params?.verification_status) queryParams.verification_status = params.verification_status;
-    if (params?.vehicle_type_id) queryParams.vehicle_type_id = params.vehicle_type_id;
+    if (params?.verification_status)
+      queryParams.verification_status = params.verification_status;
+    if (params?.vehicle_type_id)
+      queryParams.vehicle_type_id = params.vehicle_type_id;
     if (params?.driver_id) queryParams.driver_id = params.driver_id;
     if (params?.make) queryParams.make = params.make;
     if (params?.model) queryParams.model = params.model;
     if (params?.license_plate) queryParams.license_plate = params.license_plate;
-    
-    return client.get('/vehicles/composite', { params: queryParams });
+
+    return client.get("/vehicles/composite", { params: queryParams });
   },
-  
+
   getById: (id: number) => {
     const client = createApiClient();
     return client.get(`/vehicles/composite/${id}`);
   },
-  
+
   getByDriver: (driverId: number) => {
     const client = createApiClient();
     return client.get(`/drivers/${driverId}/vehicles`);
   },
-  
+
   create: (data: any) => {
     // If data is FormData, handle it properly
     if (data instanceof FormData) {
       const formDataClient = createApiClient();
       // Remove Content-Type header for FormData - browser will set it with boundary
-      delete formDataClient.defaults.headers['Content-Type'];
-      return formDataClient.post('/vehicles', data);
+      delete formDataClient.defaults.headers["Content-Type"];
+      return formDataClient.post("/vehicles", data);
     }
     const client = createApiClient();
-    return client.post('/vehicles', data);
+    return client.post("/vehicles", data);
   },
-  
+
   update: (id: number, data: any) => {
     // If data is FormData, handle it properly
     if (data instanceof FormData) {
       const formDataClient = createApiClient();
       // Remove Content-Type header for FormData - browser will set it with boundary
-      delete formDataClient.defaults.headers['Content-Type'];
+      delete formDataClient.defaults.headers["Content-Type"];
       return formDataClient.put(`/vehicles/composite/${id}`, data);
     }
     const client = createApiClient();
     return client.put(`/vehicles/composite/${id}`, data);
   },
-  
+
   delete: (id: number) => {
     const client = createApiClient();
     return client.delete(`/vehicles/${id}`);
   },
 
-  verify: (id: number, action: 'verify' | 'reject', notes?: string) => {
+  verify: (id: number, action: "verify" | "reject", notes?: string) => {
     const client = createApiClient();
     return client.post(`/vehicles/${id}/verify`, { action, notes });
   },
@@ -457,30 +515,37 @@ export const vehicleService = {
     const client = createApiClient();
     return client.post(`/vehicles/${id}/set-primary`);
   },
+    importVehicles: (file: File) => {
+    const client = createApiClient();
+    const formData = new FormData();
+    formData.append("file", file);
+    delete client.defaults.headers["Content-Type"];
+    return client.post("/vehicles/import", formData);
+  },
 };
 
 // Trip Service
 export const tripService = {
   getAll: (params: { [key: string]: any } = {}) => {
     const client = createApiClient();
-    return client.get('/trips', { params });
+    return client.get("/trips", { params });
   },
-  
+
   getById: (id: number) => {
     const client = createApiClient();
     return client.get(`/trips/${id}`);
   },
-  
+
   create: (data: any) => {
     const client = createApiClient();
-    return client.post('/trips', data);
+    return client.post("/trips", data);
   },
-  
+
   update: (id: number, data: any) => {
     const client = createApiClient();
     return client.put(`/trips/${id}`, data);
   },
-  
+
   delete: (id: number) => {
     const client = createApiClient();
     return client.delete(`/trips/${id}`);
@@ -513,22 +578,22 @@ export const tripOfferService = {
     const client = createApiClient();
     return client.get(`/trips/${tripId}/offers`);
   },
-  
+
   getById: (tripId: number, offerId: number) => {
     const client = createApiClient();
     return client.get(`/trips/${tripId}/offers/${offerId}`);
   },
-  
+
   create: (tripId: number, data: any) => {
     const client = createApiClient();
     return client.post(`/trips/${tripId}/offers`, data);
   },
-  
+
   update: (tripId: number, offerId: number, data: any) => {
     const client = createApiClient();
     return client.put(`/trips/${tripId}/offers/${offerId}`, data);
   },
-  
+
   delete: (tripId: number, offerId: number) => {
     const client = createApiClient();
     return client.delete(`/trips/${tripId}/offers/${offerId}`);
@@ -545,38 +610,38 @@ export const vehicleTypeService = {
   getAll: (params?: {
     page?: number;
     limit?: number;
-    status?: 'active' | 'inactive';
+    status?: "active" | "inactive";
   }) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.page) queryParams.page = params.page;
     if (params?.limit) queryParams.limit = params.limit;
     if (params?.status) queryParams.status = params.status;
-    
-    return client.get('/vehicle-types', { params: queryParams });
+
+    return client.get("/vehicle-types", { params: queryParams });
   },
-  
+
   getActive: () => {
     const client = createApiClient();
-    return client.get('/vehicle-types/active');
+    return client.get("/vehicle-types/active");
   },
-  
+
   getById: (id: number) => {
     const client = createApiClient();
     return client.get(`/vehicle-types/${id}`);
   },
-  
+
   create: (data: any) => {
     const client = createApiClient();
-    return client.post('/vehicle-types', data);
+    return client.post("/vehicle-types", data);
   },
-  
+
   update: (id: number, data: any) => {
     const client = createApiClient();
     return client.put(`/vehicle-types/${id}`, data);
   },
-  
+
   delete: (id: number) => {
     const client = createApiClient();
     return client.delete(`/vehicle-types/${id}`);
@@ -585,36 +650,32 @@ export const vehicleTypeService = {
 
 // Coupon Service (Admin only)
 export const couponService = {
-  getAll: (params?: {
-    page?: number;
-    limit?: number;
-    status?: string;
-  }) => {
+  getAll: (params?: { page?: number; limit?: number; status?: string }) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.page) queryParams.page = params.page;
     if (params?.limit) queryParams.limit = params.limit;
     if (params?.status) queryParams.status = params.status;
-    
-    return client.get('/admin/coupons', { params: queryParams });
+
+    return client.get("/admin/coupons", { params: queryParams });
   },
-  
+
   getById: (id: number) => {
     const client = createApiClient();
     return client.get(`/admin/coupons/${id}`);
   },
-  
+
   create: (data: any) => {
     const client = createApiClient();
-    return client.post('/admin/coupons', data);
+    return client.post("/admin/coupons", data);
   },
-  
+
   update: (id: number, data: any) => {
     const client = createApiClient();
     return client.put(`/admin/coupons/${id}`, data);
   },
-  
+
   delete: (id: number) => {
     const client = createApiClient();
     return client.delete(`/admin/coupons/${id}`);
@@ -632,55 +693,55 @@ export const adService = {
   }) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.page) queryParams.page = params.page;
     if (params?.limit) queryParams.limit = params.limit;
     if (params?.is_active) queryParams.is_active = params.is_active;
     if (params?.valid_from) queryParams.valid_from = params.valid_from;
     if (params?.valid_until) queryParams.valid_until = params.valid_until;
-    
-    return client.get('/admin/ads', { params: queryParams });
+
+    return client.get("/admin/ads", { params: queryParams });
   },
-  
+
   getActive: () => {
     const client = createApiClient();
-    return client.get('/ads');
+    return client.get("/ads");
   },
-  
+
   getById: (id: number) => {
     const client = createApiClient();
     return client.get(`/admin/ads/${id}`);
   },
-  
+
   create: (data: any) => {
     const client = createApiClient();
     // If data is FormData, don't set Content-Type - browser will set it with boundary
     if (data instanceof FormData) {
-      return client.post('/admin/ads', data, {
+      return client.post("/admin/ads", data, {
         headers: {
-          'Content-Type': undefined, // Let browser set Content-Type with boundary
+          "Content-Type": undefined, // Let browser set Content-Type with boundary
         },
       });
     }
-    return client.post('/admin/ads', data);
+    return client.post("/admin/ads", data);
   },
-  
+
   update: (id: number, data: any) => {
     // If data is FormData, use POST for file uploads with method spoofing
     if (data instanceof FormData) {
       const formDataClient = createApiClient();
       // Add _method=PUT for Laravel method spoofing
-      if (!data.has('_method')) {
-        data.append('_method', 'PUT');
+      if (!data.has("_method")) {
+        data.append("_method", "PUT");
       }
       // Remove Content-Type header for FormData - browser will set it with boundary
-      delete formDataClient.defaults.headers['Content-Type'];
+      delete formDataClient.defaults.headers["Content-Type"];
       return formDataClient.post(`/admin/ads/${id}`, data);
     }
     const client = createApiClient();
     return client.put(`/admin/ads/${id}`, data);
   },
-  
+
   delete: (id: number) => {
     const client = createApiClient();
     return client.delete(`/admin/ads/${id}`);
@@ -699,37 +760,38 @@ export const complaintService = {
   }) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.page) queryParams.page = params.page;
     if (params?.limit) queryParams.limit = params.limit;
     if (params?.status) queryParams.status = params.status;
     if (params?.user_id) queryParams.user_id = params.user_id;
-    if (params?.complaintable_type) queryParams.complaintable_type = params.complaintable_type;
+    if (params?.complaintable_type)
+      queryParams.complaintable_type = params.complaintable_type;
     if (params?.subject) queryParams.subject = params.subject;
-    
-    return client.get('/complaints', { params: queryParams });
+
+    return client.get("/complaints", { params: queryParams });
   },
-  
+
   getById: (id: number) => {
     const client = createApiClient();
     return client.get(`/complaints/${id}`);
   },
-  
+
   create: (data: any) => {
     const client = createApiClient();
-    return client.post('/complaints', data);
+    return client.post("/complaints", data);
   },
-  
+
   update: (id: number, data: any) => {
     const client = createApiClient();
     return client.put(`/complaints/${id}`, data);
   },
-  
+
   resolve: (id: number, data: { resolution_notes?: string }) => {
     const client = createApiClient();
     return client.post(`/admin/complaints/${id}/resolve`, data);
   },
-  
+
   delete: (id: number) => {
     const client = createApiClient();
     return client.delete(`/complaints/${id}`);
@@ -773,19 +835,19 @@ export const notificationService = {
   }) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.page) queryParams.page = params.page;
     if (params?.limit) queryParams.limit = params.limit;
     if (params?.target_type) queryParams.target_type = params.target_type;
-    
-    return client.get('/admin/notifications', { params: queryParams });
+
+    return client.get("/admin/notifications", { params: queryParams });
   },
-  
+
   getById: (id: number) => {
     const client = createApiClient();
     return client.get(`/admin/notifications/${id}`);
   },
-  
+
   send: (data: {
     title: string;
     body: string;
@@ -794,9 +856,9 @@ export const notificationService = {
     driver_id?: number;
   }) => {
     const client = createApiClient();
-    return client.post('/admin/notifications/send', data);
+    return client.post("/admin/notifications/send", data);
   },
-  
+
   test: (data: {
     title: string;
     body: string;
@@ -805,7 +867,7 @@ export const notificationService = {
     driver_id?: number;
   }) => {
     const client = createApiClient();
-    return client.post('/admin/notifications/test', data);
+    return client.post("/admin/notifications/test", data);
   },
 };
 
@@ -813,7 +875,7 @@ export const notificationService = {
 export const statisticsService = {
   getStatistics: () => {
     const client = createApiClient();
-    return client.get('/admin/statistics');
+    return client.get("/admin/statistics");
   },
 };
 
@@ -825,32 +887,32 @@ export const companyProfitsService = {
     end_date?: string;
   }) => {
     const client = createApiClient();
-    return client.get('/admin/company-profits', { params });
+    return client.get("/admin/company-profits", { params });
   },
-  
+
   getTemporalDistribution: () => {
     const client = createApiClient();
-    return client.get('/admin/company-profits/temporal-distribution');
+    return client.get("/admin/company-profits/temporal-distribution");
   },
-  
+
   getByPaymentMethod: (params?: {
     period?: string;
     start_date?: string;
     end_date?: string;
   }) => {
     const client = createApiClient();
-    return client.get('/admin/company-profits/by-payment-method', { params });
+    return client.get("/admin/company-profits/by-payment-method", { params });
   },
-  
+
   getByCity: (params?: {
     period?: string;
     start_date?: string;
     end_date?: string;
   }) => {
     const client = createApiClient();
-    return client.get('/admin/company-profits/by-city', { params });
+    return client.get("/admin/company-profits/by-city", { params });
   },
-  
+
   getTopDrivers: (params?: {
     limit?: number;
     period?: string;
@@ -858,28 +920,22 @@ export const companyProfitsService = {
     end_date?: string;
   }) => {
     const client = createApiClient();
-    return client.get('/admin/company-profits/top-drivers', { params });
+    return client.get("/admin/company-profits/top-drivers", { params });
   },
-  
-  getGrowthIndicators: (params?: {
-    period?: string;
-  }) => {
+
+  getGrowthIndicators: (params?: { period?: string }) => {
     const client = createApiClient();
-    return client.get('/admin/company-profits/growth-indicators', { params });
+    return client.get("/admin/company-profits/growth-indicators", { params });
   },
-  
-  getMonthlyTrend: (params?: {
-    months?: number;
-  }) => {
+
+  getMonthlyTrend: (params?: { months?: number }) => {
     const client = createApiClient();
-    return client.get('/admin/company-profits/monthly-trend', { params });
+    return client.get("/admin/company-profits/monthly-trend", { params });
   },
-  
-  getDailyTrend: (params?: {
-    days?: number;
-  }) => {
+
+  getDailyTrend: (params?: { days?: number }) => {
     const client = createApiClient();
-    return client.get('/admin/company-profits/daily-trend', { params });
+    return client.get("/admin/company-profits/daily-trend", { params });
   },
 };
 
@@ -887,34 +943,34 @@ export const companyProfitsService = {
 export const settingsService = {
   getAll: () => {
     const client = createApiClient();
-    return client.get('/admin/settings');
+    return client.get("/admin/settings");
   },
-  
+
   getByKey: (key: string) => {
     const client = createApiClient();
     return client.get(`/admin/settings/${key}`);
   },
-  
+
   getPlatformFeePercentage: () => {
     const client = createApiClient();
-    return client.get('/admin/settings/platform-fee-percentage');
+    return client.get("/admin/settings/platform-fee-percentage");
   },
-  
+
   updatePlatformFeePercentage: (platformFeePercentage: number) => {
     const client = createApiClient();
-    return client.put('/admin/settings/platform-fee-percentage', {
+    return client.put("/admin/settings/platform-fee-percentage", {
       platform_fee_percentage: platformFeePercentage,
     });
   },
-  
+
   getMaxDriverDebtLimit: () => {
     const client = createApiClient();
-    return client.get('/admin/settings/max-driver-debt-limit');
+    return client.get("/admin/settings/max-driver-debt-limit");
   },
-  
+
   updateMaxDriverDebtLimit: (maxDriverDebtLimit: number) => {
     const client = createApiClient();
-    return client.put('/admin/settings/max-driver-debt-limit', {
+    return client.put("/admin/settings/max-driver-debt-limit", {
       max_driver_debt_limit: maxDriverDebtLimit,
     });
   },
@@ -930,20 +986,21 @@ export const rolesService = {
   }) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.page) queryParams.page = params.page;
     if (params?.per_page) queryParams.per_page = params.per_page;
-    if (params?.is_active !== undefined) queryParams.is_active = params.is_active;
+    if (params?.is_active !== undefined)
+      queryParams.is_active = params.is_active;
     if (params?.search) queryParams.search = params.search;
-    
-    return client.get('/admin/roles', { params: queryParams });
+
+    return client.get("/admin/roles", { params: queryParams });
   },
-  
+
   getById: (id: number | string) => {
     const client = createApiClient();
     return client.get(`/admin/roles/${id}`);
   },
-  
+
   create: (data: {
     name: string;
     slug?: string;
@@ -952,46 +1009,52 @@ export const rolesService = {
     permission_ids?: number[];
   }) => {
     const client = createApiClient();
-    return client.post('/admin/roles', data);
+    return client.post("/admin/roles", data);
   },
-  
-  update: (id: number | string, data: {
-    name?: string;
-    slug?: string;
-    description?: string;
-    is_active?: boolean;
-  }) => {
+
+  update: (
+    id: number | string,
+    data: {
+      name?: string;
+      slug?: string;
+      description?: string;
+      is_active?: boolean;
+    },
+  ) => {
     const client = createApiClient();
     return client.put(`/admin/roles/${id}`, data);
   },
-  
+
   delete: (id: number | string) => {
     const client = createApiClient();
     return client.delete(`/admin/roles/${id}`);
   },
-  
+
   getPermissions: (id: number | string) => {
     const client = createApiClient();
     return client.get(`/admin/roles/${id}/permissions`);
   },
-  
+
   assignPermissions: (id: number | string, permissionIds: number[]) => {
     const client = createApiClient();
     return client.post(`/admin/roles/${id}/permissions`, {
       permission_ids: permissionIds,
     });
   },
-  
-  getUsers: (id: number | string, params?: {
-    page?: number;
-    per_page?: number;
-  }) => {
+
+  getUsers: (
+    id: number | string,
+    params?: {
+      page?: number;
+      per_page?: number;
+    },
+  ) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.page) queryParams.page = params.page;
     if (params?.per_page) queryParams.per_page = params.per_page;
-    
+
     return client.get(`/admin/roles/${id}/users`, { params: queryParams });
   },
 };
@@ -1007,21 +1070,21 @@ export const permissionsService = {
   }) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.page) queryParams.page = params.page;
     if (params?.per_page) queryParams.per_page = params.per_page;
     if (params?.group) queryParams.group = params.group;
     if (params?.search) queryParams.search = params.search;
     if (params?.group_by !== undefined) queryParams.group_by = params.group_by;
-    
-    return client.get('/admin/permissions', { params: queryParams });
+
+    return client.get("/admin/permissions", { params: queryParams });
   },
-  
+
   getById: (id: number | string) => {
     const client = createApiClient();
     return client.get(`/admin/permissions/${id}`);
   },
-  
+
   create: (data: {
     name: string;
     slug?: string;
@@ -1029,32 +1092,35 @@ export const permissionsService = {
     description?: string;
   }) => {
     const client = createApiClient();
-    return client.post('/admin/permissions', data);
+    return client.post("/admin/permissions", data);
   },
-  
-  update: (id: number | string, data: {
-    name?: string;
-    slug?: string;
-    group?: string;
-    description?: string;
-  }) => {
+
+  update: (
+    id: number | string,
+    data: {
+      name?: string;
+      slug?: string;
+      group?: string;
+      description?: string;
+    },
+  ) => {
     const client = createApiClient();
     return client.put(`/admin/permissions/${id}`, data);
   },
-  
+
   delete: (id: number | string) => {
     const client = createApiClient();
     return client.delete(`/admin/permissions/${id}`);
   },
-  
+
   getRoles: (id: number | string) => {
     const client = createApiClient();
     return client.get(`/admin/permissions/${id}/roles`);
   },
-  
+
   getGroups: () => {
     const client = createApiClient();
-    return client.get('/admin/permissions/groups/list');
+    return client.get("/admin/permissions/groups/list");
   },
 };
 
@@ -1064,47 +1130,54 @@ export const userRolesService = {
     const client = createApiClient();
     return client.get(`/admin/users/${userId}/roles`);
   },
-  
-  getUserPermissions: (userId: number, params?: {
-    group?: string;
-    group_by?: boolean | string;
-  }) => {
+
+  getUserPermissions: (
+    userId: number,
+    params?: {
+      group?: string;
+      group_by?: boolean | string;
+    },
+  ) => {
     const client = createApiClient();
     const queryParams: Record<string, any> = {};
-    
+
     if (params?.group) queryParams.group = params.group;
     if (params?.group_by !== undefined) queryParams.group_by = params.group_by;
-    
-    return client.get(`/admin/users/${userId}/roles/permissions`, { params: queryParams });
+
+    return client.get(`/admin/users/${userId}/roles/permissions`, {
+      params: queryParams,
+    });
   },
-  
+
   assignRole: (userId: number, roleId: number) => {
     const client = createApiClient();
     return client.post(`/admin/users/${userId}/roles`, {
       role_id: roleId,
     });
   },
-  
+
   syncRoles: (userId: number, roleIds: number[]) => {
     const client = createApiClient();
     return client.put(`/admin/users/${userId}/roles`, {
       role_ids: roleIds,
     });
   },
-  
+
   removeRole: (userId: number, roleId: number | string) => {
     const client = createApiClient();
     return client.delete(`/admin/users/${userId}/roles/${roleId}`);
   },
-  
+
   checkRole: (userId: number, roleSlug: string) => {
     const client = createApiClient();
     return client.get(`/admin/users/${userId}/roles/check-role/${roleSlug}`);
   },
-  
+
   checkPermission: (userId: number, permissionSlug: string) => {
     const client = createApiClient();
-    return client.get(`/admin/users/${userId}/permissions/check/${permissionSlug}`);
+    return client.get(
+      `/admin/users/${userId}/permissions/check/${permissionSlug}`,
+    );
   },
 };
 
@@ -1112,17 +1185,20 @@ export const userRolesService = {
 export const governoratesService = {
   getAll: () => {
     // Use direct URL instead of proxy
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.MODE === 'production' ? 'https://newapi.diziel.com' : 'http://localhost:8000');
+    const backendUrl =
+      import.meta.env.VITE_BACKEND_URL ||
+      (import.meta.env.MODE === "production"
+        ? "https://newapi.diziel.com"
+        : "http://localhost:8000");
     const client = axios.create({
       baseURL: `${backendUrl}/api/v1`,
       withCredentials: true,
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Accept-Language': i18n.language || 'en',
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Accept-Language": i18n.language || "en",
       },
     });
-    return client.get('/governorates');
+    return client.get("/governorates");
   },
 };
-

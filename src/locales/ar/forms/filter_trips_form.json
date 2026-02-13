@@ -5,7 +5,7 @@
     "vehicleType": "نوع المركبة",
     "userId": "معرف المستخدم",
     "driverId": "معرف السائق",
-    "pickupAddress": "عنوان الاستلام",
+    "pickupAddress": "عنوان الاستلام (التحميل)",
     "destinationAddress": "عنوان الوجهة"
   },
   "buttons": {

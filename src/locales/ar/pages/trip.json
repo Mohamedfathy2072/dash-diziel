@@ -11,7 +11,7 @@
   "base_price": "السعر الأساسي",
   "scheduled_at": "مجدولة في",
   "pickup_information": "معلومات الاستلام",
-  "pickup_address": "عنوان الاستلام",
+  "pickup_address": "عنوان الاستلام (التحميل)",
   "pickup_latitude": "خط العرض",
   "pickup_longitude": "خط الطول",
   "pickup_date": "تاريخ الاستلام",
@@ -57,5 +57,6 @@
   "ratings": "التقييمات والمراجعات",
   "rateTrip": "تقييم الرحلة",
   "loadingRatings": "جاري تحميل التقييمات...",
-  "noRatingsYet": "لا توجد تقييمات بعد. كن أول من يقيم!"
+  "noRatingsYet": "لا توجد تقييمات بعد. كن أول من يقيم!",
+  "final_price":"السعر النهائي"
 }

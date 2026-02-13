@@ -12,9 +12,11 @@ const Logo = ({ theme = "light", className, noHome, variant }: LogoTypes) => {
   //     <DizielIcon lang={lang} className={`${variant === "logo" ? "h-[40px] !w-auto md:h-[35px] sm:!h-[30px]" : ""} ${className}`} />
   //   )
 
-  return noHome ? "" : (
-    <Link to={`/dashboard`} className={`!p-0`}>
-      {""}
+  return noHome ? (
+    ""
+  ) : (
+    <Link to="/dashboard" className="!p-0">
+      <img className="w-50" src="/images/main-logo.png" alt="logo" />
     </Link>
   );
 };

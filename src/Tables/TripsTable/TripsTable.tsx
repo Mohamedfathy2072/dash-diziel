@@ -15,6 +15,7 @@ import PrimaryTable from "../PrimaryTable";
 import { StyledTableCell } from "../StyledTableCell";
 import { WhiteStyledTableRow } from "../WhiteStyledTableRow";
 import ActionMenus from "./ActionMenus";
+import { formatPrice } from "../../utils/priceFormat";
 
 const TripsTable = ({
   data,
@@ -27,8 +28,9 @@ const TripsTable = ({
 }) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation("tables/trips_table");
-  const { activeVehicleTypes } = useVehicleTypes();
+    const { t:tTrip } = useTranslation("pages/trip");
 
+  const { activeVehicleTypes } = useVehicleTypes();
   return (
     <PrimaryTable variant={"trips"} count={count} currentCount={data?.length} loading={loading}>
       <TableHead>
@@ -50,80 +52,93 @@ const TripsTable = ({
             {t("labels.vehicleType", { defaultValue: "Vehicle Type" })}
           </StyledTableCell>
           <StyledTableCell align="center">
-            {t("labels.basePrice", { defaultValue: "Base Price" })}
+            {/* {t("labels.basePrice", { defaultValue: "Base Price" })} */}
+            {tTrip("final_price")}
           </StyledTableCell>
           <StyledTableCell align={i18n.language === "ar" ? "right" : "left"}>
             {t("labels.actions", { defaultValue: "Actions" })}
           </StyledTableCell>
         </TableRow>
       </TableHead>
-      <TableBody>
-        {data && !loading ? (
-          data.map((trip, i) => (
-            <WhiteStyledTableRow key={i} hover>
-              <StyledTableCell
-                component="th"
-                scope="row"
-                align={i18n.language === "ar" ? "left" : "right"}
-                className="!cursor-pointer"
-                onClick={() =>
-                  navigate(`${import.meta.env.VITE_TRIPS_ROUTE}/${trip.id}`)
-                }
+  <TableBody>
+  {data && !loading ? (
+    data.map((trip, i) => {
+      const acceptedOffer = trip.offers?.find(
+        (offer) => offer.status === "accepted"
+      );
+      const displayedPrice = acceptedOffer?.offered_price || trip.base_price;
+
+      return (
+        <WhiteStyledTableRow key={i} hover>
+          <StyledTableCell
+            component="th"
+            scope="row"
+            align={i18n.language === "ar" ? "left" : "right"}
+            className="!cursor-pointer"
+            onClick={() =>
+              navigate(`${import.meta.env.VITE_TRIPS_ROUTE}/${trip.id}`)
+            }
+          >
+            <Box>
+              <Typography
+                variant="body1"
+                className="!font-[600] !text-primary hover:underline"
               >
-                <Box>
-                  <Typography
-                    variant="body1"
-                    className="!font-[600] !text-primary hover:underline"
-                  >
-                    {trip.trip_title || `Trip #${trip.id}`}
-                  </Typography>
-                  <Typography variant="caption" className="!text-gray-500">
-                    {new Date(trip.created_at).toLocaleDateString()}
-                  </Typography>
-                </Box>
-              </StyledTableCell>
-              
-              <StyledTableCell align="center">
-                <Chip
-                  label={getTripStatusLabel(trip.status)}
-                  className={getTripStatusColor(trip.status)}
-                  size="small"
-                />
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                <Typography variant="body2" className="!text-gray-600" title={trip.pickup_address}>
-                  {trip.pickup_address.length > 30 
-                    ? `${trip.pickup_address.substring(0, 30)}...` 
-                    : trip.pickup_address}
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                <Typography variant="body2" className="!text-gray-600" title={trip.destination_address}>
-                  {trip.destination_address.length > 30 
-                    ? `${trip.destination_address.substring(0, 30)}...` 
-                    : trip.destination_address}
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                <Typography variant="body2" className="!capitalize">
-                  {getVehicleTypeName(trip.vehicle_type || trip.vehicle_type_id, activeVehicleTypes)}
-                </Typography>
-              </StyledTableCell>
-              <StyledTableCell align="center">
-                <Typography variant="body2" className="!font-[600]">
-                  ${(Number(trip.base_price) || 0).toFixed(2)}
-                </Typography>
-              </StyledTableCell>
-             
-              <StyledTableCell align={i18n.language === "ar" ? "right" : "left"}>
-                <ActionMenus trip={trip} />
-              </StyledTableCell>
-            </WhiteStyledTableRow>
-          ))
-        ) : (
-          <LoadingBody count={5} />
-        )}
-      </TableBody>
+                {trip.trip_title || `Trip #${trip.id}`}
+              </Typography>
+              <Typography variant="caption" className="!text-gray-500">
+                {new Date(trip.created_at).toLocaleDateString()}
+              </Typography>
+            </Box>
+          </StyledTableCell>
+
+          <StyledTableCell align="center">
+            <Chip
+              label={getTripStatusLabel(trip.status)}
+              className={getTripStatusColor(trip.status)}
+              size="small"
+            />
+          </StyledTableCell>
+
+          <StyledTableCell align="center">
+            <Typography variant="body2" className="!text-gray-600" title={trip.pickup_address}>
+              {trip.pickup_address.length > 30 
+                ? `${trip.pickup_address.substring(0, 30)}...` 
+                : trip.pickup_address}
+            </Typography>
+          </StyledTableCell>
+
+          <StyledTableCell align="center">
+            <Typography variant="body2" className="!text-gray-600" title={trip.destination_address}>
+              {trip.destination_address.length > 30 
+                ? `${trip.destination_address.substring(0, 30)}...` 
+                : trip.destination_address}
+            </Typography>
+          </StyledTableCell>
+
+          <StyledTableCell align="center">
+            <Typography variant="body2" className="!capitalize">
+              {getVehicleTypeName(trip.vehicle_type || trip.vehicle_type_id, activeVehicleTypes)}
+            </Typography>
+          </StyledTableCell>
+
+          <StyledTableCell align="center">
+            <Typography variant="body2" className="!font-[600]">
+              {formatPrice(displayedPrice)}
+            </Typography>
+          </StyledTableCell>
+
+          <StyledTableCell align={i18n.language === "ar" ? "right" : "left"}>
+            <ActionMenus trip={trip} />
+          </StyledTableCell>
+        </WhiteStyledTableRow>
+      );
+    })
+  ) : (
+    <LoadingBody count={5} />
+  )}
+</TableBody>
+
     </PrimaryTable>
   );
 };

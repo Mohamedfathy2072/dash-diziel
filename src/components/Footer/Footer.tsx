@@ -9,7 +9,7 @@ const Footer = () => {
   return (
     <Box component={"footer"} className="bg-white h-[60px] w-full">
       <PrimaryBox>
-        <PrimaryContainer className="!flex justify-start items-center">
+        <PrimaryContainer className="!flex justify-end items-center">
           <Typography variant="subtitle1" className="!font-[700]">
             © {new Date().getFullYear()}{" "}
             <span className="text-primary">{t("brandName")}</span> . {t("rightsReserved")}

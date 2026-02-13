@@ -24,7 +24,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: localStorage.getItem(import.meta.env.VITE_LANG_STORAGE) || "ar",
+    // lng: localStorage.getItem(import.meta.env.VITE_LANG_STORAGE) || "ar",  flag
     fallbackLng: "ar",
     supportedLngs: ["ar", "en"],
     interpolation: { escapeValue: false },

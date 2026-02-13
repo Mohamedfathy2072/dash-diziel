@@ -143,7 +143,7 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
       .transform((value, originalValue) => {
         return originalValue === "" ? null : originalValue;
       })
-      .max(20, t("", { defaultValue: "الرقم القومي لا يجب أن يزيد عن 20 رقمًا" })),
+      .max(14, t("", { defaultValue: "الرقم القومي لا يجب أن يزيد عن 14 رقمًا" })),
    
     city: yup
       .string()

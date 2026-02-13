@@ -12,6 +12,7 @@ import useListPage from "../../hooks/useListPage";
 import useAuth from "../../hooks/useAuth";
 import { getCreatePermission } from "../../utils/createPermissions";
 import { handleToaster } from "../../functions/handleToaster";
+import i18n from "../../i18n";
 
 interface GenericListSectionProps {
   title: string;
@@ -47,7 +48,6 @@ const GenericListSection = memo(({
 
   const displayTitle = useMemo(() => titleKey ? t(titleKey) : title, [titleKey, t, title]);
   const displayAddLabel = useMemo(() => addLabelKey ? t(addLabelKey) : addLabel, [addLabelKey, t, addLabel]);
-
   const handleAddClick = useCallback(() => {
     if (!addUrl) return;
 

@@ -8,19 +8,23 @@ import { RouterProvider } from "react-router-dom";
 import { prefixer } from "stylis";
 import rtlPlugin from "stylis-plugin-rtl";
 import "./assets/index.css";
+import "./sass/main.scss";
 import i18n from "./i18n";
 import logger from "./utils/logger";
 import { reportWebVitals } from "./reportWebVitals";
 import { router } from "./routers/router";
 import { store } from "./store/store";
 import { theme } from "./theme";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const createEmotionCache = (lang: string) =>
   createCache({
     key: lang === "ar" ? "muirtl" : "mui",
-    insertionPoint: document.querySelector<HTMLMetaElement>(
-      'meta[name="emotion-insertion-point"]'
-    ) || undefined,
+    insertionPoint:
+      document.querySelector<HTMLMetaElement>(
+        'meta[name="emotion-insertion-point"]',
+      ) || undefined,
     prepend: true,
     stylisPlugins: lang === "ar" ? [prefixer, rtlPlugin] : [prefixer],
   });
