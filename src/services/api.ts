@@ -515,7 +515,7 @@ export const vehicleService = {
     const client = createApiClient();
     return client.post(`/vehicles/${id}/set-primary`);
   },
-    importVehicles: (file: File) => {
+  importVehicles: (file: File) => {
     const client = createApiClient();
     const formData = new FormData();
     formData.append("file", file);
@@ -526,9 +526,23 @@ export const vehicleService = {
 
 // Trip Service
 export const tripService = {
+  uploadPhoto: (tripId: number, formData: FormData) => {
+  const client = createApiClient();
+  return client.post(`/admin/trips/${tripId}/photos`, formData, {
+    headers: { "Content-Type": undefined },
+  });
+},
+deletePhoto: (tripId: number, photoId: number) => {
+  const client = createApiClient();
+  return client.delete(`/admin/trips/${tripId}/photos/${photoId}`);
+},
   getAll: (params: { [key: string]: any } = {}) => {
     const client = createApiClient();
     return client.get("/trips", { params });
+  },
+  getPhotos: (tripId: number) => {
+    const client = createApiClient();
+    return client.get(`/admin/trips/${tripId}/photos`);
   },
 
   getById: (id: number) => {

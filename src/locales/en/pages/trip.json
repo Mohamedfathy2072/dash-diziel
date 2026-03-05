@@ -58,5 +58,26 @@
   "rateTrip": "Rate Trip",
   "loadingRatings": "Loading ratings...",
   "noRatingsYet": "No ratings yet. Be the first to rate!",
-  "final_price": "Final Price"
+  "final_price": "Final Price",
+  "policy_before": "before",
+  "policy_after": "after",
+  "additional_1": "Additional 1",
+  "additional_2": "Additional 2",
+  "additional_3": "Additional 3",
+  "additional_4": "Additional 4",
+  "additional_5": "Additional 5",
+  "additional_6": "Additional 6",
+  "photo_type": "Photo Type",
+  "trip_photos":"Trip Photos",
+  "before_loading": "Before Loading",
+  "after_signature": "After Signature",
+  "mandatory_photos": "Mandatory Photos",
+  "additional_photos": "Additional Photos",
+  "required": "Required",
+  "no_photo_uploaded": "No photo uploaded yet",
+  "upload": "Upload",
+  "replace": "Replace photo",
+  "view_photo": "View photo",
+  "delete_photo": "Delete photo"
+
 }

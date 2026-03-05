@@ -127,7 +127,7 @@ const useDriverSchema = (isEdit = false, selectedDriver?: Driver | null) => {
       .transform((value, originalValue) => {
         return originalValue === "" ? null : originalValue;
       })
-      .max(50, t("", { defaultValue: "نوع السائق لا يجب أن يزيد عن 50 حرفًا" })),
+      .max(50, t("", { defaultValue: "نوع الرخصة لا يجب أن يزيد عن 50 حرفًا" })),
 
     license_degree: yup
       .string()

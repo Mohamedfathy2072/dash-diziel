@@ -238,19 +238,18 @@ const DriverForm = ({
       }}
     />
 
-    {/* نوع السائق */}
     <Input
       formik={formik}
       name="driver_type"
-      label={t("", { defaultValue: "نوع السائق" })}
+      label={t("", { defaultValue: "نوع الرخصة" })}
       select
       options={driverTypeOptions}
       values={driverTypeValues}
-      placeholder={t("", { defaultValue: "اختر نوع السائق" })}
+      placeholder={t("", { defaultValue: "اختر نوع الرخصة" })}
       optional
     />
 
-    {/* درجة الرخصة */}
+ 
     <Input
       formik={formik}
       name="license_degree"

@@ -230,7 +230,7 @@ const PhoneNumberInput = <T extends AllFormsTypes>({
       const val = value.slice(data.dialCode.length);
       const formatted = value.startsWith(`+${data.dialCode}-`)
         ? value
-        : `+${data.dialCode}-${val}`;
+        : `+${data.dialCode}${val}`;
       if (onChange) {
         onChange(formatted);
       }

@@ -11,6 +11,8 @@ interface TripsState {
   totalPages: number;
   totalCount: number;
   limit: number;
+  photos: any[];
+  photosLoading: boolean;
 }
 
 const initialState: TripsState = {
@@ -22,34 +24,59 @@ const initialState: TripsState = {
   totalPages: 1,
   totalCount: 0,
   limit: 10,
+  photos: [],
+photosLoading: false,
 };
 
+export const uploadTripPhoto = createAsyncThunk(
+  "trips/uploadPhoto",
+  async ({ tripId, formData }: { tripId: number; formData: FormData }) => {
+    const response = await tripService.uploadPhoto(tripId, formData);
+    return response.data.data;
+  }
+);
+export const deleteTripPhoto = createAsyncThunk(
+  "trips/deletePhoto",
+  async ({ tripId, photoId }: { tripId: number; photoId: number }) => {
+    await tripService.deletePhoto(tripId, photoId);
+    return photoId;
+  }
+);
 // Async thunks
 export const fetchTrips = createAsyncThunk(
   "trips/fetchAll",
   async (queries: { [key: string]: string | number } = {}) => {
     const page = +(queries.page || 1);
     const limit = +(queries.limit || 10);
-    
+
     // Extract filter parameters
     const params: any = {
       page,
       limit,
     };
-    
+
     // Add filter parameters if they exist
     if (queries.status) params.status = queries.status;
-    if (queries.vehicle_type_id) params.vehicle_type_id = typeof queries.vehicle_type_id === 'string' ? parseInt(queries.vehicle_type_id, 10) : queries.vehicle_type_id;
+    if (queries.vehicle_type_id)
+      params.vehicle_type_id =
+        typeof queries.vehicle_type_id === "string"
+          ? parseInt(queries.vehicle_type_id, 10)
+          : queries.vehicle_type_id;
     // Backward compatibility: also check for old vehicle_type param
-    if (!params.vehicle_type_id && queries.vehicle_type) params.vehicle_type_id = typeof queries.vehicle_type === 'string' ? parseInt(queries.vehicle_type, 10) : queries.vehicle_type;
+    if (!params.vehicle_type_id && queries.vehicle_type)
+      params.vehicle_type_id =
+        typeof queries.vehicle_type === "string"
+          ? parseInt(queries.vehicle_type, 10)
+          : queries.vehicle_type;
     if (queries.user_id) params.user_id = +queries.user_id;
     if (queries.driver_id) params.driver_id = +queries.driver_id;
     if (queries.pickup_address) params.pickup_address = queries.pickup_address;
-    if (queries.destination_address) params.destination_address = queries.destination_address;
-    
+    if (queries.destination_address)
+      params.destination_address = queries.destination_address;
+
     const response = await tripService.getAll(params);
     const responseData = response.data.data;
-    
+
     // Handle both paginated response structure and plain array (fallback)
     if (Array.isArray(responseData)) {
       return {
@@ -62,10 +89,18 @@ export const fetchTrips = createAsyncThunk(
         to: responseData.length > 0 ? responseData.length : null,
       } as PaginatedResponse<Trip>;
     }
-    
+
     // Normal paginated response from backend
     return responseData as PaginatedResponse<Trip>;
-  }
+  },
+);
+
+export const fetchTripPhotos = createAsyncThunk(
+  "trips/fetchPhotos",
+  async (tripId: number) => {
+    const response = await tripService.getPhotos(tripId);
+    return response.data.data; 
+  },
 );
 
 export const fetchTripById = createAsyncThunk(
@@ -73,7 +108,7 @@ export const fetchTripById = createAsyncThunk(
   async (id: number) => {
     const response = await tripService.getById(id);
     return response.data.data as Trip;
-  }
+  },
 );
 
 export const updateTrip = createAsyncThunk(
@@ -81,7 +116,7 @@ export const updateTrip = createAsyncThunk(
   async ({ id, data }: { id: number; data: Partial<Trip> }) => {
     const response = await tripService.update(id, data);
     return response.data.data as Trip;
-  }
+  },
 );
 
 export const deleteTrip = createAsyncThunk(
@@ -89,7 +124,7 @@ export const deleteTrip = createAsyncThunk(
   async (id: number) => {
     await tripService.delete(id);
     return id;
-  }
+  },
 );
 
 export const acceptTripOffer = createAsyncThunk(
@@ -97,23 +132,20 @@ export const acceptTripOffer = createAsyncThunk(
   async ({ tripId, offerId }: { tripId: number; offerId: number }) => {
     const response = await tripService.acceptOffer(tripId, offerId);
     return response.data.data as Trip;
-  }
+  },
 );
 
-export const startTrip = createAsyncThunk(
-  "trips/start",
-  async (id: number) => {
-    const response = await tripService.start(id);
-    return response.data.data as Trip;
-  }
-);
+export const startTrip = createAsyncThunk("trips/start", async (id: number) => {
+  const response = await tripService.start(id);
+  return response.data.data as Trip;
+});
 
 export const completeTrip = createAsyncThunk(
   "trips/complete",
   async (id: number) => {
     const response = await tripService.complete(id);
     return response.data.data as Trip;
-  }
+  },
 );
 
 export const cancelTrip = createAsyncThunk(
@@ -121,7 +153,7 @@ export const cancelTrip = createAsyncThunk(
   async ({ id, reason }: { id: number; reason?: string }) => {
     const response = await tripService.cancel(id, reason);
     return response.data.data as Trip;
-  }
+  },
 );
 
 const tripsSlice = createSlice({
@@ -136,6 +168,46 @@ const tripsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+
+builder
+  .addCase(fetchTripPhotos.pending, (state) => {
+    state.photosLoading = true;
+  })
+  .addCase(fetchTripPhotos.fulfilled, (state, action) => {
+    state.photosLoading = false;
+    state.photos = action.payload || [];
+  })
+  .addCase(fetchTripPhotos.rejected, (state) => {
+    state.photosLoading = false;
+  });
+
+builder
+  .addCase(deleteTripPhoto.pending, (state, action) => {
+    state.deletingPhotoId = action.meta.arg.photoId;
+  })
+  .addCase(deleteTripPhoto.fulfilled, (state, action) => {
+    state.deletingPhotoId = null;
+    state.photos = state.photos.filter((p: any) => p.id !== action.payload);
+  })
+  .addCase(deleteTripPhoto.rejected, (state) => {
+    state.deletingPhotoId = null;
+  });
+
+// Also update uploadTripPhoto fulfilled to REPLACE existing photo of same type:
+// Replace this in extraReducers:
+builder
+  .addCase(uploadTripPhoto.fulfilled, (state, action) => {
+    // Replace existing photo of same type, or add new
+    const incoming = action.payload;
+    const existingIndex = state.photos.findIndex(
+      (p: any) => p.photo_type === incoming.photo_type
+    );
+    if (existingIndex !== -1) {
+      state.photos[existingIndex] = incoming;
+    } else {
+      state.photos = [...state.photos, incoming];
+    }
+  });
     // Fetch trips
     builder
       .addCase(fetchTrips.pending, (state) => {

@@ -47,6 +47,8 @@ import NotificationForm from "./NotificationForm/NotificationForm";
 import RoleForm from "./RoleForm/RoleForm";
 import PermissionForm from "./PermissionForm/PermissionForm";
 import DepositForm from "./DepositForm/DepositForm";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store/store";
 
 const Forms = ({ type }: FormsTypes) => {
   const { formik } = useSubmitForm(type as keyof FormikMap);
@@ -55,6 +57,7 @@ const Forms = ({ type }: FormsTypes) => {
   const documentsRef = useRef<{ [key: string]: File | null }>({});
   const fileRef = useRef<File | null>(null);
   const imageFileRef = useRef<File | null>(null);
+  const selectedTrip = useSelector((state: RootState) => state.trips.selectedTrip);
 
   // Handle form submission for user/driver/ad forms with photo, documents, and image
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -251,6 +254,7 @@ const Forms = ({ type }: FormsTypes) => {
         <TripForm
           formik={formik as FormikProps<TripFormTypes>}
           type={type as "editTrip"}
+          trip={selectedTrip ?? undefined}
         />
       )}
       {type === "filterTrips" && (

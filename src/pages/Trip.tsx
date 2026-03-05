@@ -18,7 +18,12 @@ import TripOfferCard from "../components/trip/TripOfferCard/TripOfferCard";
 import TimelineItem from "../components/trip/TimelineItem/TimelineItem";
 import QuickInfoCard from "../components/trip/QuickInfoCard/QuickInfoCard";
 import useDetailPage from "../hooks/useDetailPage";
-import { fetchTripById, clearSelectedTrip } from "../store/tripsSlice";
+import {
+  fetchTripById,
+  clearSelectedTrip,
+  fetchTripPhotos,
+  uploadTripPhoto,
+} from "../store/tripsSlice";
 import { getTripStatusLabel, getTripStatusColor } from "../utils/enums";
 import { getVehicleTypeName } from "../utils/vehicleTypes";
 import { formatDate, formatTime } from "../utils/dateFormat";
@@ -27,7 +32,7 @@ import useVehicleTypes from "../hooks/useVehicleTypes";
 import useAuth from "../hooks/useAuth";
 import type { RootState } from "../store/store";
 import type { TripOffer } from "../types/domain";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTripRatings, checkCanRate } from "../store/ratingsSlice";
 import { useModalsStore } from "../globals/modalsStore";
@@ -35,6 +40,7 @@ import { useAppStore } from "../globals/appStore";
 import RatingList from "../components/ratings/RatingList";
 import { GradientButton } from "../mui/buttons/GradientButton";
 import type { AppDispatch } from "../store/store";
+import TripPhotosSection from "./TripPhotosSection";
 
 const Trip = () => {
   const { t } = useTranslation("pages/trip");
@@ -44,11 +50,20 @@ const Trip = () => {
   const { activeVehicleTypes } = useVehicleTypes();
   const setRatingModal = useModalsStore((state) => state.setRatingModal);
   const setRatingData = useAppStore((state) => state.setRatingData);
-  const tripRatings = useSelector((state: RootState) => state.ratings.tripRatings) || [];
+  const tripRatings =
+    useSelector((state: RootState) => state.ratings.tripRatings) || [];
   const canRate = useSelector((state: RootState) => state.ratings.canRate);
-  const ratingsLoading = useSelector((state: RootState) => state.ratings.loading);
+  const ratingsLoading = useSelector(
+    (state: RootState) => state.ratings.loading,
+  );
 
-  const { id, selectedItem: selectedTrip, loading, error, handleBack } = useDetailPage({
+  const {
+    id,
+    selectedItem: selectedTrip,
+    loading,
+    error,
+    handleBack,
+  } = useDetailPage({
     selector: (state: RootState) => ({
       selectedItem: state.trips.selectedTrip,
       loading: state.trips.loading,
@@ -61,11 +76,16 @@ const Trip = () => {
 
   // Fetch ratings and check if user can rate when trip is loaded
   useEffect(() => {
-    if (selectedTrip?.id && selectedTrip?.status === 'completed') {
+    if (selectedTrip?.id && selectedTrip?.status === "completed") {
       dispatch(fetchTripRatings(selectedTrip.id));
       dispatch(checkCanRate(selectedTrip.id));
     }
   }, [selectedTrip?.id, selectedTrip?.status, dispatch]);
+  useEffect(() => {
+    if (selectedTrip?.id) {
+      dispatch(fetchTripPhotos(selectedTrip.id));
+    }
+  }, [selectedTrip?.id]);
 
   const handleRateClick = () => {
     if (selectedTrip?.id) {
@@ -126,12 +146,12 @@ const Trip = () => {
       showDelete={isSuperAdmin()}
     />
   );
-const acceptedOffer = selectedTrip?.offers?.find(
-  (offer) => offer.status === "accepted"
-);
+  const acceptedOffer = selectedTrip?.offers?.find(
+    (offer) => offer.status === "accepted",
+  );
 
-const displayedPrice =
-  acceptedOffer?.offered_price || selectedTrip?.base_price;
+  const displayedPrice =
+    acceptedOffer?.offered_price || selectedTrip?.base_price;
 
   return (
     <DetailPageWrapper
@@ -155,7 +175,10 @@ const displayedPrice =
             <Box className="p-8">
               <Box className="flex items-start justify-between mb-6">
                 <Box className="flex-1">
-                  <Typography variant="h4" className="!font-[700] !mb-4 !text-gray-900 !text-2xl md:!text-3xl">
+                  <Typography
+                    variant="h4"
+                    className="!font-[700] !mb-4 !text-gray-900 !text-2xl md:!text-3xl"
+                  >
                     {selectedTrip.trip_title || `Trip #${selectedTrip.id}`}
                   </Typography>
                   <Box className="flex items-center gap-4 flex-wrap">
@@ -175,24 +198,23 @@ const displayedPrice =
                       </Box>
                     )} */}
 
-                 {displayedPrice && (
-                    <Box className="px-5 py-3 bg-white/90 backdrop-blur-sm rounded-xl border border-white/50 shadow-md hover:shadow-lg transition-all duration-200">
-                      <Typography
-                        variant="caption"
-                        className="!text-gray-600 !block !mb-1 !font-medium"
-                      >
-                        {t("final_price")}
-                      </Typography>
+                    {displayedPrice && (
+                      <Box className="px-5 py-3 bg-white/90 backdrop-blur-sm rounded-xl border border-white/50 shadow-md hover:shadow-lg transition-all duration-200">
+                        <Typography
+                          variant="caption"
+                          className="!text-gray-600 !block !mb-1 !font-medium"
+                        >
+                          {t("final_price")}
+                        </Typography>
 
-                      <Typography
-                        variant="h6"
-                        className="!font-bold !text-green-600 !text-lg"
-                      >
-                        {formatPrice(displayedPrice)}
-                      </Typography>
-                    </Box>
-                  )}
-
+                        <Typography
+                          variant="h6"
+                          className="!font-bold !text-green-600 !text-lg"
+                        >
+                          {formatPrice(displayedPrice)}
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
                 </Box>
               </Box>
@@ -203,7 +225,7 @@ const displayedPrice =
                   label={t("vehicle_type")}
                   value={getVehicleTypeName(
                     selectedTrip.vehicle_type || selectedTrip.vehicle_type_id,
-                    activeVehicleTypes
+                    activeVehicleTypes,
                   )}
                 />
                 {selectedTrip.scheduled_at && (
@@ -211,17 +233,26 @@ const displayedPrice =
                     label={t("scheduled_at")}
                     value={
                       <Box>
-                        <Typography variant="body1" className="!font-semibold !text-gray-900">
+                        <Typography
+                          variant="body1"
+                          className="!font-semibold !text-gray-900"
+                        >
                           {formatDate(selectedTrip.scheduled_at)}
                         </Typography>
-                        <Typography variant="caption" className="!text-gray-500">
+                        <Typography
+                          variant="caption"
+                          className="!text-gray-500"
+                        >
                           {formatTime(selectedTrip.scheduled_at)}
                         </Typography>
                       </Box>
                     }
                   />
                 )}
-                <QuickInfoCard label={t("trip_id")} value={`#${selectedTrip.id}`} />
+                <QuickInfoCard
+                  label={t("trip_id")}
+                  value={`#${selectedTrip.id}`}
+                />
               </Box>
             </Box>
           </Paper>
@@ -272,36 +303,62 @@ const displayedPrice =
           </Paper>
 
           {/* Additional Information */}
-          {(selectedTrip.description || selectedTrip.notes || selectedTrip.weight || selectedTrip.material) && (
+          {(selectedTrip.description ||
+            selectedTrip.notes ||
+            selectedTrip.weight ||
+            selectedTrip.material) && (
             <Paper className="paper shadow-xl !rounded-2xl">
               <Box className="p-6 md:p-8">
-                <SectionHeader title={t("additional_information")} className="mb-6" />
+                <SectionHeader
+                  title={t("additional_information")}
+                  className="mb-6"
+                />
                 <Box className="grid grid-cols-2 md:grid-cols-1 gap-5">
                   {selectedTrip.description && (
                     <Box className="col-span-full p-5 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                      <Typography variant="caption" className="!text-gray-500 !block !mb-2 !font-medium">
+                      <Typography
+                        variant="caption"
+                        className="!text-gray-500 !block !mb-2 !font-medium"
+                      >
                         {t("description")}
                       </Typography>
-                      <Typography variant="body1" className="!text-gray-900 whitespace-pre-wrap">
+                      <Typography
+                        variant="body1"
+                        className="!text-gray-900 whitespace-pre-wrap"
+                      >
                         {selectedTrip.description}
                       </Typography>
                     </Box>
                   )}
                   {selectedTrip.notes && (
                     <Box className="col-span-full p-5 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200 shadow-sm hover:shadow-md transition-shadow">
-                      <Typography variant="caption" className="!text-blue-700 !block !mb-2 !font-semibold">
+                      <Typography
+                        variant="caption"
+                        className="!text-blue-700 !block !mb-2 !font-semibold"
+                      >
                         {t("notes")}
                       </Typography>
-                      <Typography variant="body1" className="!text-gray-900 whitespace-pre-wrap">
+                      <Typography
+                        variant="body1"
+                        className="!text-gray-900 whitespace-pre-wrap"
+                      >
                         {selectedTrip.notes}
                       </Typography>
                     </Box>
                   )}
                   {(selectedTrip.weight || selectedTrip.material) && (
                     <Box className="col-span-full grid grid-cols-2 md:grid-cols-1 gap-5">
-                      {selectedTrip.weight && <InfoField label={t("weight")} value={selectedTrip.weight} />}
+                      {selectedTrip.weight && (
+                        <InfoField
+                          label={t("weight")}
+                          value={selectedTrip.weight}
+                        />
+                      )}
                       {selectedTrip.material && (
-                        <InfoField label={t("material")} value={selectedTrip.material} />
+                        <InfoField
+                          label={t("material")}
+                          value={selectedTrip.material}
+                        />
                       )}
                     </Box>
                   )}
@@ -327,7 +384,11 @@ const displayedPrice =
                     />
                   )}
                   {selectedTrip.started_at && (
-                    <TimelineItem label={t("started_at")} date={selectedTrip.started_at} variant="started" />
+                    <TimelineItem
+                      label={t("started_at")}
+                      date={selectedTrip.started_at}
+                      variant="started"
+                    />
                   )}
                   {selectedTrip.completed_at && (
                     <TimelineItem
@@ -345,7 +406,10 @@ const displayedPrice =
                   )}
                   {selectedTrip.cancellation_reason && (
                     <Box className="col-span-full p-5 rounded-xl bg-gradient-to-br from-red-50 to-red-100/50 border border-red-200 shadow-sm hover:shadow-md transition-shadow">
-                      <Typography variant="caption" className="!text-red-700 !block !mb-2 !font-semibold">
+                      <Typography
+                        variant="caption"
+                        className="!text-red-700 !block !mb-2 !font-semibold"
+                      >
                         {t("cancellation_reason")}
                       </Typography>
                       <Typography variant="body1" className="!text-gray-900">
@@ -384,30 +448,39 @@ const displayedPrice =
           )}
 
           {/* Accepted Driver Information */}
-          {selectedTrip.accepted_driver && selectedTrip.accepted_driver.user && (
-            <Paper className="paper shadow-xl !rounded-2xl hover:shadow-2xl transition-all duration-300">
-              <Box className="p-6 md:p-8">
-                <SectionHeader title={t("accepted_driver_information")} className="mb-6" />
-                <Box
-                  className="cursor-pointer hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 p-5 rounded-xl transition-all border-2 border-transparent hover:border-green-200"
-                  onClick={() => handleDriverClick(selectedTrip.accepted_driver?.id)}
-                >
-                  <UserInfoCard
-                    photoUrl={selectedTrip.accepted_driver.user.photo_url}
-                    name={selectedTrip.accepted_driver.user.name}
-                    email={selectedTrip.accepted_driver.user.email}
-                    phone={selectedTrip.accepted_driver.user.phone}
+          {selectedTrip.accepted_driver &&
+            selectedTrip.accepted_driver.user && (
+              <Paper className="paper shadow-xl !rounded-2xl hover:shadow-2xl transition-all duration-300">
+                <Box className="p-6 md:p-8">
+                  <SectionHeader
+                    title={t("accepted_driver_information")}
+                    className="mb-6"
                   />
+                  <Box
+                    className="cursor-pointer hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 p-5 rounded-xl transition-all border-2 border-transparent hover:border-green-200"
+                    onClick={() =>
+                      handleDriverClick(selectedTrip.accepted_driver?.id)
+                    }
+                  >
+                    <UserInfoCard
+                      photoUrl={selectedTrip.accepted_driver.user.photo_url}
+                      name={selectedTrip.accepted_driver.user.name}
+                      email={selectedTrip.accepted_driver.user.email}
+                      phone={selectedTrip.accepted_driver.user.phone}
+                    />
+                  </Box>
                 </Box>
-              </Box>
-            </Paper>
-          )}
+              </Paper>
+            )}
 
           {/* Accepted Vehicle Information */}
           {selectedTrip.accepted_vehicle && (
             <Paper className="paper shadow-xl !rounded-2xl hover:shadow-2xl transition-shadow duration-300">
               <Box className="p-6 md:p-8">
-                <SectionHeader title={t("accepted_vehicle_information")} className="mb-6" />
+                <SectionHeader
+                  title={t("accepted_vehicle_information")}
+                  className="mb-6"
+                />
                 <VehicleInfoCard
                   make={selectedTrip.accepted_vehicle.make}
                   model={selectedTrip.accepted_vehicle.model}
@@ -417,39 +490,157 @@ const displayedPrice =
                   vehicleType={selectedTrip.accepted_vehicle.vehicle_type}
                   vehicleTypeId={selectedTrip.accepted_vehicle.vehicle_type_id}
                   activeVehicleTypes={activeVehicleTypes}
-                  onClick={() => handleVehicleClick(selectedTrip.accepted_vehicle?.id)}
+                  onClick={() =>
+                    handleVehicleClick(selectedTrip.accepted_vehicle?.id)
+                  }
                 />
               </Box>
             </Paper>
           )}
 
           {/* Ratings Section */}
-          {selectedTrip.status === 'completed' && (
+          {selectedTrip.status === "completed" && (
             <Paper className="paper shadow-xl !rounded-2xl">
               <Box className="p-6 md:p-8">
                 <Box className="flex items-center justify-between mb-6">
-                  <SectionHeader title={t("ratings", { defaultValue: "Ratings & Reviews" })} />
+                  <SectionHeader
+                    title={t("ratings", { defaultValue: "Ratings & Reviews" })}
+                  />
                   {canRate && (
-                    <GradientButton onClick={handleRateClick} className="!px-6 !py-2.5">
+                    <GradientButton
+                      onClick={handleRateClick}
+                      className="!px-6 !py-2.5"
+                    >
                       {t("rateTrip", { defaultValue: "Rate Trip" })}
                     </GradientButton>
                   )}
                 </Box>
                 {ratingsLoading ? (
-                  <Typography variant="body2" className="text-gray-500 text-center py-8">
-                    {t("loadingRatings", { defaultValue: "Loading ratings..." })}
+                  <Typography
+                    variant="body2"
+                    className="text-gray-500 text-center py-8"
+                  >
+                    {t("loadingRatings", {
+                      defaultValue: "Loading ratings...",
+                    })}
                   </Typography>
                 ) : (
                   <RatingList
                     ratings={tripRatings}
                     showDetails={true}
-                    emptyMessage={t("noRatingsYet", { defaultValue: "No ratings yet. Be the first to rate!" })}
+                    emptyMessage={t("noRatingsYet", {
+                      defaultValue: "No ratings yet. Be the first to rate!",
+                    })}
                   />
                 )}
               </Box>
             </Paper>
           )}
 
+          {/* {selectedTrip.status === "accepted" && (
+            <Paper className="paper shadow-xl !rounded-2xl">
+              <Box className="p-6 md:p-8">
+                <Box className="flex items-center justify-between mb-6">
+                  <SectionHeader
+                    title={t("trip_photos", { defaultValue: "Trip Photos" })}
+                  />
+                  <Box className="flex items-center gap-3">
+                    <label className="text-sm font-medium text-gray-700">
+                      {t("photo_type")}
+                    </label>
+                    <select
+                      value={photoType}
+                      onChange={(e) => setPhotoType(e.target.value)}
+                      className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="policy_before">
+                        {t("policy_before")}
+                      </option>
+                      <option value="policy_after">{t("policy_after")}</option>
+                      <option value="additional_1">{t("additional_1")}</option>
+                      <option value="additional_2">{t("additional_2")}</option>
+                      <option value="additional_3">{t("additional_3")}</option>
+                      <option value="additional_4">{t("additional_4")}</option>
+                      <option value="additional_5">{t("additional_5")}</option>
+                      <option value="additional_6">{t("additional_6")}</option>
+                    </select>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handlePhotoUpload}
+                    />
+                    <GradientButton
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploadLoading}
+                      className="!px-5 !py-2"
+                    >
+                      {uploadLoading ? (
+                        <CircularProgress size={18} className="!text-white" />
+                      ) : (
+                        t("upload_photo", { defaultValue: "Upload Photo" })
+                      )}
+                    </GradientButton>
+                  </Box>
+                </Box>
+
+                {photosLoading ? (
+                  <Box className="flex justify-center py-10">
+                    <CircularProgress />
+                  </Box>
+                ) : photos.length > 0 ? (
+                  <Box className="grid grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
+                    {photos.map((photo: any) => (
+                      <Box
+                        key={photo.id}
+                        className="rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow group relative"
+                      >
+                        <img
+                          src={`${import.meta.env.VITE_BACKEND_URL}/${photo.photo_url}`}
+                          alt={photo.description || photo.photo_type}
+                          className="w-full h-48 object-cover"
+                        />
+                        <Box className="p-3 bg-white">
+                          <Typography
+                            variant="caption"
+                            className="!text-gray-500 !font-medium capitalize"
+                          >
+                            {photo.photo_type?.replace("_", " ")}
+                          </Typography>
+                          {photo.description && (
+                            <Typography
+                              variant="body2"
+                              className="!text-gray-700 !text-xs mt-1"
+                            >
+                              {photo.description}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Box>
+                    ))}
+                  </Box>
+                ) : (
+                  <Box className="text-center py-12">
+                    <Typography variant="body1" className="!text-gray-400">
+                      {t("no_photos", {
+                        defaultValue: "No photos uploaded yet.",
+                      })}
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+            </Paper>
+          )} */}
+          {isSuperAdmin() &&
+            (selectedTrip.status === "accepted" ||
+              selectedTrip.status === "completed") && (
+              <TripPhotosSection
+                tripId={selectedTrip.id}
+                isSuperAdmin={isSuperAdmin()}
+                isView={true}
+              />
+            )}
           {/* Trip Offers */}
           <Paper className="paper shadow-xl !rounded-2xl">
             <Box className="p-6 md:p-8">
